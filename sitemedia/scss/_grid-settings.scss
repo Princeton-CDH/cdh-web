@@ -1,38 +1,27 @@
-@import "neat/neat-helpers";
-
-//Current settings for the minimum of the large
-// viewport content
-$column: 55px;
-$gutter: 30px;
-
-$grid-columns: 12;
-$max-width: 990px;
-
-//Breakpoint grid values
-$medium_val: 735px;
-$small_val: 84%;
-
-
-$medium: new-breakpoint(max-width 1068px 9);
-$small: new-breakpoint(max-width 735px 1);
-
 @import "neat/neat";
 
-@mixin responsive-container {
+// breakpoints and content sizes for large, medium, and small viewports
+$medium-max-width: 1068px;
+$medium-content-width: 735px;
 
-  @include outer-container();
+$small-max-width: 735px;
+$small-content-width: 84%;
 
-  @include media($small) {
-    @include outer-container($small_val);
-  }
+$large-content-width: 990px;
 
-  @include media($medium) {
-    @include outer-container($medium_val);
-  }
-}
+$gutter: 30px;
 
-@if ($visual-grid) {
-  body:before {
-    @include responsive-container;
-  }
-}
+// set medium viewport grid as default
+$neat-grid: (
+    columns: 9,
+    gutter: $gutter
+);
+
+// large grid for over 1068 px
+$large-grid: (
+    columns: 12,
+    gutter: $gutter,
+    media: 1069px
+);
+
+

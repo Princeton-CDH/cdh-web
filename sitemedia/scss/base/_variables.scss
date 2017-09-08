@@ -1,6 +1,11 @@
+// Font stacks
+$font-stack-headline: BrownStdRegular, arial, sans-serif;
+$font-stack-headline-bold: BrownStdBold, bold arial, sans-serif;
+$font-stack-body-text: 'Lyon Text Web', Georgia, serif;
+
 // Typography
-$base-font-family: $font-stack-system;
-$heading-font-family: $base-font-family;
+$base-font-family: $font-stack-body-text;
+$heading-font-family: $font-stack-headline;
 
 // Line height
 $base-line-height: 1.5;
@@ -13,17 +18,20 @@ $small-spacing: $base-spacing / 2;
 $base-z-index: 0;
 
 // Colors
-$blue: #1565c0;
-$dark-gray: #333;
-$medium-gray: #999;
-$light-gray: #ddd;
+$cdh-blue: #00edff;
+$light-grey: #f8f8f8;  // formerly bg-gray
+$dark-grey: #646464;   // formerly text-gray
+$offwhite: #f9f9f9;
+$black: #000000;
+
+// bitters built-ins
 
 // Font Colors
-$base-font-color: $dark-gray;
-$action-color: $blue;
+$base-font-color: $black;
+$action-color: $cdh-blue;
 
 // Border
-$base-border-color: $light-gray;
+$base-border-color: $light-grey;
 $base-border: 1px solid $base-border-color;
 
 // Background Colors
