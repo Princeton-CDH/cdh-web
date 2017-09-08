@@ -3,72 +3,31 @@
 @import "grid-settings";
 
 
-body {
-	background-color: $light-grey;
-	margin: 0;
-	padding: 0;
-	font-family: $font-stack-body-text;
-	font-size: 20px;
-	color: #000000;
-	line-height: 1.6;
-}
-
-h1, h2, h3, h4 {
-	font-family: $font-stack-headline-bold;
-	font-weight: bold;
-}
-
-h3 {
-	font-size: 28px;
-	line-height: 1.29;
-}
-
-h4 {
-	font-size: 20px;
-	font-stretch: normal;
-}
-
-/* NOTE: labeled as .quote in zeplin, used for blog excerpt/call out in design */
-q {
-	font-family: Georgia;
-	font-size: 21px;
-	font-style: italic;
-	line-height: 1.52;
-	color: $dark-grey;
-}
-
-/* Caption in zeplin */
-figcaption {
-	font-family: $font-stack-body-text; /* redundant? body font */
-	font-size: 18px;
-	font-style: italic;
-	line-height: 1.33;
-	text-align: center;
-	color: $dark-grey;
-}
-
-
 /* container with max-width for large, medium, and small viewports */
 .responsive-container {
-	@include grid-container;
-	// can we use grid-collapse here to consume gutters or does it need to be on elements?
+    @include grid-container;
+    // can we use grid-collapse here to consume gutters or does it need to be on elements?
 
-	max-width: $large-content-width;
-	margin: auto;
+    max-width: $large-content-width;
+    margin: auto;
 
     @media (max-width: $medium-max-width) {
-    	max-width: $medium-content-width;
+        max-width: $medium-content-width;
     }
 
     @media (max-width: $small-max-width) {
-    	max-width: $small-content-width;
+        max-width: $small-content-width;
     }
 
-    // NOTE: uncomment for visual debugging
-    // @include grid-visual();
-    // @include grid-media($large-grid){
-	  // @include grid-visual();
-    // }
+}
+
+
+/* add class for visual debugging */
+.grid-visual  {
+    @include grid-visual();
+    @include grid-media($large-grid){
+      @include grid-visual();
+    }
 }
 
 
@@ -87,87 +46,6 @@ div.bleed-image-placeholder {
 	margin-right: auto;
 }
 
-header.nav {
-	width: 100%;
-	height: 90px;
-	max-width: 1440px;
-	position: fixed;
-	text-align: center;
-	background-color: rgba(255, 255, 255, 0.95);
-	left: 0;
-	right: 0;
-	margin-left: auto;
-	margin-right: auto;
-	transition: margin-top 0.25s;
-
-	z-index: 10;
-	&.hidden {
-		margin-top: -90px;
-	}
-	nav {
-		@extend .responsive-container;
-		padding-top: 22px;
-		display: flex;
-		flex-direction: row;
-		a.home-page {
-			width: 60px;
-			height: 44.8px;
-			margin-right: 36.2px;
-			img {
-				flex: auto;
-				width: 60px;
-				height: 44.8px;
-			}
-		}
-	}
-	section {
-		display: flex;
-		flex-direction: column;
-		flex: auto;
-		padding: 0;
-		ul {
-			display: flex;
-			flex: auto;
-			text-align: left;
-			padding: 0;
-			width: 100%;
-			height: 15px;
-			// Make sure margins behave for spacing between rows (~28 px)
-			margin-bottom: 14px;
-			margin-top: 14px;
-			&.first-row {
-				margin: 0;
-				text-transform: uppercase;
-				padding-bottom: 14px;
-				border-bottom: solid 1px #d8d8d8;
-				height: auto;
-			}
-			li {
-				font-family: $font-stack-headline-bold;
-				font-size: 12px;
-				color: #000000;
-				flex: auto;
-				display: inline;
-				a {
-					color: #000000;
-					text-decoration: none;
-					padding-bottom: 14px;
-					&:focus,
-					&:hover,
-					&:visited {
-						text-decoration: none;
-						color: #000000;
-					}
-					&.current-page {
-						border-bottom: 4px;
-						border-bottom-color: $cdh-blue;
-						border-bottom-style: solid;
-					}
-				}
-			}
-		}
-	}
-}
 div.spacer {
 	height: 340px;
 }
@@ -183,61 +61,6 @@ div.spacer {
 	);
 }
 
-footer {
-	padding-top: 150px;
-	section {
-		@extend .responsive-container;
-		height: 261px;
-		width: 100%;
-		overflow: hidden;
-		border-top: 1px;
-		border-top-style: solid;
-		border-top-color: #d8d8d8;
-		p.contact-info {
-			position: absolute;
-			margin-top: 156px;
-			font-family: $font-stack-headline;
-			font-size: 12px;
-			color: $dark-grey;
-		}
-		ul {
-			@include grid-column(2);
-			display: flex;
-			flex-direction: column;
-			padding: 0;
-			li {
-				display: inline;
-				flex: auto;
-				color: #000000;
-				margin-top: 6px;
-				margin-bottom: 6px;
-				margin-left: 0;
-				font-family: $font-stack-headline;
-				font-size: 12px;
-				&.menu-header {
-					font-family: $font-stack-headline-bold;
-					text-transform: uppercase;
-				}
-				a {
-					color: #000000;
-					text-decoration: none;
-					&:focus,
-					&:hover,
-					&:visited {
-						text-decoration: none;
-						color: #000000;
-					}
-					span.fa {
-						font-size: 20px;
-						height: 20px;
-						width: 20px;
-						color: $dark-grey !important;
-					}
-				}
-			}
-		}
-	}
-}
 
 article {
 	padding-top: 90px;
@@ -334,6 +157,8 @@ article {
 /* Custom mixin to generate css triangles at top left and bottom right
    to mimic the look of the cdh logo.  Argument is logo shadow width */
 @mixin cdhlogo-shadow($width) {
+	/* NOTE: might be able to use bourbon triangle mixin here, but this is working */
+
 	/* triangle top right */
 	&::after {
 		height: 0;
@@ -343,6 +168,7 @@ article {
 		position: absolute;
 		right: 0;
 		top: 0;
+		border: 1px solid blue;
 	}
 
 	/* triangle bottom left */
@@ -360,7 +186,6 @@ article {
 }
 
 /* card layouts - projects, events */
-
 
 $event-card-height: 426px;
 $event-card-img-height: 240px;
@@ -479,9 +304,9 @@ $event-card-img-height: 240px;
 		}
 		a {
 			background-color: white;
-			// full width and height minus border and padding
-			width: calc(100% - 40px - 17px - 14px);
-			height: calc(100% - 40px - 12px);
+			// full width and height minus border
+			width: calc(100% - 40px);
+			height: calc(100% - 40px);
 			padding: 12px 17px 0 14px;
 			margin: 0;
 		}
