@@ -3,11 +3,13 @@
 
 {% block main %}
 {# do we care about month display? #}
+{% comment %}
 <ul>
     {% for date in date_list %}
         <li>{{ date|date:"M" }}</li>
     {% endfor %}
 </ul>
+{% endcomment %}
 
 <section class="events">
     <h1>{{ year|date:"Y" }} Events</h1>
