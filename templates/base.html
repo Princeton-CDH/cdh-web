@@ -73,9 +73,8 @@
   </div>
 </div>
     {% block content %}
-    {% block content-header %}
-    <div class='spacer'></div>   {# TODO: what is this for? needs to be adjusted #}
-    {% endblock %}
+        {% block content-header %}
+        {% endblock %}
     <div id='maincontent'>
         {% block main %}{% endblock %}
     </div>

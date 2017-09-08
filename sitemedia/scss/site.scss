@@ -19,17 +19,19 @@
         max-width: $small-content-width;
     }
 
-}
-
-
-/* add class for visual debugging */
-.grid-visual  {
-    @include grid-visual();
+	/* uncomment for visual debugging */
+/*    @include grid-visual();
     @include grid-media($large-grid){
       @include grid-visual();
-    }
+    } */
+
 }
 
+
+
+#maincontent {
+	@extend .responsive-container;
+}
 
 div.bleed-image-placeholder {
 	width: 100%;
@@ -62,12 +64,14 @@ div.spacer {
 }
 
 
-article {
-	padding-top: 90px;
+article.landing-page {
+	/* undo default body margin to clear top nav */
+	margin-top: -$header-nav-height + 10;  /* FIXME: why is the 10px needed? */
+	// padding-top: 90px;
 	width: 100%;
 	position: relative;
 
-	.landing-page header {
+	header {
 		/* NOTE: styles currently for landing pages, may need adjustment */
 		width: 100%;
 		max-width: none;
@@ -88,6 +92,7 @@ article {
   	    }
 
 		div {
+			@extend .responsive-container;
 			padding-top: 336px;
 		    @media (max-width: $small-max-width) {
   				padding: 30px;
@@ -150,9 +155,6 @@ article {
 
 
 
-#maincontent {
-	@extend .responsive-container;
-}
 
 /* Custom mixin to generate css triangles at top left and bottom right
    to mimic the look of the cdh logo.  Argument is logo shadow width */
@@ -161,6 +163,7 @@ article {
 
 	/* triangle top right */
 	&::after {
+		width: 0;
 		height: 0;
 		border-top: $width solid $light-grey;
 		border-left: $width solid transparent;
@@ -168,7 +171,6 @@ article {
 		position: absolute;
 		right: 0;
 		top: 0;
-		border: 1px solid blue;
 	}
 
 	/* triangle bottom left */
@@ -309,6 +311,7 @@ $event-card-img-height: 240px;
 			height: calc(100% - 40px);
 			padding: 12px 17px 0 14px;
 			margin: 0;
+			overflow: hidden;
 		}
 
 		p {
@@ -318,7 +321,6 @@ $event-card-img-height: 240px;
 			color: $dark-grey;
 			line-height: 1.33;
 			margin: 0;
-			@include ellipsis();
 		}
 
 	}
@@ -335,8 +337,8 @@ $event-card-img-height: 240px;
 
 		a {
 			// full width and height minus border and padding
-			width: calc(100% - 55px - 44px - 19px);
-			height: calc(100% - 55px - 16px);
+			width: calc(100% - 55px);
+			height: calc(100% - 55px);
 			padding: 16px 44px 0 19px;
 		}
 
@@ -438,6 +440,7 @@ $event-card-img-height: 240px;
   @include size(350px);
   position: fixed;
   right: 0;
+  top: 0;
   z-index: 11;
   background: transparent;
   font-size: 14px;
