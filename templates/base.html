@@ -49,6 +49,18 @@
             scroll = scrolled;
 
         });
+
+        $(document).ready(function() {
+            $('.menu-toggle').on('click', function(e){
+                e.preventDefault();
+                console.log("click");
+                $('#mainmenu').toggle();
+            });
+            $('#footermenu .menu-header a').on('click', function(e){
+                $(this).parent().toggleClass('open');
+                $(this).parent().find('.submenu').toggle();
+            });
+    });
     </script>
 
 </head>
@@ -57,8 +69,10 @@
     <a href='#mainmenu' aria-label='Main Menu'></a>
     <a href='#maincontent' aria-label='Main Content'></a>
     <a href='#footermenu' aria-label='Footer Menu'></a>
-
     <header class="nav">
+        <nav class='mobile-nav'>
+            <a class="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a>
+        </nav>
         <nav id='mainmenu'>
             <a href='{% url 'home' %}' class='home-page'>
               <img
@@ -84,21 +98,7 @@
         <section>
             {% page_menu "snippets/footer_menu.html" %}
 
-            <ul>
-                <li class='menu-header'><a href='#'>CONTACT AND DIRECTIONS</a></li>
-                <li class='menu-header'><a href='#'>FAQS</a></li>
-                <li class='menu-header'><a href='#'>SUBSCRIBE</a></li>
-                <li><a href='#'><span class='fa fa-facebook-square'
-                    aria-label='CDH Facebook Link'>
-              </span></a>
-                    <a href='#'><span class='fa fa-twitter'
-                    aria-label='CDH Twitter Link'>
-              </span></a>
-                </li>
-
-            </ul>
-
-            {# testing: RDFa markup for organization and address #}
+            {# RDFa markup for organization and address #}
             <p class='contact-info' typeof="schema:Organization">
                {# TODO: pass in site url <a href="" property="url"> #}
                 <span property="schema:name">Center for Digital Humanities</span><br />

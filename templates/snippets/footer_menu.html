@@ -1,14 +1,25 @@
 {% load pages_tags i18n %}
 {# display full top-level and secondary navigation in the footer #}
 {# adapted from mezzanine pages/menus/primary.html template #}
+<ul>
 {% for page in page_branch %}
-    <ul>
     {% if page.in_menu %}
         <li class='menu-header'>
+            {% if page_branch %}  {# page hs sub pages #}
+            <a class="toggle">+</a> {# toggle for mobile menu #}
+            {% endif %}
             <a href="{{ page.get_absolute_url }}">{{ page.title }}</a>
-        </li>
-        {% page_menu page "snippets/footer_secondary_nav.html" %}
+            {% if page_branch %}
+            <ul class="submenu">
+                {% page_menu page "snippets/footer_secondary_nav.html" %}
+            </ul>
+            {% endif %}
     {% endif %}
-    </ul>
 {% endfor %}
-
+{# social links #}
+<li><a href='#'><span class='fa fa-facebook-square'
+    aria-label='CDH Facebook Link'></span></a>
+    <a href='#'><span class='fa fa-twitter'
+     aria-label='CDH Twitter Link'></span></a>
+</li>
+</ul>
