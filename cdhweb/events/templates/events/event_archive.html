@@ -2,7 +2,6 @@
 
 
 {% block main %}
-<h3>Archives</h3>
 <ul class="pull-right">
 {% for archive_date in date_list %}
     <li><a href="{% url 'event:by-year' year=archive_date.year %}">{{ archive_date.year }}</a></li>
