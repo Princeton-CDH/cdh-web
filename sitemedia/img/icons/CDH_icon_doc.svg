@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #00edff;
+      }
+
+      .cls-2, .cls-4 {
+        fill: none;
+        stroke-miterlimit: 10;
+        stroke-width: 4px;
+      }
+
+      .cls-2 {
+        stroke: #00edff;
+      }
+
+      .cls-3 {
+        fill: #fff;
+      }
+
+      .cls-4 {
+        stroke: #000;
+      }
+    </style>
+  </defs>
+  <title>CDH_icon_doc</title>
+  <g id="Layer_2" data-name="Layer 2">
+    <g id="_Rectangle_" data-name="&lt;Rectangle&gt;">
+      <g>
+        <rect class="cls-1" x="15" y="8" width="42" height="54"/>
+        <rect class="cls-2" x="15" y="8" width="42" height="54"/>
+      </g>
+      <g>
+        <rect class="cls-3" x="9" y="2" width="42" height="54"/>
+        <rect class="cls-4" x="9" y="2" width="42" height="54"/>
+      </g>
+    </g>
+    <line id="_Path_" data-name="&lt;Path&gt;" class="cls-4" x1="17" y1="15" x2="42" y2="15"/>
+    <line id="_Path_2" data-name="&lt;Path&gt;" class="cls-4" x1="17" y1="26" x2="42" y2="26"/>
+    <line id="_Path_3" data-name="&lt;Path&gt;" class="cls-4" x1="17" y1="37" x2="32" y2="37"/>
+  </g>
+</svg>

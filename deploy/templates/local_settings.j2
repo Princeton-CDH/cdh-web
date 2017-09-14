@@ -1,0 +1,48 @@
+# This file is exec'd from settings.py, so it has access to and can
+# modify all the variables in settings.py.
+
+# If this file is changed in development, the development server will
+# have to be manually restarted because changes will not be noticed
+# immediately.
+
+DEBUG = {{ debug | default(False) }}
+
+# Make these unique, and don't share it with anybody.
+SECRET_KEY = "{{ secret_key }}"
+NEVERCACHE_KEY = "{{ nevercache_key }}"
+
+# override default media config so it is shared across deploys
+MEDIA_ROOT = '/var/deploy/cdh-web/media'
+MEDIA_URL = '/media/'
+
+SHOW_TEST_WARNING = {{ test_waring | default(True) }}
+
+
+DATABASES = {
+    "default": {
+        # Ends with "postgresql_psycopg2", "mysql", "sqlite3" or "oracle".
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "{{ db_name }}",
+        # Not used with sqlite3.
+        "USER": "{{ db_usr }}",
+        # Not used with sqlite3.
+        "PASSWORD": "{{ db_pass }}",
+        # Set to empty string for localhost. Not used with sqlite3.
+        "HOST": "",
+        # Set to empty string for default. Not used with sqlite3.
+        "PORT": "",
+    }
+}
+
+
+CAS_SERVER_URL='https://fed.princeton.edu/cas/'
+
+# configure ldap servers, search base, and filter
+{{ pucas_settings }}
+
+###################
+# DEPLOY SETTINGS #
+###################
+
+# Domains for public site
+ALLOWED_HOSTS = ["{{ allowed_host }}"]
