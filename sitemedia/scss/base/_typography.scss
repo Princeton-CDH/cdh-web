@@ -21,18 +21,26 @@ p {
   margin: 0 0 $small-spacing;
 }
 
-a {
-  color: $action-color;
+#maincontent p a {
+  color: black;
+  text-decoration: none;
   text-decoration-skip: ink;
   transition: color $base-duration $base-timing;
+  /* use background to do a colored underline */
+  background-image: linear-gradient(to right, $cdh-blue 100%, transparent 0%);
+  background-position: 0 0.85em;
+  background-repeat: repeat-x;
+  background-size: 8px 2px;
 
   &:hover {
-    color: shade($action-color, 25%);
+    background-color: $light-cdh-blue;
   }
 
   &:focus {
-    // outline: $focus-outline;
-    // outline-offset: $focus-outline-offset;
+    outline: $focus-outline;
+    outline-offset: $focus-outline-offset;
+    background-color: white;
+    background-image: none;
   }
 }
 

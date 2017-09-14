@@ -19,6 +19,8 @@ $base-z-index: 0;
 
 // Colors
 $cdh-blue: #00edff;
+$dark-cdh-blue: shade($cdh-blue, 75%);
+$light-cdh-blue: tint($cdh-blue, 85%);
 $light-grey: #f8f8f8;  // formerly bg-gray
 $dark-grey: #646464;   // formerly text-gray
 $offwhite: #f9f9f9;
