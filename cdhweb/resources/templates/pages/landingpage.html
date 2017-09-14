@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content-header %}
-<header style="background-image:url('{{ MEDIA_URL }}{{ page.landingpage.image }}')">
+<header {% if page.landingpage.image %}style="background-image:url('{{ MEDIA_URL }}{{ page.landingpage.image }}')"{% endif %}>
     <div>
     <a href="{% url 'home' %}" class="home">/</a>
     <h1>{{ page.title }}</h1>
