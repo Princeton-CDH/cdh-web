@@ -87,6 +87,10 @@ article.landing-page {
 		background-position: 50% 50%;
 		background-repeat: no-repeat;
 
+		/* fallback background gradient for pages without an image */
+		background: $dark-cdh-blue; /* For browsers that do not support gradients */
+		background: linear-gradient($dark-cdh-blue, transparent);
+
 	    @media (max-width: $small-max-width) {
   	    	height: 320px;
   	    }
