@@ -138,13 +138,9 @@ article.landing-page {
 		margin-top: -116px;
 		background-color: white;
 		z-index: 4;  /* overlap background image from header */
-		// padding: 80px 170px 100px;
+		padding: 80px 170px 100px;
 		position: relative;
 		min-height: 250px;
-
-		> * {
-			margin-left: 170px;
-		}
 
 	    @media (max-width: $medium-max-width) {
   	    	padding: 80px 85px 100px;
