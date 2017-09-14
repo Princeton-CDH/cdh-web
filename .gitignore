@@ -10,6 +10,7 @@ local_settings.py
 .cache
 .sass-cache
 env/
+sitemedia/fonts
 
 # Ansible key convention
 .vault_passwd
