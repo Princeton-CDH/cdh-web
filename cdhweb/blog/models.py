@@ -1,9 +1,11 @@
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
+from django.utils.text import Truncator
 
 from mezzanine.core.fields import FileField
 from mezzanine.core.models import Displayable, RichText
+from mezzanine.core.managers import DisplayableManager
 from mezzanine.utils.models import AdminThumbMixin, upload_to
 
 from taggit.managers import TaggableManager
@@ -37,6 +39,29 @@ class MultiOwnable(models.Model):
         return ', '.join(str(user) for user in self.users.all())
     author_list.short_description = 'Authors'
 
+class BlogPostQuerySet(models.QuerySet):
+
+    def featured(self):
+        '''return blog posts that are marked as featured'''
+        return self.filter(is_featured=True)
+
+    def recent(self):
+        '''sort blog posts by publication date'''
+        return self.order_by('-publish_date')
+
+class BlogPostManager(DisplayableManager):
+
+    def get_queryset(self):
+        '''Return default queryset :class:`BlogPostQuerySet`'''
+        return BlogPostQuerySet(self.model, using=self._db)
+
+    def featured(self):
+        '''return blog posts that are marked as featured'''
+        return self.get_queryset().featured()
+
+    def recent(self):
+        '''sort blog posts by publication date'''
+        return self.get_queryset().recent()
 
 class BlogPost(Displayable, MultiOwnable, RichText, AdminThumbMixin):
     """
@@ -48,13 +73,29 @@ class BlogPost(Displayable, MultiOwnable, RichText, AdminThumbMixin):
     # care about any of those?
     featured_image = FileField(verbose_name=_("Featured Image"),
         upload_to=upload_to("blog.BlogPost.featured_image", "blog"),
+        help_text="Appears on the homepage carousel when post is featured.",
         format="Image", max_length=255, null=True, blank=True)
     related_posts = models.ManyToManyField("self",
                                  verbose_name=_("Related posts"), blank=True)
     tags = TaggableManager(blank=True)
     attachments = models.ManyToManyField(Attachment, blank=True)
+    is_featured = models.BooleanField(verbose_name=_("Featured"), default=False,
+                help_text="Feature the post in the carousel on the homepage.")
 
     admin_thumb_field = "featured_image"
+
+    @property
+    def short_title(self):
+        '''shorter title with ellipsis'''
+        return Truncator(self.title).chars(75)
+
+    @property
+    def short_description(self):
+        '''shorter description with ellipsis'''
+        return Truncator(self.description).chars(250)
+
+    # override manager
+    objects = BlogPostManager()
 
     class Meta:
         verbose_name = _("Blog post")

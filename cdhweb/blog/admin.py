@@ -12,10 +12,10 @@ class BlogPostAdmin(TweetableAdminMixin, DisplayableAdmin, OwnableAdmin):
     Admin class for blog posts.
     """
 
-    list_display = ["title", "author_list", "status", "admin_link", "tag_list",
-        "admin_thumb"]
-    list_editable = ("status",)
-    list_filter = ("status", )
+    list_display = ["title", "author_list", "status", "is_featured",
+                    "admin_link", "tag_list", "admin_thumb"]
+    list_editable = ("status", "is_featured")
+    list_filter = ("status", "is_featured")
     date_hierarchy = "publish_date"
     radio_fields = {"status": admin.HORIZONTAL}
     # filter_horizontal = ("categories", "related_posts",)
@@ -26,7 +26,8 @@ class BlogPostAdmin(TweetableAdminMixin, DisplayableAdmin, OwnableAdmin):
     fieldsets = (
         (None, {
             "fields": ["title", "status", ("publish_date", "expiry_date"),
-                       "content", "featured_image", "users", "attachments"] #, "tags"]
+                       "content", ("is_featured", "featured_image"),
+                       "users", "attachments"] #, "tags"]
         }),
         (_("Meta data"), {
             "fields": ["_meta_title", "slug",
