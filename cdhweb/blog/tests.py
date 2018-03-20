@@ -26,7 +26,7 @@ class TestBlog(TestCase):
         '''test that truncated titles are correctly generated'''
         # truncate with ellipsis for titles > 75char
         post = BlogPost(title="Congratulations to Valedictorian Jin Yun Chow '17 and Salutatorian Grant Storey '17")
-        assert len(post.short_title) == 75
+        assert len(post.short_title) == 65
         assert post.short_title.endswith('...')
         # do nothing for titles < 75char
         post = BlogPost(title="Congratulations!")

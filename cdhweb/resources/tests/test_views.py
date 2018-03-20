@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.utils import timezone
 import pytest
 
+from cdhweb.blog.models import BlogPost
 from cdhweb.events.models import Event, EventType
 from cdhweb.projects.models import Project, GrantType, Grant
 from cdhweb.resources.utils import absolutize_url
@@ -25,9 +26,24 @@ class TestViews(TestCase):
         self.assertContains(response, reverse('event:upcoming'),
             msg_prefix='should link to upcoming events (in lieue of an archive)')
 
-        ### test how projects are displayed on the home page
+        ### test the carousel display
+        # add some posts but don't feature any yet; should display most recent 3
         today = timezone.now()
         site = Site.objects.first()
+        posts = BlogPost.objects.bulk_create(
+            [BlogPost(site=site) for n in range(0, 5)]
+        )
+        response = self.client.get(index_url)
+        assert len(response.context['updates']) == 3
+        
+        # feature all of the posts; should yield all of them in context
+        for post in posts:
+            post.is_featured = True
+            post.save()
+        response = self.client.get(index_url)
+        assert len(response.context['updates']) == 5
+
+        ### test how projects are displayed on the home page
         projects = Project.objects.bulk_create(
             [Project(title='Meeting %s' % a, slug=a, highlight=True,
                      site=site, short_description='This is project %s' % a)

@@ -2,6 +2,7 @@
 
 {% block content %} {# add a class to main content for home-page specific styles #}
 <div class="homepage">
+{% include 'snippets/carousel.html' %}
 {{ block.super }}
 </div>
 {% endblock %}

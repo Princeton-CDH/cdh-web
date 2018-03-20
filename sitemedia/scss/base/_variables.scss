@@ -28,8 +28,10 @@ $black: #000000;
 // NOTE: #d8d8d8 is also in use; create a variable? useful to distinguish/name?
 
 // local items
-$header-nav-height: 90px;
+$header-nav-height: 100px;
 $small-header-nav-height: 50px;
+$carousel-height: 680px;
+$small-carousel-height: 640px;
 
 // breakpoints and content sizes for large, medium, and small viewports
 $small-max-width: 735px;

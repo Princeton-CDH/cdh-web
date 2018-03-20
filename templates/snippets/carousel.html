@@ -1,0 +1,41 @@
+{% if updates %}
+<div id="carousel">
+    {% for post in updates %}
+    {% if forloop.first %}
+    <div class="post-update active">
+    {% else %}
+    <div class="post-update">
+    {% endif %}
+        {% if post.featured_image %}
+        <header style="background-image: url('{{ MEDIA_URL }}{{ post.featured_image }}')">
+        {% else %}
+        <header>
+        {% endif %}
+            <div class="header-overlay"></div>
+        </header>
+        <a href="{{ post.get_absolute_url }}">
+        <div class="post-update-text">
+                <div class="quote">"</div>
+                <div class="heading">Updates</div>
+                <div class="line"></div>
+                <h1 class="title">{{ post.short_title }}</h1>
+                <p class="description">{{ post.short_description }}</p>
+            </div>
+        </a>
+    </div>
+    {% endfor %}
+    <div id="post-controls">
+        {% for post in updates %}
+            <a href="#">
+                {% if forloop.first %}
+                <div class="dot active" data-index="{{ forloop.counter0 }}"></div>
+                {% else %}
+                <div class="dot" data-index="{{ forloop.counter0 }}"></div>
+                {% endif %}
+            </a>
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+<div id="spacer"></div>
+{% endif %}

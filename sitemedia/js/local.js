@@ -66,4 +66,40 @@ $(document).ready(function(){
         $(this).find('.secondary-nav.active').show();
     })
 
+    /*
+     * Homepage carousel
+     */
+
+    var changeSlide = function(toIndex) {
+        // show the slide
+        $('#carousel .post-update.active').removeClass('active')
+        $('#carousel .post-update').eq(toIndex).addClass('active')
+        // highlight the button
+        $('#post-controls a div.active').removeClass('active')
+        $('#post-controls a div').eq(toIndex).addClass('active')
+    }
+
+    $('#post-controls a').each(function(i, button) {
+        $(button).click(function() {
+            changeSlide(i)
+            // restart the autoplay "timer" from zero
+            clearInterval(playerID)
+            playerID = startAutoplay()
+        })
+    })
+
+    // TODO maybe make mouseenter/mouseleave clear/reset autoplay - 
+    // thus hovering would "freeze" the slideshow
+
+    // autoplay function
+    var startAutoplay = function() {
+        return setInterval(function(){
+            var activeIndex = $('#post-controls a div.active').data('index')
+            var newIndex = (activeIndex + 1) % $('#post-controls a').length
+            changeSlide(newIndex)
+        }, 5000) // autoplay slide time is 5s
+    }
+
+    var playerID = startAutoplay()
+
 });

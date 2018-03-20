@@ -26,9 +26,25 @@ header, div, p, img, section, article {
     }
 }
 
-#maincontent {
-	@extend .responsive-container;
+/* add full-bleed carousel images on homepage */
+.homepage {
+	margin-top: -$header-nav-height;
+
+	@media (max-width: $small-max-width) {
+		margin-top: -$small-header-nav-height;
+	}
+
+	#maincontent {
+		position: relative;
+		top: -70px;
+		@extend .responsive-container;
+
+		@media (max-width: $small-max-width) {
+			top: -10px;
+		}
+	}
 }
+
 
 div.bleed-image-placeholder {
 	width: 100%;
@@ -231,6 +247,164 @@ article.landing-page {
 	}
 }
 
+/* carousel layout - featured posts & updates */
+
+#carousel,
+#carousel .post-update,
+#carousel .post-update header {
+	height: $carousel-height;
+	width: 100%;
+
+	@media (max-width: $small-max-width) {
+		height: $small-carousel-height;
+	}
+}
+
+#carousel {
+	display: block;
+	position: relative;
+	top: -$header-nav-height;
+
+	@media (max-width: $small-max-width) {
+		top: -$small-header-nav-height;
+	}
+	
+	a {
+		text-decoration: none;
+	}
+	
+	#post-controls {
+		display: flex;
+		justify-content: center;
+		position: relative;
+		top: $carousel-height - 30px;
+
+		@media (max-width: $small-max-width) {
+  	    	top: $small-carousel-height - 30px;
+	    }
+		
+		a {
+			padding: 0 8px;
+		}
+		
+		.dot {
+			margin: auto;
+			background-color: $dark-grey;
+			border-radius: 100%;
+			width: 10px;
+			height: 10px;
+			
+			&.active {
+				background-color: $cdh-blue;
+			}
+		}
+	}
+	
+	.post-update {
+		position: absolute;
+		top: 0;
+		display: block;
+		transition: opacity 1s ease;
+		opacity: 0;
+		
+		&.active {
+			opacity: 100;
+		}
+		
+		header {
+			background-image: url('/static/img/post-default-background.jpg');
+			background-color: rgba(0, 0, 0, 0.2); // dark grey fallback
+			background-size: cover;
+			background-position: 50% 50%;
+			background-repeat: no-repeat;
+		}
+
+		.header-overlay {
+			width: 100%;
+			height: 100%;
+			background-color: rgba($cdh-blue, 0.2); // tint the header image
+			opacity: 20;
+		}
+		
+		.post-update-text {
+			position: relative;
+			z-index: 4;
+			margin: auto;
+			top: -392px;
+			width: 990px;
+			height: 323px;
+			background-color: $base-background-color;
+			padding: 45px 86px;
+
+			@media (max-width: $medium-max-width) {
+				width: 735px;
+				height: 313px;
+				padding: 40px 30px;
+			}
+
+			@media (max-width: $small-max-width) {
+				top: -492px;
+				width: 270px;
+				height: 425px;
+				padding: 30px 20px;
+			}
+	
+			.quote {
+				display: none;
+				position: absolute;
+				color: $cdh-blue;
+				font-size: 8em;
+				font-family: $font-stack-headline-bold;
+				font-style: italic;
+				transform: rotate(180deg);
+				margin: -275px -125px;
+				z-index: 5;
+
+				@media (min-width: $medium-max-width) {
+					// display: block; 
+				}
+			}
+			
+			.heading {
+				margin: 5px 0;
+			}
+			
+			.line {
+				width: 30px;
+				height: 4px;
+				background-color: $cdh-blue;
+				margin: 20px 0;
+			}
+			
+			.title {
+				font-size: 2em;
+				color: $black;
+				margin-bottom: 20px;
+
+				@media (max-width: $small-max-width) {
+					font-size: 1.25em;
+				}
+			}
+			
+			.heading,
+			.description {
+				font-size: 0.75em;
+				color: $dark-grey;
+				font-family: $font-stack-headline;
+				line-height: normal;
+
+				@media (max-width: $small-max-width) {
+					font-size: 1em;
+				}
+			}
+		}
+	}
+}
+
+#spacer { // used if there are no blog posts of any kind for carousel
+	height: 150px;
+}
+
 /* card layouts - projects, events */
 
 $event-card-height: 425px;
@@ -256,7 +430,7 @@ $event-card-img-height: 240px;
 		height: 100%;
 	}
 
-	.content {.  /* card-description font */
+	.content {  /* card-description font */
 		font-family: $font-stack-headline;
 		font-size: 16px;
 		background-color: white;

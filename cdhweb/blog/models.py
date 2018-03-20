@@ -87,7 +87,7 @@ class BlogPost(Displayable, MultiOwnable, RichText, AdminThumbMixin):
     @property
     def short_title(self):
         '''shorter title with ellipsis'''
-        return Truncator(self.title).chars(75)
+        return Truncator(self.title).chars(65)
 
     @property
     def short_description(self):

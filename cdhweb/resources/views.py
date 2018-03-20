@@ -3,6 +3,8 @@ from random import shuffle
 from django.views.generic.base import View, TemplateView
 from django.utils.cache import get_conditional_response
 
+from cdhweb.blog.models import BlogPost
+
 from cdhweb.events.models import Event
 
 from cdhweb.projects.models import Project
@@ -44,7 +46,12 @@ class Homepage(TemplateView):
     template_name = 'site_index.html'
 
     def get_context_data(self, *args, **kwargs):
-        # TODO: highlighted/featured blog post
+        # get featured posts if there are any
+        if (BlogPost.objects.featured().exists()):
+            updates = BlogPost.objects.featured()
+        else:
+            # if no featured, use 3 most recent posts
+            updates = BlogPost.objects.recent()[:3]
 
         # get highlighted, published projects
         # TODO: (maybe) published(for_user=request.user)
@@ -57,6 +64,7 @@ class Homepage(TemplateView):
         upcoming_events = Event.objects.published().upcoming()[:3]
 
         return {
+            'updates': updates,
             'projects': projects[:4],   # first four of random list
             'events': upcoming_events
         }
