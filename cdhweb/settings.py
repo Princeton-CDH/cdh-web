@@ -91,6 +91,10 @@ ADMIN_MENU_ORDER = (
 # INSTALLED_APPS setting.
 USE_MODELTRANSLATION = False
 
+# Use custom settings for the embedded TinyMCE editor.
+# 
+TINYMCE_SETUP_JS = 'js/tinymce_setup.js'
+
 
 ########################
 # MAIN DJANGO SETTINGS #
