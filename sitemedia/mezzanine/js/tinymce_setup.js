@@ -67,22 +67,21 @@
         return false;
     }
 
-    function get_main_stylesheet() {
-        /**
-         * We don't know what the name of the compressed stylesheet will be, but we know it
-         * will have "site" somewhere in the href attribute
-         */
-        var mainSheet
+    function get_editor_stylesheet() {
+        // We don't know what the name of the compressed stylesheet will be,
+        // but we know it will have "site" somewhere in the href attribute
+        var mainSheet;
         $.each(document.styleSheets, function(_, sheet) {
             if (sheet.href && sheet.href.match(/site/g)) {
-                mainSheet = sheet
+                mainSheet = sheet;
             }
         })
-        return mainSheet || false
+        // Use the default style if something went wrong
+        return mainSheet ? mainSheet.href : window.__tinymce_css;
     }
 
     // get its href so that we can apply it to tinyMCE only
-    var editor_css = get_main_stylesheet().href
+    var editor_css = get_editor_stylesheet();
 
     var tinymce_config = {
         height: '500px',
@@ -90,7 +89,7 @@
         plugins: [
             "advlist autolink lists link image charmap print preview anchor",
             "searchreplace visualblocks code fullscreen",
-            "insertdatetime media table contextmenu paste"
+            "insertdatetime media contextmenu paste"
         ],
         link_list: window.__link_list_url,
         relative_urls: false,
@@ -98,26 +97,34 @@
         convert_urls: false,
         menubar: false,
         statusbar: false,
-        toolbar: ("insertfile undo redo | styleselect | bold italic | " +
-                  "alignleft aligncenter alignright alignjustify | " +
-                  "bullist numlist outdent indent | link image table | " +
+        toolbar: ("insertfile undo redo | formatselect | bold italic | " +
+                  "bullist numlist outdent indent | link image | " +
                   "code fullscreen"),
+        block_formats: 'Paragraph=p;Header 2=h2;Header 3=h3;Div=div;Blockquote=blockquote;Preformatted=pre',
         file_browser_callback: custom_file_browser,
+        image_caption: true, // use HTML5 <figcaption>s
+        image_dimensions: false, // don't allow hardcoding image dimensions
         content_css: editor_css, // apply the main stylesheet
         body_id: 'maincontent', // this is necessary for most of our styles to apply
-        valid_elements: "*[*]"  // Don't strip anything since this is handled by bleach.
+        invalid_elements: 'span' // strip out <span>s
     };
 
-    function initialise_richtext_fields($elements) {
-        if ($elements && typeof tinyMCE != 'undefined') {
-            $elements.tinymce(tinymce_config);
+    // We could use the 'selector' property to initialize tinyMCE, but jQuery's selectors
+    // are more powerful, so we use 'target' instead. This function always takes a single
+    // DOM element as an argument (not a jQuery element).
+    function initialise_richtext_field($element) {
+        if ($element && typeof tinyMCE != 'undefined') {
+            var conf = tinymce_config;
+            conf.target = $element; // this always needs to be single DOM element
+            tinymce.init(conf);
         }
     }
 
     // Register a handler for Django's formset:added event, to initialise
     // any rich text fields in dynamically added inline forms.
     $(document).on('formset:added', function(e, $row) {
-        initialise_richtext_fields($row.find('textarea.mceEditor'));
+        // convert found jQuery element to DOM element
+        initialise_richtext_field($row.find('textarea.mceEditor')[0]);
     });
 
     // Initialise all existing editor fields, except those with an id
@@ -125,9 +132,11 @@
     // hidden template inline rows used by Django's dynamic inlines, and they
     // shouldn't be initialised as editors.
     $(document).ready(function() {
-        initialise_richtext_fields($('textarea.mceEditor').filter(function() {
+        $('textarea.mceEditor').filter(function() {
             return (this.id || '').indexOf('__prefix__') === -1;
-        }));
+        }).toArray().forEach(function($element) { // toArray() returns DOM elements
+            initialise_richtext_field($element);
+        });
     });
 
 })(window.django ? django.jQuery : jQuery);
