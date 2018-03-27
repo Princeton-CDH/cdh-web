@@ -1,16 +1,7 @@
-{% if updates %}
 <div id="carousel">
     {% for post in updates %}
-    {% if forloop.first %}
-    <div class="post-update active">
-    {% else %}
-    <div class="post-update">
-    {% endif %}
-        {% if post.featured_image %}
-        <header style="background-image: url('{{ MEDIA_URL }}{{ post.featured_image }}')">
-        {% else %}
-        <header>
-        {% endif %}
+    <div class="post-update{% if forloop.first %} active{% endif %}">
+        <header{% if post.featured_image %} style="background-image: url('{{ MEDIA_URL }}{{ post.featured_image }}')"{% endif %}>
             <div class="header-overlay"></div>
         </header>
         <a href="{{ post.get_absolute_url }}">
@@ -24,18 +15,13 @@
         </a>
     </div>
     {% endfor %}
+    {% if updates|length > 1 %}
     <div id="post-controls">
         {% for post in updates %}
             <a href="#">
-                {% if forloop.first %}
-                <div class="dot active" data-index="{{ forloop.counter0 }}"></div>
-                {% else %}
-                <div class="dot" data-index="{{ forloop.counter0 }}"></div>
-                {% endif %}
+                <div class="dot{% if forloop.first %} active{% endif %}" data-index="{{ forloop.counter0 }}"></div>
             </a>
         {% endfor %}
     </div>
+    {% endif %}
 </div>
-{% else %}
-<div id="spacer"></div>
-{% endif %}

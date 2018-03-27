@@ -27,23 +27,37 @@ class TestViews(TestCase):
             msg_prefix='should link to upcoming events (in lieue of an archive)')
 
         ### test the carousel display
+        # shouldn't display without any blog posts
+        self.assertTemplateNotUsed(response, 'snippets/carousel.html')
         # add some posts but don't feature any yet; should display most recent 3
-        today = timezone.now()
-        site = Site.objects.first()
-        posts = BlogPost.objects.bulk_create(
-            [BlogPost(site=site) for n in range(0, 5)]
-        )
+        for n in range(1, 8):
+            BlogPost.objects.create(title='Post %s' % n)
         response = self.client.get(index_url)
         assert len(response.context['updates']) == 3
-        
-        # feature all of the posts; should yield all of them in context
-        for post in posts:
+        self.assertTemplateUsed(response, 'snippets/carousel.html')
+        self.assertContains(response, '<div id="carousel')
+        # one "active" slide, the rest are normal
+        self.assertContains(response, '<div class="post-update active">', count=1)
+        self.assertContains(response, '<div class="post-update">', count=2)
+        # feature all of the posts; should display most recent 6
+        for post in BlogPost.objects.all():
             post.is_featured = True
             post.save()
         response = self.client.get(index_url)
-        assert len(response.context['updates']) == 5
+        assert len(response.context['updates']) == 6
+        self.assertTemplateUsed(response, 'snippets/carousel.html')
+        self.assertContains(response, '<div id="carousel')
+        self.assertContains(response, '<div class="post-update active">', count=1)
+        self.assertContains(response, '<div class="post-update">', count=5)
+
+        # ensure all displayed posts have a title and link
+        for post in BlogPost.objects.all()[:6]:
+            self.assertContains(response, post.get_absolute_url())
+            self.assertContains(response, post.title)
 
         ### test how projects are displayed on the home page
+        today = timezone.now()
+        site = Site.objects.first()
         projects = Project.objects.bulk_create(
             [Project(title='Meeting %s' % a, slug=a, highlight=True,
                      site=site, short_description='This is project %s' % a)

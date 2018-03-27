@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %} {# add a class to main content for home-page specific styles #}
-<div class="homepage">
+<div class="homepage{% if updates %} with-carousel{% endif %}">
+{% if updates %}
 {% include 'snippets/carousel.html' %}
+{% endif %}
 {{ block.super }}
 </div>
 {% endblock %}

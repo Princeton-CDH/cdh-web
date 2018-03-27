@@ -100,6 +100,9 @@ $(document).ready(function(){
         }, 5000) // autoplay slide time is 5s
     }
 
-    var playerID = startAutoplay()
+    // start autoplay if there's more than one slide
+    if ($('#carousel .post-update').length > 1) {
+        var playerID = startAutoplay()
+    }
 
 });

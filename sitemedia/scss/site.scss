@@ -26,6 +26,10 @@ header, div, p, img, section, article {
     }
 }
 
+#maincontent {
+	@extend .responsive-container;
+}
+
 /* add full-bleed carousel images on homepage */
 .homepage {
 	margin-top: -$header-nav-height;
@@ -36,13 +40,20 @@ header, div, p, img, section, article {
 
 	#maincontent {
 		position: relative;
-		top: -70px;
-		@extend .responsive-container;
+		margin-top: 30px;
+	}
 
-		@media (max-width: $small-max-width) {
-			top: -10px;
+	&.with-carousel {
+		#maincontent {
+			margin-top: 0;
+			top: -70px;
+
+			@media (max-width: $small-max-width) {
+				top: -10px;
+			}
 		}
 	}
+
 }
 
 
@@ -266,6 +277,7 @@ article.landing-page {
 	top: -$header-nav-height;
 
 	@media (max-width: $small-max-width) {
+		height: 100%;
 		top: -$small-header-nav-height;
 	}
 	
@@ -280,7 +292,7 @@ article.landing-page {
 		top: $carousel-height - 30px;
 
 		@media (max-width: $small-max-width) {
-  	    	top: $small-carousel-height - 30px;
+  	    	display: none;
 	    }
 		
 		a {
@@ -306,6 +318,12 @@ article.landing-page {
 		display: block;
 		transition: opacity 1s ease;
 		opacity: 0;
+
+		@media (max-width: $small-max-width) {
+			position: relative;
+			transition: none;
+			opacity: 100;
+		}		
 		
 		&.active {
 			opacity: 100;
@@ -317,6 +335,10 @@ article.landing-page {
 			background-size: cover;
 			background-position: 50% 50%;
 			background-repeat: no-repeat;
+
+			@media (max-width: $small-max-width) {
+				height: 200px;
+			}
 		}
 
 		.header-overlay {
@@ -332,21 +354,19 @@ article.landing-page {
 			margin: auto;
 			top: -392px;
 			width: 990px;
-			height: 323px;
+			height: 320px;
 			background-color: $base-background-color;
 			padding: 45px 86px;
 
 			@media (max-width: $medium-max-width) {
 				width: 735px;
-				height: 313px;
 				padding: 40px 30px;
 			}
 
 			@media (max-width: $small-max-width) {
-				top: -492px;
-				width: 270px;
-				height: 425px;
-				padding: 30px 20px;
+				top: 0;
+				width: 100%;
+				padding: 10px 25px;
 			}
 	
 			.quote {
@@ -374,6 +394,10 @@ article.landing-page {
 				height: 4px;
 				background-color: $cdh-blue;
 				margin: 20px 0;
+
+				@media (max-width: $small-max-width) {
+					margin: 10px 0;
+				}
 			}
 			
 			.title {
@@ -383,6 +407,7 @@ article.landing-page {
 
 				@media (max-width: $small-max-width) {
 					font-size: 1.25em;
+					margin-bottom: 10px;
 				}
 			}
 			

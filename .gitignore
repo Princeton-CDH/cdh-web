@@ -16,6 +16,9 @@ sitemedia/fonts
 .DS_Store
 .coverage
 
+# Visual Studio Code settings
+.vscode
+
 *.swp
 
 # stock python git-ignores provided by github
@@ -35,6 +38,7 @@ nosetests.xml
 coverage.xml
 *,cover
 .hypothesis/
+.pytest_cache/
 
 # Flask stuff:
 instance/
