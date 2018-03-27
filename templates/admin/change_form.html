@@ -9,8 +9,12 @@
 
 {% block extrahead %}
     <script>
-    // find the main (compressed) stylesheet and turn it off - we can use its href elsewhere
-    // according to MDN, setting the "disabled" attr directly is not recommended, so we use js
+    // We use "compress" above because we need django-compressor to generate a
+    // stylesheet for us to apply to the tinyMCE preview. Once that happens, we
+    // need to target the stylesheet and turn it off - we are only interested
+    // in its href attribute, not in applying it to the whole page.
+    // According to MDN, setting the "disabled" attr directly is not
+    // recommended, so we use js to disable it immediately.
     (function($) {
         $.each(document.styleSheets, function(_, sheet) {
             if (sheet.href && sheet.href.match(/site/g)) sheet.disabled = true

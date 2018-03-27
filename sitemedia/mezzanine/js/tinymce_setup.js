@@ -67,20 +67,27 @@
         return false;
     }
 
+    // Stylesheets are being compiled using django-compressor
+    // (https://github.com/django-compressor/django-compressor),
+    // which generates a single .css file on page load and inserts it
+    // into the page using a django template tag. We ensure this happens
+    // by including the "compress" tag on the edit form template
+    // (templates/admin/change_form.html).
     function get_editor_stylesheet() {
         // We don't know what the name of the compressed stylesheet will be,
-        // but we know it will have "site" somewhere in the href attribute
+        // but we know it will have "site" somewhere in the href attribute,
+        // because the base .scss file is sitemedia/scss/site.scss.
         var mainSheet;
         $.each(document.styleSheets, function(_, sheet) {
             if (sheet.href && sheet.href.match(/site/g)) {
                 mainSheet = sheet;
             }
         })
-        // Use the default style if something went wrong
+        // Use the default tinyMCE style if we couldn't find the site styles
         return mainSheet ? mainSheet.href : window.__tinymce_css;
     }
 
-    // get its href so that we can apply it to tinyMCE only
+    // get the main stylesheet so that we can apply it to tinyMCE only
     var editor_css = get_editor_stylesheet();
 
     var tinymce_config = {
