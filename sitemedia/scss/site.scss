@@ -1224,10 +1224,10 @@ section.blogposts, section.people, section.events {
 
 	h1 {
 		@media (min-width: $medium-min-width) {
-			@include grid-column(7);
+			@include grid-column(6);
 		}
 	    @media (min-width: $large-min-width) {
-			@include grid-column(10);
+			@include grid-column(9);
 		}
 		@media (max-width: $small-max-width) {
 			@include full-grid-width;
@@ -1236,7 +1236,7 @@ section.blogposts, section.people, section.events {
 	}
 
 	.archive-nav {
-		@include grid-column(2);
+		@include grid-column(3);
 		justify-self: end;
 		float: none;
 		margin: 0;

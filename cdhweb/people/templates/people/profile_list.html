@@ -10,35 +10,28 @@
 
 {# drop-down nav adapted from events page #}
 <div class="archive-nav">
-  <a class="toggle">
-    {{ archive_menu_title }}
+  <a class="toggle">Staff and Affiliates
     <i class="fa fa-chevron-down" aria-hidden="true"></i></a>
   <ul class="submenu">
-    {% url 'people:staff' as staff_url %}
-    {% url 'people:alumni' as alumni_url %}
-    <li {% if request.path == staff_url %}class="current"{% endif %}><a href="{{ staff_url }}">Current</a></li>
-    <li {% if request.path == alumni_url %}class="current"{% endif %}><a href="{{ alumni_url }}">Alumni</a></li>
+    {% for label, profile_url in archive_nav_urls %}
+      <li {% if request.path == profile_url %}class="current"{% endif %}><a href="{{ profile_url }}">{{ label }}</a></li>
+    {% endfor %}
   </ul>
 </div>
 
-
-{% for profile in object_list %}
-    <div class="card profile"
-        {% if profile.thumb %}style="background-image:url('{{ MEDIA_URL }}{{ profile.thumb }}')"{% endif %}>
-    <a href="{{ profile.get_absolute_url }}" title="{{ profile.title }}">
-        <div class="content">
-
-        {% with position=profile.user.positions.first %}
-        <p class="title">
-            {% if not position.is_current %}{{ position.years }}<br/>{% endif %}
-            {{ profile.user.positions.first.title|default:'' }}
-        </p>
-        {% endwith %}
-        <p class="name">{{ profile.title }}</p>
-        </div>
-    </a>
-</div>
+{# current people #}
+{% for profile in current %}
+    {% include 'people/snippets/profile_card.html' %}
 {% endfor %}
+
+{# alumni / past members or affiliates #}
+{% if past %}
+  <h2>Alumni</h2>
+  {% for profile in past %}
+    {% include 'people/snippets/profile_card.html' %}
+  {% endfor %}
+{% endif %}
+
 </section>
 {% endblock %}
 

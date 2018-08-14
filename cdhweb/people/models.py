@@ -95,6 +95,16 @@ class ProfileQuerySet(models.QuerySet):
         '''Return only CDH staff members'''
         return self.filter(is_staff=True)
 
+    def postdocs(self):
+        '''Return CDH Postdoctoral Fellows, based on role title'''
+        return self.filter(user__positions__title__title__icontains='Postdoctoral Fellow')
+
+    def students(self):
+        '''Return CDH student assistants and grantees. based on role title'''
+        # TODO: find grantees
+        return self.filter(user__positions__title__title__icontains='graduate')
+
+
     def _current_position_query(self):
         return (models.Q(user__positions__end_date__isnull=True) |
                models.Q(user__positions__end_date__gte=date.today()))

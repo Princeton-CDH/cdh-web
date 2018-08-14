@@ -6,7 +6,9 @@ from cdhweb.people import views
 urlpatterns = [
     # for now, no generic people list page exists
     # url('^$', views.ProfileListView.as_view(), name='list'),
-    url('^staff/$', views.StaffListView.as_view(), name='staff'),
-    url('^alumni/$', views.AlumniListView.as_view(), name='alumni'),
-    url('^(?P<slug>[\w-]+)/$', views.ProfileDetailView.as_view(), name='profile'),
+    url(r'^staff/$', views.StaffListView.as_view(), name='staff'),
+    url(r'^postdocs/$', views.PostdocListView.as_view(), name='postdocs'),
+    url(r'^students/$', views.StudentListView.as_view(), name='students'),
+
+    url(r'^(?P<slug>[\w-]+)/$', views.ProfileDetailView.as_view(), name='profile'),
 ]

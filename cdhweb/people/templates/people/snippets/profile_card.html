@@ -1,0 +1,15 @@
+{# display person profile card; expects profile object as profile #}
+<div class="card profile"
+    {% if profile.thumb %}style="background-image:url('{{ MEDIA_URL }}{{ profile.thumb }}')"{% endif %}>
+    <a href="{{ profile.get_absolute_url }}" title="{{ profile.title }}">
+        <div class="content">
+        {% with position=profile.user.positions.first %}
+        <p class="title">
+            {% if not position.is_current %}{{ position.years }}<br/>{% endif %}
+            {{ profile.user.positions.first.title|default:'' }}
+        </p>
+        {% endwith %}
+        <p class="name">{{ profile.title }}</p>
+        </div>
+    </a>
+</div>

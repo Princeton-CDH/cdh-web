@@ -4,6 +4,7 @@ from django.conf import settings
 from django.db.models import Q
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
+from django.urls import reverse
 
 from cdhweb.people.models import Profile
 from cdhweb.resources.views import LastModifiedMixin, LastModifiedListMixin
@@ -39,48 +40,60 @@ class ProfileDetailView(ProfileMixinView, DetailView, LastModifiedMixin):
         return context
 
 
-# class ProfileListView(ProfileMixinView, ListView):
-#     # NOTE: we probably don't need a full list of all profiles;
-#     # instead we'll probably want a few filtered lists, e.g. current
-#     # staff, guest speakers, alumni, etc.
-#     pass
+class ProfileListView(ProfileMixinView, ListView):
+    '''Base class for profile list views'''
+    page_title = ''
+    nav_title = ''
+
+    def get_queryset(self):
+        # get published profile ordered by position (job title then start date)
+        return super().get_queryset().order_by_position().distinct()
+
+    def get_context_data(self):
+        context = super().get_context_data()
+        # update context to display current and past people separately
+        context.update({
+            'current': self.object_list.current(),
+            'past': self.object_list.not_current(),
+            'title': self.page_title,
+            'nav_title': self.nav_title,
+            'archive_nav_urls': [
+                ('Staff', reverse('people:staff')),
+                ('Postdoctoral Fellows', reverse('people:postdocs')),
+                ('Students', reverse('people:students')),
+            ]
+        })
+        return context
 
 
-class StaffListView(ProfileMixinView, ListView, LastModifiedListMixin):
+class StaffListView(ProfileListView):
+    '''Display current and past CDH staff'''
+    page_title = 'Who we are'
+    nav_title = 'Staff'
 
     def get_queryset(self):
         # filter to profiles with staff flag set
-        # *and* a current position (no end date or unexpired end date).
         # order by job title sort order and then by last name
-        # (TODO: perhaps job start date for secondary sort?)
-        return super(StaffListView, self).get_queryset() \
-            .staff().current().order_by_position().distinct()
-
-    def get_context_data(self):
-        context = super(StaffListView, self).get_context_data()
-        context.update({
-            'title': 'Who we are',
-            'nav_title': 'Who we are | Current',
-            'archive_menu_title': 'Current'
-        })
-        return context
+        return super().get_queryset().staff()
 
 
-class AlumniListView(ProfileMixinView, ListView, LastModifiedListMixin):
+class PostdocListView(ProfileListView):
+    '''Display current and past postdoctoral fellows'''
+    page_title = 'Postdoctoral Fellows'
+    nav_title = page_title
 
     def get_queryset(self):
-        return super(AlumniListView, self).get_queryset() \
-            .staff().not_current().order_by_position().distinct()
-
-    def get_context_data(self):
-        context = super(AlumniListView, self).get_context_data()
-        context.update({
-            'title': 'Alumni',
-            'nav_title': 'Who we are | Alumni',
-            'archive_menu_title': 'Alumni'
-
-        })
-        return context
+        # filter to just postdocs
+        return super().get_queryset().postdocs()
 
 
+class StudentListView(ProfileListView):
+    '''Display current and past graduate fellows, graduate and undergraduate
+    assistants.'''
+    page_title = 'Students'
+    nav_title = page_title
+
+    def get_queryset(self):
+        # filter to just students
+        return super().get_queryset().students()
 
