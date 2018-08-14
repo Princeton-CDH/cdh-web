@@ -297,19 +297,20 @@ class TestViews(TestCase):
     def test_staff_list(self):
         # create test person and add two positions
         staffer = Person.objects.create(username='staff')
-        profile = Profile.objects.create(user=staffer, title='Amazing Contributor',
+        profile = Profile.objects.create(
+            user=staffer, title='Amazing Contributor',
             status=CONTENT_STATUS_PUBLISHED, is_staff=True)
         staff_title = Title.objects.create(title='staff')
-        fellow = Title.objects.create(title='fellow')
         postdoc = Title.objects.create(title='post-doc')
-        prev_post = Position.objects.create(user=staffer, title=postdoc,
+        prev_post = Position.objects.create(
+            user=staffer, title=postdoc,
             start_date=date(2015, 1, 1), end_date=date(2015, 12, 31))
-        cur_post = Position.objects.create(user=staffer, title=staff_title,
-            start_date=date(2016, 6,1))
+        cur_post = Position.objects.create(
+            user=staffer, title=staff_title, start_date=date(2016, 6, 1))
 
         response = self.client.get(reverse('people:staff'))
         # person should only appear once even if they have multiple positions
-        assert len(response.context['object_list']) == 1
+        assert len(response.context['current']) == 1
 
         self.assertContains(response, profile.title)
         self.assertContains(response, profile.current_title)
@@ -322,42 +323,13 @@ class TestViews(TestCase):
         cur_post.end_date = date.today() + timedelta(days=1)
         cur_post.save()
         response = self.client.get(reverse('people:staff'))
-        assert profile in response.context['object_list']
-        # should not be listed if position end date has passed
+        assert profile in response.context['current']
+        # should be in past, not current, if position end date has passed
         cur_post.end_date = date.today() - timedelta(days=1)
         cur_post.save()
         response = self.client.get(reverse('people:staff'))
-        assert profile not in response.context['object_list']
-
-    def test_alumni_list(self):
-        # create test person and add two positions
-        staffer = Person.objects.create(username='staff')
-        profile = Profile.objects.create(user=staffer, title='Amazing Contributor',
-            status=CONTENT_STATUS_PUBLISHED, is_staff=True)
-        staff_title = Title.objects.create(title='staff')
-        fellow = Title.objects.create(title='fellow')
-        postdoc = Title.objects.create(title='post-doc')
-        prev_post = Position.objects.create(user=staffer, title=postdoc,
-            start_date=date(2015, 1, 1), end_date=date(2015, 12, 31))
-        cur_post = Position.objects.create(user=staffer, title=staff_title,
-            start_date=date(2016, 6, 1))
-
-        alum = Person.objects.create(username='oldstaff')
-        alum_profile = Profile.objects.create(user=alum, title='Past Brilliance',
-            status=CONTENT_STATUS_PUBLISHED, is_staff=True)
-        alum_post = Position.objects.create(user=alum, title=postdoc,
-            start_date=date(2015, 1, 1), end_date=date(2016, 2, 28))
-        prev_alum_post = Position.objects.create(user=alum, title=fellow,
-            start_date=date(2014, 1, 1), end_date=date(2014, 12, 31))
-
-        response = self.client.get(reverse('people:alumni'))
-        # person should only appear once even if they have multiple positions
-        assert len(response.context['object_list']) == 1
-
-        self.assertContains(response, alum_profile.title)
-        self.assertContains(response, alum_post.title)
-        self.assertContains(response, alum_post.years)
-        self.assertContains(response, alum_profile.get_absolute_url())
+        assert profile not in response.context['current']
+        assert profile in response.context['past']
 
     def test_profile_detail(self):
          # create test person and add two positions
