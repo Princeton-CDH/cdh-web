@@ -57,6 +57,7 @@ class ProfileListView(ProfileMixinView, ListView):
             'past': self.object_list.not_current(),
             'title': self.page_title,
             'nav_title': self.nav_title,
+            # TODO: generate this from mezzanine menu so it can be re-ordered
             'archive_nav_urls': [
                 ('Staff', reverse('people:staff')),
                 ('Postdoctoral Fellows', reverse('people:postdocs')),
