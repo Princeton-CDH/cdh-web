@@ -36,6 +36,14 @@ class ProjectQuerySet(models.QuerySet):
         '''Projects with no current grant, based on dates'''
         return self.exclude(self._current_grant_query())
 
+    def staff(self):
+        '''Staff and postdoc projects, based on special 'staff R&D grant'''
+        return self.filter(grant__grant_type__grant_type='Staff R&D')
+
+    def not_staff(self):
+        '''Exclude staff and postdoc projects, based on special 'staff R&D grant'''
+        return self.exclude(grant__grant_type__grant_type='Staff R&D')
+
 
 class ProjectManager(DisplayableManager):
     '''Custom manager for :class:`Project`.  Extends
@@ -138,7 +146,7 @@ class Grant(models.Model):
 
     def __str__(self):
         return '%s: %s (%s-%s)' % (self.project.title, self.grant_type.grant_type,
-            self.start_date.year, self.end_date.year)
+            self.start_date.year, self.end_date.year if self.end_date else '')
 
 
 # fixme: where does resource type go, for associated links?

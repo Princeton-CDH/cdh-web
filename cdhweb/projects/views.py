@@ -24,21 +24,41 @@ class ProjectMixinView(object):
 
 
 class ProjectListView(ProjectMixinView, ListView, LastModifiedListMixin):
-    '''Current projects, based on grant dates'''
+    '''Current projects, based on grant dates. (Does not include staff
+    projects.)'''
 
     title = 'Current Projects'
 
     def get_queryset(self):
-        return super().get_queryset().current()
+        return super().get_queryset().current().not_staff()
 
 
 class PastProjectListView(ProjectMixinView, ListView, LastModifiedListMixin):
-    '''Past projects (no active grant)'''
+    '''Past projects (no active grant). Does not include staff
+    projects.)'''
 
     title = 'Past Projects'
 
     def get_queryset(self):
-        return super().get_queryset().not_current()
+        return super().get_queryset().not_current().not_staff()
+
+
+class StaffProjectListView(ProjectMixinView, ListView, LastModifiedListMixin):
+    '''Staff projects, based on special staff R&D grant'''
+
+    title = 'Staff and Postdoctoral Fellow Projects'
+
+    def get_queryset(self):
+        return super().get_queryset().staff()
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context.update({
+            'project_list': self.object_list.current(),
+            'past': self.object_list.not_current()
+        })
+        return context
+
 
 
 class ProjectDetailView(ProjectMixinView, DetailView, LastModifiedMixin):
