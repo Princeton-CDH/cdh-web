@@ -18,14 +18,23 @@ class ProjectQuerySet(models.QuerySet):
         '''return projects that are marked as highlighted'''
         return self.filter(highlight=True)
 
-    def current(self):
-        '''current projects with an active grant'''
+    def _current_grant_query(self):
+        '''QuerySet filter to find projects with a current grant,
+        based on start date before current date and end date after current
+        date or not set.
+        '''
         today = timezone.now()
-        # current projects means an active grant
-        # filter for projects with grants where start and end date
-        # come before and after the current date
-        return self.filter(grant__start_date__lt=today) \
-            .filter(grant__end_date__gt=today)
+        return (models.Q(grant__start_date__lt=today) &
+                (models.Q(grant__end_date__gt=today) |
+                 models.Q(grant__end_date__isnull=True)))
+
+    def current(self):
+        '''Projects with a current grant, based on dates'''
+        return self.filter(self._current_grant_query())
+
+    def not_current(self):
+        '''Projects with no current grant, based on dates'''
+        return self.exclude(self._current_grant_query())
 
 
 class ProjectManager(DisplayableManager):
@@ -42,6 +51,8 @@ class ProjectManager(DisplayableManager):
     def current(self):
         return self.get_queryset().current()
 
+    def not_current(self):
+        return self.get_queryset().not_current()
 
 class Project(Displayable, AdminThumbMixin, ExcerptMixin):
     '''A CDH sponsored project'''
@@ -123,7 +134,7 @@ class Grant(models.Model):
     project = models.ForeignKey(Project)
     grant_type = models.ForeignKey(GrantType)
     start_date = models.DateField()
-    end_date = models.DateField()
+    end_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return '%s: %s (%s-%s)' % (self.project.title, self.grant_type.grant_type,

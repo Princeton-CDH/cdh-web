@@ -6,7 +6,7 @@
 
 {% block main %}
 <section class="projects">
-<h1>Projects</h1>
+<h1>{{ title }}</h1>
 {% for project in object_list %}
     {% include 'projects/snippets/project_card.html' with large=1 %}
 {% endfor %}

@@ -156,10 +156,36 @@ class TestProjectQuerySet(TestCase):
 
         assert not Project.objects.current().exists()
 
+        # grant ends in the future
         grant.end_date = today + timedelta(days=1)
         grant.save()
         assert Project.objects.current().exists()
 
+        # grant end date is not set
+        grant.end_date = None
+        grant.save()
+        assert Project.objects.current().exists()
+
+    def test_not_current(self):
+        today = datetime.today()
+        proj = Project.objects.create(title="Derrida's Margins")
+        grtype = GrantType.objects.create(grant_type='Sponsored Project')
+        # asocciated grant has ended
+        grant = Grant.objects.create(project=proj, grant_type=grtype,
+            start_date=today - timedelta(days=2),
+            end_date=today - timedelta(days=1))
+
+        assert Project.objects.not_current().exists()
+
+        # grant end date in the future
+        grant.end_date = today + timedelta(days=1)
+        grant.save()
+        assert not Project.objects.not_current().exists()
+
+        # grant end date is not set
+        grant.end_date = None
+        grant.save()
+        assert not Project.objects.not_current().exists()
 
 class TestGrant(TestCase):
 
@@ -238,6 +264,17 @@ class TestViews(TestCase):
     def test_list(self):
         proj = Project.objects.create(title="Derrida's Margins")
         response = self.client.get(reverse('project:list'))
+        # no current grant - not on main project page
+        self.assertNotContains(response, proj.get_absolute_url())
+
+        # add a grant that is current (has not ended)
+        today = datetime.today()
+        grtype = GrantType.objects.create(grant_type='Sponsored Project')
+        Grant.objects.create(project=proj, grant_type=grtype,
+                             start_date=today - timedelta(days=30),
+                             end_date=today + timedelta(days=30))
+
+        response = self.client.get(reverse('project:list'))
         self.assertContains(response, escape(proj.title))
         self.assertContains(response, proj.get_absolute_url())
         self.assertContains(response, proj.short_description)
@@ -259,6 +296,14 @@ class TestViews(TestCase):
         self.assertContains(response, 'Built by CDH')
 
         # TODO: test thumbnail image
+
+    def test_past(self):
+        proj = Project.objects.create(title="Derrida's Margins")
+        response = self.client.get(reverse('project:past'))
+        self.assertContains(response, escape(proj.title))
+        self.assertContains(response, proj.get_absolute_url())
+
+
 
     def test_detail(self):
         proj = Project.objects.create(title="Derrida's Margins",
