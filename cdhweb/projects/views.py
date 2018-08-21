@@ -17,48 +17,35 @@ class ProjectMixinView(object):
         # (or draft profiles for logged in users with permission to view)
         return Project.objects.published() # TODO: published(for_user=self.request.user)
 
+
+class ProjectListMixinView(ProjectMixinView, ListView, LastModifiedListMixin):
+
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['title'] = self.title
+        # update context to display current and past projects separately
+        context.update({
+            'project_list': self.object_list.current(),
+            'past_projects': self.object_list.not_current().order_by_newest_grant(),
+            'title': self.title
+        })
         return context
 
 
-class ProjectListView(ProjectMixinView, ListView, LastModifiedListMixin):
-    '''Current projects, based on grant dates. (Does not include staff
-    projects.)'''
-
-    title = 'Current Projects'
+class ProjectListView(ProjectListMixinView):
+    '''Current and past projects, based on grant dates. (Does not include
+    staff and postdoc projects.)'''
 
     def get_queryset(self):
-        return super().get_queryset().current().not_staff_or_postdoc()
+        return super().get_queryset().not_staff_or_postdoc()
 
 
-class PastProjectListView(ProjectMixinView, ListView, LastModifiedListMixin):
-    '''Past projects (no active grant). Does not include staff
-    projects.)'''
-
-    title = 'Past Projects'
-
-    def get_queryset(self):
-        return super().get_queryset().not_current().not_staff_or_postdoc()
-
-
-class StaffProjectListView(ProjectMixinView, ListView, LastModifiedListMixin):
+class StaffProjectListView(ProjectListMixinView):
     '''Staff projects, based on special staff R&D grant'''
 
     title = 'Staff and Postdoctoral Fellow Projects'
 
     def get_queryset(self):
         return super().get_queryset().staff_or_postdoc()
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        context.update({
-            'project_list': self.object_list.current(),
-            'past': self.object_list.not_current()
-        })
-        return context
-
 
 
 class ProjectDetailView(ProjectMixinView, DetailView, LastModifiedMixin):

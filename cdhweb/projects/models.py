@@ -47,6 +47,14 @@ class ProjectQuerySet(PublishedQuerySetMixin):
         '''Exclude staff and postdoc projects, based on grant type'''
         return self.exclude(grant__grant_type__grant_type__in=self.staff_postdoc_grants)
 
+    def order_by_newest_grant(self):
+        '''order by grant start date, most recent grants first; secondary
+        sort by project title'''
+        # NOTE: using annotation to get just the most recent start date
+        # to avoid issues with projects appearing multiple times.
+        return self.annotate(last_start=models.Max('grant__start_date')) \
+                   .order_by('-last_start', 'title')
+
 
 class Project(Displayable, AdminThumbMixin, ExcerptMixin):
     '''A CDH sponsored project'''

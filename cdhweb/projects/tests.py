@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 from django.contrib.auth import get_user_model
 from django.contrib.sites.models import Site
@@ -224,6 +224,35 @@ class TestProjectQuerySet(TestCase):
         assert postdoc_proj not in non_staff_postdoc_projects
         assert other_proj in non_staff_postdoc_projects
 
+    def test_order_by_newest_grant(self):
+        # create three test projects with grants in successive years
+        sponsored = GrantType.objects.get_or_create(grant_type='Sponsored Project')[0]
+        p1 = Project.objects.create(title="One")
+        Grant.objects.create(project=p1, grant_type=sponsored,
+                             start_date=date(2015, 9, 1))
+        p2 = Project.objects.create(title="Two")
+        Grant.objects.create(project=p2, grant_type=sponsored,
+                             start_date=date(2016, 9, 1))
+        p3 = Project.objects.create(title="Three")
+        Grant.objects.create(project=p3, grant_type=sponsored,
+                             start_date=date(2017, 9, 1))
+
+        ordered = Project.objects.order_by_newest_grant()
+        # should be ordered newest first
+        assert ordered[0] == p3
+        assert ordered[1] == p2
+        assert ordered[2] == p1
+
+        # with multiple grants, still orders based on newest grant
+        Grant.objects.create(project=p3, grant_type=sponsored,
+                             start_date=date(2015, 9, 1))
+
+        ordered = Project.objects.order_by_newest_grant()
+        # should be ordered newest first
+        assert ordered[0] == p3
+
+
+
 
 class TestGrant(TestCase):
 
@@ -300,11 +329,8 @@ class TestViews(TestCase):
     fixtures = ['test-pages.json']
 
     def test_list(self):
+        # create test project
         proj = Project.objects.create(title="Derrida's Margins")
-        response = self.client.get(reverse('project:list'))
-        # no current grant - not on main project page
-        self.assertNotContains(response, proj.get_absolute_url())
-
         # add a grant that is current (has not ended)
         today = datetime.today()
         grtype = GrantType.objects.create(grant_type='Sponsored Project')
@@ -313,6 +339,7 @@ class TestViews(TestCase):
                              end_date=today + timedelta(days=30))
 
         response = self.client.get(reverse('project:list'))
+        assert proj in response.context['project_list']
         self.assertContains(response, escape(proj.title))
         self.assertContains(response, proj.get_absolute_url())
         self.assertContains(response, proj.short_description)
@@ -333,13 +360,13 @@ class TestViews(TestCase):
         self.assertContains(response, project_url)
         self.assertContains(response, 'Built by CDH')
 
-        # TODO: test thumbnail image
-
-    def test_past(self):
+        # check past projects
         proj = Project.objects.create(title="Derrida's Margins")
-        response = self.client.get(reverse('project:past'))
-        self.assertContains(response, escape(proj.title))
-        self.assertContains(response, proj.get_absolute_url())
+        response = self.client.get(reverse('project:list'))
+        assert proj not in response.context['project_list']
+        assert proj in response.context['past_projects']
+
+        # TODO: test thumbnail image?
 
     def test_staff_list(self):
         # create staff, postdoc, and other project

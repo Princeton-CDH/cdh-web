@@ -16,11 +16,9 @@
     <i class="fa fa-chevron-down" aria-hidden="true"></i></a>
   <ul class="submenu">
     {% url 'project:list' as projects_url %}
-    {% url 'project:past' as past_projects_url %}
     {% url 'project:staff' as staff_projects_url %}
-    <li {% if request.path == projects_url %}class="current"{% endif %}><a href="{{ projects_url }}">Current Projects</a></li>
+    <li {% if request.path == projects_url %}class="current"{% endif %}><a href="{{ projects_url }}">Projects</a></li>
     <li {% if request.path == staff_projects_url %}class="current"{% endif %}><a href="{{ staff_projects_url }}">Staff and Postdoctoral Fellow Projects</a></li>
-    <li {% if request.path == past_projects_url %}class="current"{% endif %}><a href="{{ past_projects_url }}">Past Projects</a></li>
   </ul>
 </div>
 
