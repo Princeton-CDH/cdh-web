@@ -6,7 +6,6 @@ header.nav {
     width: 100%;
     position: fixed;
     text-align: center;
-    background-color: rgba(255, 255, 255, 0.95);
     left: 0;
     top: 0;
     right: 0;
@@ -27,7 +26,6 @@ header.nav {
      a {
         color: #000000;
         text-decoration: none;
-        padding-bottom: 10px;
         &:focus,
         &:hover,
         &:visited {
@@ -70,14 +68,20 @@ header.nav {
         }
     }
 
+    .nav-wrap {
+        background-color: rgba(255, 255, 255, 0.95);
+    }
+
     nav {
         @extend .responsive-container;
-        padding: 22px 0;
+        padding: 10px 0;
         display: flex;
         flex-direction: row;
+        flex-wrap: wrap;
+
         a.home-page {
-            width: 80px;
-            height: 60px;
+            width: 60px;
+            height: 45px;
             margin-right: 25px;
 
             @media (max-width: $medium-max-width) {
@@ -85,8 +89,8 @@ header.nav {
             }
 
             img {
-                width: 80px;
-                height: 60px;
+                width: 60px;
+                height: 45px;
                 max-width: none;
             }
 
@@ -98,7 +102,8 @@ header.nav {
         }
 
     }
-    section {
+
+    section.nav-main {
         display: flex;
         flex-direction: column;
         flex: auto;
@@ -120,8 +125,8 @@ header.nav {
             }
 
             &.primary-nav {
+                align-items: center;
                 margin: 0;
-                padding-bottom: 14px;
                 height: auto;
                 > li {
                     flex: auto;
@@ -145,12 +150,14 @@ header.nav {
                     text-transform: uppercase;
                     font-family: $font-stack-headline-bold;
                     color: #000000;
+                    padding: 16px 0 10px;
+                    font-weight: bold;
                 }
             }
 
             li {
                 display: inline;
-                font-size: 12px;
+                font-size: 14px;
                 margin-right: 40px;
                 @media (max-width: $small-max-width) {
                     display: block;
@@ -159,7 +166,6 @@ header.nav {
             }
 
             &.secondary-nav {
-                border-top: solid 1px #d8d8d8;
                 margin-top: 0;
                 font-family: $font-stack-headline;
                 font-weight: normal;
@@ -173,6 +179,55 @@ header.nav {
                 &.active {
                     display: block;
                 }
+            }
+        }
+    }
+
+    section.nav-card {
+        @extend .responsive-container;
+        width: 100%;
+        display: none;
+        top: 55px;
+        
+        .inner {
+            margin-left: 80px;
+            border-top: solid 2px #d8d8d8;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .secondary-nav,
+        .tertiary-nav {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+
+            li {
+                font-family: $font-stack-headline;
+                font-weight: normal;
+                font-size: 14px;
+                text-align: left;
+            }
+        }
+
+        .secondary-nav {
+            padding-top: 25px;
+
+            li {
+                min-width: 120px;
+                margin-right: 20px;
+            }
+        }
+
+        .tertiary-nav {
+            flex: auto;
+            flex-direction: column;
+            padding-bottom: 20px;
+            padding-top: 10px;
+
+            li {
+                color: $dark-grey;
             }
         }
     }

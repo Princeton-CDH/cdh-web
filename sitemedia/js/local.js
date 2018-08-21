@@ -52,18 +52,15 @@ $(document).ready(function(){
         $(this).parent().find('.submenu').toggle();
     });
 
+    // show nav card on mouseover for main menu entry
+    $('.primary-nav a').mouseenter(function(e) {
+        $('.nav-card').css('display', 'none') // hide others
+        $('.nav-card.' + e.target.parentElement.id).css('display', 'block')
+    })
 
-    // show submenu on mouseover for main menu entry
-    $('.primary-nav > li').not('.current-page').mouseover(function() {
-        // hide all secondary nav, show this one
-        $(this).parent().find('li .secondary-nav').hide();
-        $(this).find('.secondary-nav').show();
-    });
-    // restore current page menu when mouse leaves primary nav
-    $('.primary-nav').mouseout(function() {
-        // hide all secondary nav, show the current one
-        $(this).find('.secondary-nav').hide();
-        $(this).find('.secondary-nav.active').show();
+    // hide all nav cards when we leave the nav
+    $('.nav-wrap').mouseleave(function() {
+        $('.nav-card').css('display', 'none')
     })
 
     /*

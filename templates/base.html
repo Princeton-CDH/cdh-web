@@ -45,17 +45,19 @@
     <a href='#maincontent' aria-label='Main Content'></a>
     <a href='#footermenu' aria-label='Footer Menu'></a>
     <header class="nav">
-        <nav class='mobile-nav'>
-            <a class="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a>
-        </nav>
-        <nav id='mainmenu'>
-            <a href='{% url 'home' %}' class='home-page'>
-              <img
-              alt='The Center for Digital Humanities @ Princeton'
-              src='{% static "img/CDH_logo.svg" %}' />
-            </a>
-            {% page_menu "snippets/primary_navigation.html" %}
-        </nav>
+        <div class="nav-wrap">
+            <nav class='mobile-nav'>
+                <a class="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a>
+            </nav>
+            <nav id='mainmenu'>
+                <a href='{% url 'home' %}' class='home-page'>
+                  <img
+                  alt='The Center for Digital Humanities @ Princeton'
+                  src='{% static "img/CDH_logo.svg" %}' />
+                </a>
+                {% page_menu "snippets/primary_navigation.html" %}
+            </nav>
+        </div>
     </header>
     {% include 'snippets/test_banner.html' %}
 
