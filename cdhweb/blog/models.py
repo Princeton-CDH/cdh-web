@@ -5,13 +5,12 @@ from django.utils.text import Truncator
 
 from mezzanine.core.fields import FileField
 from mezzanine.core.models import Displayable, RichText
-from mezzanine.core.managers import DisplayableManager
 from mezzanine.utils.models import AdminThumbMixin, upload_to
 
 from taggit.managers import TaggableManager
 
 from cdhweb.people.models import Person
-from cdhweb.resources.models import Attachment
+from cdhweb.resources.models import Attachment, PublishedQuerySetMixin
 
 
 class MultiOwnable(models.Model):
@@ -39,7 +38,8 @@ class MultiOwnable(models.Model):
         return ', '.join(str(user) for user in self.users.all())
     author_list.short_description = 'Authors'
 
-class BlogPostQuerySet(models.QuerySet):
+
+class BlogPostQuerySet(PublishedQuerySetMixin):
 
     def featured(self):
         '''return blog posts that are marked as featured'''
@@ -49,19 +49,6 @@ class BlogPostQuerySet(models.QuerySet):
         '''sort blog posts by publication date'''
         return self.order_by('-publish_date')
 
-class BlogPostManager(DisplayableManager):
-
-    def get_queryset(self):
-        '''Return default queryset :class:`BlogPostQuerySet`'''
-        return BlogPostQuerySet(self.model, using=self._db)
-
-    def featured(self):
-        '''return blog posts that are marked as featured'''
-        return self.get_queryset().featured()
-
-    def recent(self):
-        '''sort blog posts by publication date'''
-        return self.get_queryset().recent()
 
 class BlogPost(Displayable, MultiOwnable, RichText, AdminThumbMixin):
     """
@@ -94,8 +81,8 @@ class BlogPost(Displayable, MultiOwnable, RichText, AdminThumbMixin):
         '''shorter description with ellipsis'''
         return Truncator(self.description).chars(250)
 
-    # override manager
-    objects = BlogPostManager()
+    # custom manager for additioal queryset filters
+    objects = BlogPostQuerySet.as_manager()
 
     class Meta:
         verbose_name = _("Blog post")

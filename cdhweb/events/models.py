@@ -10,12 +10,11 @@ import icalendar
 
 from mezzanine.core.fields import FileField
 from mezzanine.core.models import Displayable, RichText
-from mezzanine.core.managers import DisplayableManager
 from mezzanine.utils.models import AdminThumbMixin, upload_to
 from taggit.managers import TaggableManager
 
 from cdhweb.people.models import Person
-from cdhweb.resources.models import Attachment, ExcerptMixin
+from cdhweb.resources.models import Attachment, ExcerptMixin, PublishedQuerySetMixin
 from cdhweb.resources.utils import absolutize_url
 
 
@@ -53,7 +52,7 @@ class Location(models.Model):
         return self.name
 
 
-class EventQuerySet(models.QuerySet):
+class EventQuerySet(PublishedQuerySetMixin):
 
     def upcoming(self):
         '''Find upcoming events. Includes events that end on the current
@@ -72,25 +71,6 @@ class EventQuerySet(models.QuerySet):
         today = datetime(now.year, now.month, now.day,
             tzinfo=timezone.get_default_timezone())
         return self.filter(end_time__lt=today).order_by('-start_time')
-
-
-
-class EventManager(DisplayableManager):
-    # extend displayable manager to preserve access to published filter
-
-    def get_queryset(self):
-        '''return default queryset :class:`EventQuerySet`'''
-        return EventQuerySet(self.model, using=self._db)
-
-    def upcoming(self):
-        '''Find upcoming events. Includes events that end on the current
-        day even if the start time is past.'''
-        return self.get_queryset().upcoming()
-
-    def recent(self):
-        '''Find past events, most recent first.  Only includes events
-        with end date in the past.'''
-        return self.get_queryset().recent()
 
 
 class Event(Displayable, RichText, AdminThumbMixin, ExcerptMixin):
@@ -127,8 +107,8 @@ class Event(Displayable, RichText, AdminThumbMixin, ExcerptMixin):
 
     tags = TaggableManager(blank=True)
 
-    # override default manager with custom version
-    objects = EventManager()
+    # override manager for custom queryset filters
+    objects = EventQuerySet.as_manager()
 
     admin_thumb_field = "thumb"
     event_type.verbose_name = 'Type'

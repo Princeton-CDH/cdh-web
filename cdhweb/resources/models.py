@@ -1,8 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.timezone import now
 
 from mezzanine.core.fields import FileField
-from mezzanine.core.models import RichText
+from mezzanine.core.models import RichText, CONTENT_STATUS_PUBLISHED
 from mezzanine.pages.models import Page
 from mezzanine.utils.models import upload_to
 
@@ -80,4 +81,23 @@ class LandingPage(Page, RichText):
     image = FileField(verbose_name="Image",
         upload_to=upload_to("resources.landing_pages.image", "resources"),
         format="Image", max_length=255, null=True, blank=True)
+
+
+class PublishedQuerySetMixin(models.QuerySet):
+    '''QuerySet mixin. Adds a filter to find published content.
+    Uses the published check from
+     :class:`mezzanine.core.managers.PublishedManager`.'''
+
+    def published(self, for_user=None):
+        """
+        For non-staff users, return items with a published status and
+        whose publish and expiry dates fall before and after the
+        current date when specified.
+        """
+        if for_user is not None and for_user.is_staff:
+            return self.all()
+        return self.filter(
+            models.Q(publish_date__lte=now()) | models.Q(publish_date__isnull=True),
+            models.Q(expiry_date__gte=now()) | models.Q(expiry_date__isnull=True),
+            models.Q(status=CONTENT_STATUS_PUBLISHED))
 

@@ -6,13 +6,12 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse
 from django.utils.text import slugify
 from mezzanine.core.fields import RichTextField, FileField
-from mezzanine.core.managers import DisplayableManager
 from mezzanine.core.models import Displayable, CONTENT_STATUS_PUBLISHED, \
     CONTENT_STATUS_DRAFT
 from mezzanine.utils.models import AdminThumbMixin, upload_to
 from taggit.managers import TaggableManager
 
-from cdhweb.resources.models import Attachment
+from cdhweb.resources.models import Attachment, PublishedQuerySetMixin
 
 
 class Title(models.Model):
@@ -64,7 +63,7 @@ class Person(User):
     def published(self):
         '''person has a published profile page'''
         try:
-            return self.profile.status == CONTENT_STATUS_PUBLISHED
+            return self.profile.published()
         except ObjectDoesNotExist:
             return False
     published.boolean = True
@@ -89,7 +88,7 @@ class Person(User):
             return self.username
 
 
-class ProfileQuerySet(models.QuerySet):
+class ProfileQuerySet(PublishedQuerySetMixin):
 
     def staff(self):
         '''Return only CDH staff members'''
@@ -97,7 +96,7 @@ class ProfileQuerySet(models.QuerySet):
 
     def _current_position_query(self):
         return (models.Q(user__positions__end_date__isnull=True) |
-               models.Q(user__positions__end_date__gte=date.today()))
+                models.Q(user__positions__end_date__gte=date.today()))
 
     def current(self):
         '''Return profiles for users with a current position, either
@@ -110,21 +109,13 @@ class ProfileQuerySet(models.QuerySet):
         return self.exclude(self._current_position_query())
 
     def order_by_position(self):
-        # order by job title sort order and then by start date
+        '''order by job title sort order and then by start date'''
         # annotate to avoid duplicates in the queryset due to multiple positions
         # sort on highest position title and earliest start date (may
         # not be from the same position)
         return self.annotate(max_title=models.Max('user__positions__title__sort_order'),
                              min_start=models.Min('user__positions__start_date')) \
                    .order_by('max_title', 'min_start')
-
-
-class ProfileManager(DisplayableManager):
-    # extend displayable manager to provide access to
-    # mezzanine published queryset filter
-
-    def get_queryset(self):
-        return ProfileQuerySet(self.model, using=self._db)
 
 
 class Profile(Displayable, AdminThumbMixin):
@@ -152,9 +143,8 @@ class Profile(Displayable, AdminThumbMixin):
 
     tags = TaggableManager(blank=True)
 
-    # custome manager; includes mezzanine's displayable manager for access
-    # to published queryset filter, etc.
-    objects = ProfileManager()
+    # custom manager for additional queryset filters
+    objects = ProfileQuerySet.as_manager()
 
     def __str__(self):
         # FIXME: should this be self.title instead?

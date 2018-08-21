@@ -4,15 +4,15 @@ from django.utils import timezone
 
 from mezzanine.core.fields import RichTextField, FileField
 from mezzanine.core.models import Displayable
-from mezzanine.core.managers import DisplayableManager
 from mezzanine.utils.models import AdminThumbMixin, upload_to
 from taggit.managers import TaggableManager
 
 from cdhweb.people.models import Person
-from cdhweb.resources.models import ResourceType, Attachment, ExcerptMixin
+from cdhweb.resources.models import ResourceType, Attachment, ExcerptMixin, \
+    PublishedQuerySetMixin
 
 
-class ProjectQuerySet(models.QuerySet):
+class ProjectQuerySet(PublishedQuerySetMixin):
 
     def highlighted(self):
         '''return projects that are marked as highlighted'''
@@ -48,30 +48,6 @@ class ProjectQuerySet(models.QuerySet):
         return self.exclude(grant__grant_type__grant_type__in=self.staff_postdoc_grants)
 
 
-class ProjectManager(DisplayableManager):
-    '''Custom manager for :class:`Project`.  Extends
-    :class:`mezzanine.core.managers.DisplayableManager` to preserve
-    capability to find published items.'''
-
-    def get_queryset(self):
-        return ProjectQuerySet(self.model, using=self._db)
-
-    def highlighted(self):
-        return self.get_queryset().highlighted()
-
-    def current(self):
-        return self.get_queryset().current()
-
-    def not_current(self):
-        return self.get_queryset().not_current()
-
-    def staff_or_postdoc(self):
-        return self.get_queryset().staff_or_postdoc()
-
-    def not_staff_or_postdoc(self):
-        return self.get_queryset().not_staff_or_postdoc()
-
-
 class Project(Displayable, AdminThumbMixin, ExcerptMixin):
     '''A CDH sponsored project'''
 
@@ -102,7 +78,7 @@ class Project(Displayable, AdminThumbMixin, ExcerptMixin):
     attachments = models.ManyToManyField(Attachment, blank=True)
 
     # custom manager and queryset
-    objects = ProjectManager()
+    objects = ProjectQuerySet.as_manager()
 
     admin_thumb_field = "thumb"
 
