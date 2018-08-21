@@ -256,7 +256,8 @@ def test_init_profile_from_ldap():
     ldapinfo = Mock(displayName='Joe E. Schmoe',
         # no telephone or office set
         telephoneNumber=[], street=[],
-        title='Freeloader, World at large') # job title, organizational unit
+        title='Freeloader, World at large', pustatus='stf')
+        # job title, organizational unit
 
     init_profile_from_ldap(staffer, ldapinfo)
     updated_staffer = Person.objects.get(username='staff')
@@ -270,6 +271,7 @@ def test_init_profile_from_ldap():
     assert profile.slug == slugify(ldapinfo.displayName)
     assert profile.phone_number == ''
     assert profile.office_location == ''
+    assert profile.pu_status == 'stf'
     assert profile.status == CONTENT_STATUS_DRAFT
     # title should be created
     assert Title.objects.filter(title='Freeloader').exists()

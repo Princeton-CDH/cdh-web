@@ -42,16 +42,26 @@ class PersonAdmin(admin.ModelAdmin):
     # last login and date joined
 
 class ProfileAdmin(DisplayableAdmin):
-    list_display = ('title', 'status', 'is_staff', "admin_link", "admin_thumb")
-    list_filter = ('status', 'is_staff')
-
+    list_display = ('title', 'status', 'is_staff', 'pu_status', "admin_link",
+                    "admin_thumb")
+    list_filter = ('status', 'is_staff', 'pu_status')
     prepopulated_fields = {"slug": ("title",)}
-    # TODO: grapelli templates don't include a way to have the first profile
-    # default to open instead of collapsed; maybe use javascript
-    # classes = ("collapse-open",)
-    # inline_classes = ('collapse-open',)  # this is ignored
-    exclude = ('tags', )
     filter_horizontal = ('attachments', )
+    # customized fieldset based on DisplayableAdmin field set
+    fieldsets = (
+        (None, {
+            "fields": ["title", "pu_status", "is_staff", "education", "bio",
+                       "phone_number", "office_location",
+                       "image", "thumb",
+                       "status", ("publish_date", "expiry_date")],
+        }),
+        ("Page Metadata", {
+            "fields": ["_meta_title", "slug",
+                       ("description", "gen_description"),
+                        "keywords", "in_sitemap"],
+            "classes": ("collapse-open",)
+        }),
+    )
 
 class PositionAdmin(admin.ModelAdmin):
     list_display = ('user', 'title', 'start_date', 'end_date')

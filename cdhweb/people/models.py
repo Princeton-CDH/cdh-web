@@ -148,6 +148,16 @@ class Profile(Displayable, AdminThumbMixin):
     phone_number = models.CharField(max_length=50, blank=True)
     office_location = models.CharField(max_length=255, blank=True)
 
+    PU_STATUS_CHOICES = (
+        ('fac', 'Faculty'),
+        ('stf', 'Staff'),
+        ('graduate', 'Graduate Student'),
+        ('undergraduate', 'Undergraduate Student'),
+        ('external', 'Not associated with Princeton')
+    )
+    pu_status = models.CharField('Princeton Status', choices=PU_STATUS_CHOICES,
+                                 max_length=15, blank=True, default='')
+
     image = FileField(verbose_name="Image",
         upload_to=upload_to("people.image", "people"),
         format="Image", max_length=255, null=True, blank=True)
@@ -248,6 +258,9 @@ def init_profile_from_ldap(user, ldapinfo):
     # 'street' in ldap is office location
     if ldapinfo.street:
         profile.office_location = str(ldapinfo.street)
+
+    # set PU status
+    profile.pu_status = str(ldapinfo.pustatus)
 
     # set profiles to draft by default so we don't get a new page
     # for every account we initialize
