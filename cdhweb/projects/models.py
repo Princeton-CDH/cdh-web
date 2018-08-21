@@ -36,13 +36,16 @@ class ProjectQuerySet(models.QuerySet):
         '''Projects with no current grant, based on dates'''
         return self.exclude(self._current_grant_query())
 
-    def staff(self):
-        '''Staff and postdoc projects, based on special 'staff R&D grant'''
-        return self.filter(grant__grant_type__grant_type='Staff R&D')
+    #: grant types that indicate staff or postdoc project
+    staff_postdoc_grants = ['Staff R&D', 'Postdoctoral Research Project']
 
-    def not_staff(self):
-        '''Exclude staff and postdoc projects, based on special 'staff R&D grant'''
-        return self.exclude(grant__grant_type__grant_type='Staff R&D')
+    def staff_or_postdoc(self):
+        '''Staff and postdoc projects, based on grant type'''
+        return self.filter(grant__grant_type__grant_type__in=self.staff_postdoc_grants)
+
+    def not_staff_or_postdoc(self):
+        '''Exclude staff and postdoc projects, based on grant type'''
+        return self.exclude(grant__grant_type__grant_type__in=self.staff_postdoc_grants)
 
 
 class ProjectManager(DisplayableManager):
@@ -61,6 +64,13 @@ class ProjectManager(DisplayableManager):
 
     def not_current(self):
         return self.get_queryset().not_current()
+
+    def staff_or_postdoc(self):
+        return self.get_queryset().staff_or_postdoc()
+
+    def not_staff_or_postdoc(self):
+        return self.get_queryset().not_staff_or_postdoc()
+
 
 class Project(Displayable, AdminThumbMixin, ExcerptMixin):
     '''A CDH sponsored project'''

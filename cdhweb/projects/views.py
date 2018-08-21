@@ -30,7 +30,7 @@ class ProjectListView(ProjectMixinView, ListView, LastModifiedListMixin):
     title = 'Current Projects'
 
     def get_queryset(self):
-        return super().get_queryset().current().not_staff()
+        return super().get_queryset().current().not_staff_or_postdoc()
 
 
 class PastProjectListView(ProjectMixinView, ListView, LastModifiedListMixin):
@@ -40,7 +40,7 @@ class PastProjectListView(ProjectMixinView, ListView, LastModifiedListMixin):
     title = 'Past Projects'
 
     def get_queryset(self):
-        return super().get_queryset().not_current().not_staff()
+        return super().get_queryset().not_current().not_staff_or_postdoc()
 
 
 class StaffProjectListView(ProjectMixinView, ListView, LastModifiedListMixin):
@@ -49,7 +49,7 @@ class StaffProjectListView(ProjectMixinView, ListView, LastModifiedListMixin):
     title = 'Staff and Postdoctoral Fellow Projects'
 
     def get_queryset(self):
-        return super().get_queryset().staff()
+        return super().get_queryset().staff_or_postdoc()
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)

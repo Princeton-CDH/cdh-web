@@ -166,6 +166,7 @@ class TestProjectQuerySet(TestCase):
         grant.save()
         assert Project.objects.current().exists()
 
+
     def test_not_current(self):
         today = datetime.today()
         proj = Project.objects.create(title="Derrida's Margins")
@@ -186,6 +187,43 @@ class TestProjectQuerySet(TestCase):
         grant.end_date = None
         grant.save()
         assert not Project.objects.not_current().exists()
+
+    def test_staff_or_postdoc(self):
+        # create staff, postdoc, and other project
+        start = datetime.today() - timedelta(days=30)
+        staff_proj = Project.objects.create(title="Pliny Project")
+        staff_rd = GrantType.objects.get_or_create(grant_type='Staff R&D')[0]
+        Grant.objects.create(project=staff_proj, grant_type=staff_rd,
+                             start_date=start)
+        postdoc_proj = Project.objects.create(title="Linked Global Networks of Cultural Production")
+        postdoc_grant = GrantType.objects.get_or_create(grant_type='Postdoctoral Research Project')[0]
+        Grant.objects.create(project=postdoc_proj, grant_type=postdoc_grant,
+                             start_date=start)
+        other_proj = Project.objects.create(title="Derrida's Margins")
+
+        staff_postdoc_projects = Project.objects.staff_or_postdoc()
+        assert staff_proj in staff_postdoc_projects
+        assert postdoc_proj in staff_postdoc_projects
+        assert other_proj not in staff_postdoc_projects
+
+    def test_not_staff_or_postdoc(self):
+        # create staff, postdoc, and other project
+        start = datetime.today() - timedelta(days=30)
+        staff_proj = Project.objects.create(title="Pliny Project")
+        staff_rd = GrantType.objects.get_or_create(grant_type='Staff R&D')[0]
+        Grant.objects.create(project=staff_proj, grant_type=staff_rd,
+                             start_date=start)
+        postdoc_proj = Project.objects.create(title="Linked Global Networks of Cultural Production")
+        postdoc_grant = GrantType.objects.get_or_create(grant_type='Postdoctoral Research Project')[0]
+        Grant.objects.create(project=postdoc_proj, grant_type=postdoc_grant,
+                             start_date=start)
+        other_proj = Project.objects.create(title="Derrida's Margins")
+
+        non_staff_postdoc_projects = Project.objects.not_staff_or_postdoc()
+        assert staff_proj not in non_staff_postdoc_projects
+        assert postdoc_proj not in non_staff_postdoc_projects
+        assert other_proj in non_staff_postdoc_projects
+
 
 class TestGrant(TestCase):
 
