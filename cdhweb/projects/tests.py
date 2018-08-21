@@ -341,7 +341,30 @@ class TestViews(TestCase):
         self.assertContains(response, escape(proj.title))
         self.assertContains(response, proj.get_absolute_url())
 
+    def test_staff_list(self):
+        # create staff, postdoc, and other project
+        start = datetime.today() - timedelta(days=30)
+        staff_proj = Project.objects.create(title="Pliny Project")
+        staff_rd = GrantType.objects.get_or_create(grant_type='Staff R&D')[0]
+        Grant.objects.create(project=staff_proj, grant_type=staff_rd,
+                             start_date=start)
+        postdoc_proj = Project.objects.create(title="Linked Global Networks of Cultural Production")
+        postdoc_grant = GrantType.objects.get_or_create(grant_type='Postdoctoral Research Project')[0]
+        Grant.objects.create(project=postdoc_proj, grant_type=postdoc_grant,
+                             start_date=start)
+        other_proj = Project.objects.create(title="Derrida's Margins")
 
+        response = self.client.get(reverse('project:staff'))
+        # sponsored project not on staff page
+        self.assertNotContains(response, other_proj.get_absolute_url())
+
+        # staff & post-doc projects are displayed
+        self.assertContains(response, staff_proj.title)
+        self.assertContains(response, staff_proj.get_absolute_url())
+        self.assertContains(response, postdoc_proj.title)
+        self.assertContains(response, postdoc_proj.get_absolute_url())
+
+        # not testing display specifics since re-used from main project list
 
     def test_detail(self):
         proj = Project.objects.create(title="Derrida's Margins",
