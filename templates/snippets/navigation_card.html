@@ -4,13 +4,11 @@
     <div class="inner">
         <ul class="secondary-nav">
         {% for page in page_branch %}
-        <li>
-            <a href="{{ page.get_absolute_url }}">
-                {{ page.title }}
-            </a>
-            {% if page.has_children_in_menu %}
-                {% page_menu page "snippets/tertiary_navigation.html" %}
-            {% endif %}
+            <li>
+                <a href="{{ page.get_absolute_url }}">{{ page.title }}</a>
+                {% if page.has_children_in_menu %}
+                    {% page_menu page "snippets/tertiary_navigation.html" %}
+                {% endif %}
             </li>
         {% endfor %}
         </ul>

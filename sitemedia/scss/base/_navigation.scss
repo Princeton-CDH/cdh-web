@@ -183,7 +183,7 @@ header.nav {
         }
     }
 
-    section.nav-card { // secondary and tertiary navigation
+    section.nav-card { // secondary and tertiary navigation cards
         @extend .responsive-container;
         width: 100%;
         display: none;
@@ -198,6 +198,7 @@ header.nav {
         .tertiary-nav {
             list-style: none;
             display: flex;
+            flex-direction: column;
             margin: 0;
             padding: 0;
 
@@ -213,16 +214,31 @@ header.nav {
             padding-top: 25px;
             padding-bottom: 10px;
 
+            @media (min-width: $large-min-width) {
+                flex-direction: row;
+            }
+
             > li {
                 flex: none;
-                margin-right: 30px;
+                margin-bottom: 10px;
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+                
+                @media (min-width: $large-min-width) {
+                    margin-right: 30px;
+                    margin-bottom: 0;
+                }
             }
         }
 
         .tertiary-nav {
             flex: auto;
-            flex-flow: column nowrap;
-            padding-top: 10px;
+
+            @media (min-width: $large-min-width) {
+                margin-top: 10px;
+            }
 
             a {
                 color: $dark-grey;
