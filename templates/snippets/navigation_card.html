@@ -6,7 +6,7 @@
         {% for page in page_branch %}
         <li>
             <a href="{{ page.get_absolute_url }}">
-                <span class="title">{{ page.title }}</span>
+                {{ page.title }}
             </a>
             {% if page.has_children_in_menu %}
                 {% page_menu page "snippets/tertiary_navigation.html" %}
