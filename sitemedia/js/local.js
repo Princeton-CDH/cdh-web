@@ -25,6 +25,7 @@ $(document).ready(function(){
             90)
         {
             $('header').addClass('hidden');
+            $('.nav-card').css('display', 'none')
         }
         else if (scrolled > scroll)
         {
