@@ -5,6 +5,7 @@ from django.contrib.sites.models import Site
 from django.test import TestCase
 from django.urls import resolve, reverse
 from django.utils.html import escape
+from mezzanine.core.models import CONTENT_STATUS_PUBLISHED, CONTENT_STATUS_DRAFT
 
 from cdhweb.people.models import Profile
 from cdhweb.projects.models import Grant, GrantType, Project, Role, \
@@ -251,7 +252,53 @@ class TestProjectQuerySet(TestCase):
         # should be ordered newest first
         assert ordered[0] == p3
 
+    def test_published(self):
+        # technically a mixin method, testing here for convenience
 
+        staffer = get_user_model().objects.create(username='staffer',
+                                                  is_staff=True)
+        nonstaffer = get_user_model().objects.create(username='nonstaffer',
+                                                    is_staff=False)
+
+
+        # careate project in draft status
+        proj = Project.objects.create(title="Derrida's Margins",
+                                      status=CONTENT_STATUS_DRAFT)
+
+        # draft displayable only listed for staff user
+        assert proj not in Project.objects.published()
+        assert proj not in Project.objects.published(nonstaffer)
+        assert proj in Project.objects.published(staffer)
+
+        # set to published, no dates
+        proj.status = CONTENT_STATUS_PUBLISHED
+        proj.save()
+
+        # published displayable listed for everyone
+        assert proj in Project.objects.published()
+        assert proj in Project.objects.published(nonstaffer)
+        assert proj in Project.objects.published(staffer)
+
+        # publish date in future - only visible to staff user
+        proj.publish_date = datetime.today() + timedelta(days=2)
+        proj.save()
+        assert proj not in Project.objects.published()
+        assert proj not in Project.objects.published(nonstaffer)
+        assert proj in Project.objects.published(staffer)
+
+        # publish date in past - visible to all
+        proj.publish_date = datetime.today() - timedelta(days=2)
+        proj.save()
+        assert proj in Project.objects.published()
+        assert proj in Project.objects.published(nonstaffer)
+        assert proj in Project.objects.published(staffer)
+
+        # expiration date in past - only visible to staff user
+        proj.expiry_date = datetime.today() - timedelta(days=2)
+        proj.save()
+        assert proj not in Project.objects.published()
+        assert proj not in Project.objects.published(nonstaffer)
+        assert proj in Project.objects.published(staffer)
 
 
 class TestGrant(TestCase):
