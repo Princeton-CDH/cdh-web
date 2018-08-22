@@ -103,7 +103,7 @@ header.nav {
 
     }
 
-    section.nav-main {
+    div.nav-main {
         display: flex;
         flex-direction: column;
         flex: auto;
@@ -183,7 +183,7 @@ header.nav {
         }
     }
 
-    section.nav-card { // secondary and tertiary navigation cards
+    div.nav-card { // secondary and tertiary navigation cards
         @extend .responsive-container;
         width: 100%;
         display: none;

@@ -25,7 +25,7 @@ $(document).ready(function(){
             90)
         {
             $('header').addClass('hidden');
-            $('.nav-card').hide()
+            hideCards()
         }
         else if (scrolled > scroll)
         {
@@ -55,14 +55,24 @@ $(document).ready(function(){
 
     // show nav card on mouseover for main menu entry
     $('.primary-nav a').mouseenter(function(e) {
-        $('.nav-card').hide() // hide others
-        $('.nav-card.menu-' + e.target.parentElement.id).show()
+        showCard(e.target.id)
     })
 
     // hide all nav cards when we leave the nav
     $('.nav-wrap').mouseleave(function() {
-        $('.nav-card').hide()
+        hideCards()
     })
+
+    function showCard(id) {
+        hideCards() // hide others
+        $('.nav-card.menu-' + id).show()
+        $('#' + id).attr('aria-expanded', true)
+    }
+
+    function hideCards() {
+        $('.primary-nav a').attr('aria-expanded', false)
+        $('.nav-card').hide()   
+    }
 
     /*
      * Homepage carousel
