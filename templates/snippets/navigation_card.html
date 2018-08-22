@@ -1,16 +1,16 @@
+{% load pages_tags %}
 {# secondary and tertiary naviation for the top-level of the site #}
-<section class="nav-card {{ page.html_id }}">
+<section class="nav-card menu-{{ page.html_id }}">
     <div class="inner">
-        <ul class="secondary-nav {{ page.html_id }}">
+        <ul class="secondary-nav">
         {% for page in page_branch %}
-            <li id="menu-{{ page.html_id }}">
+        <li>
+            <a href="{{ page.get_absolute_url }}">
                 <span class="title">{{ page.title }}</span>
-                <ul class="tertiary-nav">
-                    <li>one</li>
-                    <li>two</li>
-                    <li>three</li>
-                    <li>four</li>
-                </ul>
+            </a>
+            {% if page.has_children_in_menu %}
+                {% page_menu page "snippets/tertiary_navigation.html" %}
+            {% endif %}
             </li>
         {% endfor %}
         </ul>

@@ -150,7 +150,7 @@ header.nav {
                     text-transform: uppercase;
                     font-family: $font-stack-headline-bold;
                     color: #000000;
-                    padding: 16px 0 10px;
+                    padding: 15px 0 11px;
                     font-weight: bold;
                 }
             }
@@ -183,19 +183,17 @@ header.nav {
         }
     }
 
-    section.nav-card {
+    section.nav-card { // secondary and tertiary navigation
         @extend .responsive-container;
         width: 100%;
         display: none;
         top: 55px;
         
         .inner {
-            margin-left: 80px;
-            border-top: solid 2px #d8d8d8;
-            display: flex;
-            flex-wrap: wrap;
+            margin-left: 85px;
+            border-top: solid 1px #d8d8d8;
         }
-
+        
         .secondary-nav,
         .tertiary-nav {
             list-style: none;
@@ -213,20 +211,20 @@ header.nav {
 
         .secondary-nav {
             padding-top: 25px;
+            padding-bottom: 10px;
 
-            li {
-                min-width: 120px;
-                margin-right: 20px;
+            > li {
+                flex: none;
+                margin-right: 30px;
             }
         }
 
         .tertiary-nav {
             flex: auto;
-            flex-direction: column;
-            padding-bottom: 20px;
+            flex-flow: column nowrap;
             padding-top: 10px;
 
-            li {
+            a {
                 color: $dark-grey;
             }
         }

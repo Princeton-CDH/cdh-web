@@ -1,0 +1,9 @@
+{% load pages_tags %}
+{# tertiary navigation, where applicable #}
+<ul class="tertiary-nav">
+    {% for page in page_branch %}
+    <li>
+        <a href="{{ page.get_absolute_url }}">{{ page.title }}</a>
+    </li>
+    {% endfor %}
+</ul>

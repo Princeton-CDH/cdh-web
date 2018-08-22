@@ -25,7 +25,7 @@ $(document).ready(function(){
             90)
         {
             $('header').addClass('hidden');
-            $('.nav-card').css('display', 'none')
+            $('.nav-card').hide()
         }
         else if (scrolled > scroll)
         {
@@ -55,13 +55,13 @@ $(document).ready(function(){
 
     // show nav card on mouseover for main menu entry
     $('.primary-nav a').mouseenter(function(e) {
-        $('.nav-card').css('display', 'none') // hide others
-        $('.nav-card.' + e.target.parentElement.id).css('display', 'block')
+        $('.nav-card').hide() // hide others
+        $('.nav-card.menu-' + e.target.parentElement.id).show()
     })
 
     // hide all nav cards when we leave the nav
     $('.nav-wrap').mouseleave(function() {
-        $('.nav-card').css('display', 'none')
+        $('.nav-card').hide()
     })
 
     /*
