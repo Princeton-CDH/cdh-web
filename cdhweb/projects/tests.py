@@ -312,44 +312,6 @@ class TestGrant(TestCase):
             end_date=datetime(end_year, 1, 1))
         assert str(grant) == '%s: %s (2016-2017)' % (proj.title, grtype.grant_type)
 
-    def test_is_current(self):
-        today = date.today()
-        proj = Project.objects.create(title="Derrida's Margins")
-        grtype = GrantType.objects.create(grant_type='Sponsored Project')
-        # not yet started
-        grant = Grant(project=proj, grant_type=grtype,
-            start_date=today + timedelta(days=1))
-        assert not grant.is_current
-
-        # start in past, no end date set
-        grant.start_date = today - timedelta(days=30)
-        assert grant.is_current
-
-        # end date in future
-        grant.end_date = today + timedelta(days=30)
-        assert grant.is_current
-
-        # end date in past
-        grant.end_date = today - timedelta(days=3)
-        assert not grant.is_current
-
-    def test_years(self):
-        proj = Project.objects.create(title="Derrida's Margins")
-        grtype = GrantType.objects.create(grant_type='Sponsored Project')
-
-        # no end date
-        grant = Grant(project=proj, grant_type=grtype,
-                      start_date=date(2016, 6, 1))
-        assert grant.years == '2016–'
-
-        # end date same year as start
-        grant.end_date = date(2016, 12, 1)
-        assert grant.years == '2016'
-
-        # end date known, different year
-        grant.end_date = date(2017, 12, 1)
-        assert grant.years == '2016–2017'
-
 
 class TestMembership(TestCase):
 

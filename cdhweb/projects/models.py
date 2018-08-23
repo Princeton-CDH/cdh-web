@@ -11,7 +11,7 @@ from taggit.managers import TaggableManager
 
 from cdhweb.people.models import Person
 from cdhweb.resources.models import ResourceType, Attachment, ExcerptMixin, \
-    PublishedQuerySetMixin
+    PublishedQuerySetMixin, DateRange
 
 
 class ProjectQuerySet(PublishedQuerySetMixin):
@@ -133,39 +133,14 @@ class GrantType(models.Model):
         return self.grant_type
 
 
-class Grant(models.Model):
+class Grant(DateRange):
     '''A specific grant associated with a project'''
     project = models.ForeignKey(Project)
     grant_type = models.ForeignKey(GrantType)
-    start_date = models.DateField()
-    end_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return '%s: %s (%s-%s)' % (self.project.title, self.grant_type.grant_type,
             self.start_date.year, self.end_date.year if self.end_date else '')
-
-    @property
-    def is_current(self):
-        '''is grant currently active - start date before today and end date
-        in the future or not set'''
-        # NOTE: borrowed from people.position; should be possible to refactor
-        today = date.today()
-        return self.start_date <= today and \
-            (not self.end_date or self.end_date > today)
-
-    @property
-    def years(self):
-        '''year or year range for display'''
-        # borrowed from people.position
-        val = str(self.start_date.year)
-        if self.end_date:
-            # start and end the same year - return single year only
-            if self.start_date.year == self.end_date.year:
-                return val
-
-            return '%s–%s' % (val, self.end_date.year)
-
-        return '%s–' % val
 
 
 # fixme: where does resource type go, for associated links?

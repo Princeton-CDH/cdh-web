@@ -380,45 +380,6 @@ class TestPosition(TestCase):
         assert str(pos) == '%s %s (%s)' % (director, staff_title,
                                            pos.start_date.year)
 
-    def test_is_current(self):
-        staff_title = Title.objects.create(title='staff', sort_order=2)
-        director = Person.objects.create(username='director')
-
-        # start date in past, no end date
-        pos = Position(user=director, title=staff_title,
-            start_date=date.today() - timedelta(days=50))
-        assert pos.is_current
-
-        # end date in future
-        pos.end_date = date.today() + timedelta(days=30)
-        assert pos.is_current
-
-        # end date in past
-        pos.end_date = date.today() - timedelta(days=3)
-        assert not pos.is_current
-
-        # start date in future
-        pos.start_date = date.today() + timedelta(days=3)
-        assert not pos.is_current
-
-    def test_years(self):
-        staff_title = Title.objects.create(title='staff', sort_order=2)
-        director = Person.objects.create(username='director')
-
-        # start date in past, no end date
-        pos = Position(user=director, title=staff_title,
-                start_date=date(2016, 6, 1))
-
-        # no end date
-        assert pos.years == '2016–'
-        # end date same year as start
-        pos.end_date = date(2016, 12, 1)
-        assert pos.years == '2016'
-
-        # end date known, different year
-        pos.end_date = date(2017, 12, 1)
-        assert pos.years == '2016–2017'
-
 
 @pytest.mark.django_db
 def test_init_profile_from_ldap():

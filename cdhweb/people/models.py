@@ -12,7 +12,8 @@ from mezzanine.core.models import Displayable, CONTENT_STATUS_PUBLISHED, \
 from mezzanine.utils.models import AdminThumbMixin, upload_to
 from taggit.managers import TaggableManager
 
-from cdhweb.resources.models import Attachment, PublishedQuerySetMixin
+from cdhweb.resources.models import Attachment, PublishedQuerySetMixin, \
+    DateRange
 
 
 class Title(models.Model):
@@ -259,42 +260,18 @@ def workshops_taught(user):
 User.workshops_taught = workshops_taught
 
 
-class Position(models.Model):
+class Position(DateRange):
     '''Through model for many-to-many relation between people
     and titles.  Adds start and end dates to the join table.'''
     user = models.ForeignKey(User, on_delete=models.CASCADE,
-        related_name='positions')
+                             related_name='positions')
     title = models.ForeignKey(Title, on_delete=models.CASCADE)
-    start_date = models.DateField()
-    end_date = models.DateField(blank=True, null=True)
 
     class Meta:
         ordering = ['-start_date']
 
     def __str__(self):
         return '%s %s (%s)' % (self.user, self.title, self.start_date.year)
-
-    @property
-    def is_current(self):
-        '''is position current - start date before today and end date
-        in the future or not set'''
-        today = date.today()
-        return self.start_date <= today and \
-            (not self.end_date or self.end_date > today)
-
-    @property
-    def years(self):
-        '''year or year range for display'''
-        val = str(self.start_date.year)
-
-        if self.end_date:
-            # start and end the same year - return single year only
-            if self.start_date.year == self.end_date.year:
-                return val
-
-            return '%s–%s' % (val, self.end_date.year)
-
-        return '%s–' % val
 
 
 def init_profile_from_ldap(user, ldapinfo):
