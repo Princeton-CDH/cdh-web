@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.text import slugify
 from mezzanine.core.fields import RichTextField, FileField
 from mezzanine.core.models import Displayable, CONTENT_STATUS_PUBLISHED, \
@@ -94,6 +95,12 @@ class Person(User):
 
         return self.website_url
 
+    @property
+    def latest_grant(self):
+        '''most recent grants where this person is project director'''
+        return self.membership_set.filter(role__title='Project Director') \
+                   .order_by('-grant__start_date').first().grant
+
     def __str__(self):
         '''Custom person display to make it easier to choose people
         in admin menus.  Uses profile title if available, otherwise combines
@@ -139,18 +146,45 @@ class ProfileQuerySet(PublishedQuerySetMixin):
         return self.exclude(user__positions__title__title__in=self.student_titles)
 
     def _current_position_query(self):
-        return (models.Q(user__positions__end_date__isnull=True) |
-                models.Q(user__positions__end_date__gte=date.today()))
+        # query to find a user with a current cdh position
+        # user *has* a position and it has no end date or date after today
+        return (
+            models.Q(user__positions__isnull=False) &
+            (models.Q(user__positions__end_date__isnull=True) |
+             models.Q(user__positions__end_date__gte=date.today())
+             )
+        )
+
+    def _current_grant_query(self):
+        today = timezone.now()
+        return (
+            models.Q(user__membership__role__title='Project Director') &
+            (models.Q(user__membership__grant__start_date__lt=today) &
+             (models.Q(user__membership__grant__end_date__gt=today) |
+              models.Q(user__membership__grant__end_date__isnull=True))
+            )
+        )
+
+    # split out? current position vs current grant? or combine?
 
     def current(self):
-        '''Return profiles for users with a current position, either
-        with no end date set or an end date in the future.'''
-        return self.filter(self._current_position_query())
+        '''Return profiles for users with a current position *or*
+        a current grant, based on start and end dates: either no end date
+        set or an end date in the future.'''
+        return self.filter(models.Q(self._current_position_query()) |
+                           models.Q(self._current_grant_query()))
 
     def not_current(self):
-        '''Return profiles for users without a current position, based on
-        no end date set or an end date in the future.'''
-        return self.exclude(self._current_position_query())
+        '''Return profiles for users who do not have a current position *or*
+        a current grant, based on start and end dates: either no end date
+        set or an end date in the future.
+        '''
+        today = timezone.now()
+        return self.filter(
+            models.Q(user__positions__end_date__lt=date.today()) |
+            (models.Q(user__membership__role__title='Project Director') &
+             models.Q(user__membership__grant__end_date__lt=today))
+        )
 
     def order_by_position(self):
         '''order by job title sort order and then by start date'''

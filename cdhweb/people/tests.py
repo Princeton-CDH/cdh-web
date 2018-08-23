@@ -156,10 +156,11 @@ class ProfileQuerySetTest(TestCase):
         staff_profile = Profile.objects.create(user=staffer)
         staff_title = Title.objects.create(title='staff')
         postdoc = Title.objects.create(title='post-doc')
+        # no position - should not be in current
+        assert not Profile.objects.current().exists()
         # previous post
-        prev_post = Position.objects.create(user=staffer, title=postdoc,
-            start_date='2015-01-01', end_date='2015-12-31')
-
+        Position.objects.create(user=staffer, title=postdoc,
+                                start_date='2015-01-01', end_date='2015-12-31')
         assert not Profile.objects.current().exists()
 
         # current post - no end date
@@ -175,15 +176,48 @@ class ProfileQuerySetTest(TestCase):
         assert current_profiles.exists()
         assert staff_profile in current_profiles
 
+        staff_profile.delete()
+
+        # affiliate with current grant project
+        grad = Person.objects.create(username='tom', first_name='Tom')
+        grad_profile = Profile.objects.create(user=grad, pu_status='graduate')
+        # graduate flag but no project
+        assert grad_profile not in Profile.objects.current()
+        # project role but not director
+        gradproj = Project.objects.create(title='Chinese Exchange Poems')
+        researcher = Role.objects.create(title='Researcher')
+        grtype = GrantType.objects.create(grant_type='Sponsored Project')
+        grant = Grant.objects.create(project=gradproj, grant_type=grtype,
+                                     start_date='2015-01-01')
+        Membership.objects.create(project=gradproj, user=grad, grant=grant,
+                                  role=researcher)
+        assert grad_profile not in Profile.objects.current()
+
+        # set as projext director on the same current grant
+        proj_director = Role.objects.create(title='Project Director')
+        Membership.objects.create(project=gradproj, user=grad, grant=grant,
+                                  role=proj_director)
+        assert grad_profile in Profile.objects.current()
+
+        # set grant end date to future - still current
+        cur_post.end_date = date.today() + timedelta(days=30)
+        assert grad_profile in Profile.objects.current()
+        # set grant end date to past - no longer current
+        cur_post.end_date = date.today() - timedelta(days=30)
+        assert grad_profile in Profile.objects.current()
+
     def test_not_current(self):
         # current staff person
         staffer = Person.objects.create(username='staffer')
         staff_profile = Profile.objects.create(user=staffer)
+
+        # no position - no non-current
+        assert not Profile.objects.not_current().exists()
+
         staff_title = Title.objects.create(title='staff')
         # current post - no end date
         cur_post = Position.objects.create(user=staffer, title=staff_title,
             start_date='2016-06-01')
-
         assert not Profile.objects.not_current().exists()
 
         # past fellow
@@ -191,8 +225,8 @@ class ProfileQuerySetTest(TestCase):
         fellow_profile = Profile.objects.create(user=fellow)
         postdoc = Title.objects.create(title='post-doc')
         # previous post
-        prev_post = Position.objects.create(user=fellow, title=postdoc,
-            start_date='2015-01-01', end_date='2015-12-31')
+        Position.objects.create(user=fellow, title=postdoc, start_date='2015-01-01',
+                                end_date='2015-12-31')
         not_current = Profile.objects.not_current()
         assert not_current.exists()
         assert fellow_profile in not_current
@@ -203,6 +237,23 @@ class ProfileQuerySetTest(TestCase):
         cur_post.save()
         assert not_current.exists()
         assert staff_profile not in not_current
+
+        # affiliate with current grant project as project director
+        grad = Person.objects.create(username='tom', first_name='Tom')
+        grad_profile = Profile.objects.create(user=grad, pu_status='graduate')
+        gradproj = Project.objects.create(title='Chinese Exchange Poems')
+        grtype = GrantType.objects.create(grant_type='Sponsored Project')
+        grant = Grant.objects.create(project=gradproj, grant_type=grtype,
+                                     start_date='2015-01-01')
+        proj_director = Role.objects.create(title='Project Director')
+        Membership.objects.create(project=gradproj, user=grad, grant=grant,
+                                  role=proj_director)
+        assert grad_profile in Profile.objects.current()
+
+        # set grant end date to past - now not current
+        grant.end_date = date.today() - timedelta(days=30)
+        grant.save()
+        assert grad_profile in Profile.objects.not_current()
 
     def test_order_by_position(self):
         director_title = Title.objects.create(title='director', sort_order=1)
@@ -533,7 +584,7 @@ class TestViews(TestCase):
         response = self.client.get(reverse('people:students'))
         assert grad_profile in response.context['current']
         assert undergrad_profile in response.context['past']
-        assert grad_pi_profile in response.context['current']
+        assert grad_pi_profile in response.context['past']
 
         # grad and undergrad have profile pages
         self.assertContains(response, grad_profile.title)

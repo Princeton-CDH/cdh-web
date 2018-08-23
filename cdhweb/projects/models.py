@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -141,6 +143,29 @@ class Grant(models.Model):
     def __str__(self):
         return '%s: %s (%s-%s)' % (self.project.title, self.grant_type.grant_type,
             self.start_date.year, self.end_date.year if self.end_date else '')
+
+    @property
+    def is_current(self):
+        '''is grant currently active - start date before today and end date
+        in the future or not set'''
+        # borrowed from people.position except date instead of datetime
+        today = date.today()
+        return self.start_date <= today and \
+            (not self.end_date or self.end_date > today)
+
+    @property
+    def years(self):
+        '''year or year range for display'''
+        # borrowed from people.position
+        val = str(self.start_date.year)
+        if self.end_date:
+            # start and end the same year - return single year only
+            if self.start_date.year == self.end_date.year:
+                return val
+
+            return '%s–%s' % (val, self.end_date.year)
+
+        return '%s–' % val
 
 
 # fixme: where does resource type go, for associated links?

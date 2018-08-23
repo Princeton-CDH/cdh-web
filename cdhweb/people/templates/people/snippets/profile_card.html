@@ -7,8 +7,15 @@
         <div class="content">
         {% with position=profile.user.positions.first %}
         <p class="title">
-            {% if not position.is_current %}{{ position.years }}<br/>{% endif %}
-            {{ profile.user.positions.first.title|default:'' }}
+            {% if position %}
+                {% if not position.is_current %}{{ position.years }}<br/>{% endif %}
+                {{ profile.user.positions.first.title|default:'' }}
+            {% else %} {# if no CDH position: display grant role #}
+            {% with grant=profile.user.latest_grant %}
+                {% if not grant.is_current %}{{ grant.years }}<br/>{% endif %}
+                {{ grant.grant_type }} Grant Recipient
+            {% endwith %}
+            {% endif %}
         </p>
         {% endwith %}
         <p class="name">{{ profile.title }}</p>
