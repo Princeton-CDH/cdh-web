@@ -420,7 +420,6 @@ class TestPosition(TestCase):
         assert pos.years == '2016–2017'
 
 
-
 @pytest.mark.django_db
 def test_init_profile_from_ldap():
     # create user to test with
@@ -451,10 +450,13 @@ def test_init_profile_from_ldap():
     # title should be created
     assert Title.objects.filter(title='Freeloader').exists()
 
-    # when updating, profile status should not change
+    # when updating, profile status and existing fields should not change
+    new_title = 'Somebody Else'
+    profile.title = new_title
     profile.status = CONTENT_STATUS_PUBLISHED
     profile.save()
     init_profile_from_ldap(staffer, ldapinfo)
+    assert profile.title == new_title
     assert profile.status == CONTENT_STATUS_PUBLISHED
 
     # ldap info with telephone and street

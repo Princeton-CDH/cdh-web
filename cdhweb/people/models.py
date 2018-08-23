@@ -313,17 +313,21 @@ def init_profile_from_ldap(user, ldapinfo):
         profile.status = CONTENT_STATUS_DRAFT
 
     # populate profile with data we can pull from ldap
+    # but do not set any fields with content, which may contain edits
+
     # - set user's display name as page title
-    profile.title = str(ldapinfo.displayName)
+    if not profile.title:
+        profile.title = str(ldapinfo.displayName)
     # - generate a slug based on display name
-    profile.slug = slugify(ldapinfo.displayName)
-    if ldapinfo.telephoneNumber:
+    if not profile.slug:
+        profile.slug = slugify(ldapinfo.displayName)
+    if ldapinfo.telephoneNumber and not profile.phone_number:
         profile.phone_number = str(ldapinfo.telephoneNumber)
     # 'street' in ldap is office location
-    if ldapinfo.street:
+    if ldapinfo.street and not profile.office_location:
         profile.office_location = str(ldapinfo.street)
 
-    # set PU status
+    # always update PU status to current
     profile.pu_status = str(ldapinfo.pustatus)
 
     profile.save()
