@@ -148,7 +148,7 @@ class Grant(models.Model):
     def is_current(self):
         '''is grant currently active - start date before today and end date
         in the future or not set'''
-        # borrowed from people.position except date instead of datetime
+        # NOTE: borrowed from people.position; should be possible to refactor
         today = date.today()
         return self.start_date <= today and \
             (not self.end_date or self.end_date > today)
