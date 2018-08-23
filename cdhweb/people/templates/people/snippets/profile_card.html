@@ -1,7 +1,9 @@
 {# display person profile card; expects profile object as profile #}
 <div class="card profile"
     {% if profile.thumb %}style="background-image:url('{{ MEDIA_URL }}{{ profile.thumb }}')"{% endif %}>
-    <a href="{{ profile.get_absolute_url }}" title="{{ profile.title }}">
+    {% with profile.user.profile_url as profile_url %} {# local or external profile, if available #}
+      {% with profile_ur|yesno:"a,div" as tag %}
+      <{{ tag }} {% if profile_url %}href="{{ profile_url }}"{% endif %} title="{{ profile.title }}">
         <div class="content">
         {% with position=profile.user.positions.first %}
         <p class="title">
@@ -11,5 +13,7 @@
         {% endwith %}
         <p class="name">{{ profile.title }}</p>
         </div>
-    </a>
+      </{{ tag }}>
+      {% endwith %}
+    {% endwith %}
 </div>
