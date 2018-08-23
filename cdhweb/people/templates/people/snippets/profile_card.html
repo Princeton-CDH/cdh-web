@@ -2,7 +2,7 @@
 <div class="card profile"
     {% if profile.thumb %}style="background-image:url('{{ MEDIA_URL }}{{ profile.thumb }}')"{% endif %}>
     {% with profile.user.profile_url as profile_url %} {# local or external profile, if available #}
-      {% with profile_ur|yesno:"a,div" as tag %}
+      {% with profile_url|yesno:"a,div" as tag %} {# link if we have a url, otherwise div #}
       <{{ tag }} {% if profile_url %}href="{{ profile_url }}"{% endif %} title="{{ profile.title }}">
         <div class="content">
         {% with position=profile.user.positions.first %}

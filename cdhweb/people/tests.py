@@ -97,7 +97,11 @@ class TestPerson(TestCase):
         # add local profile - takes precedence over external
         profile = Profile.objects.create(user=pers, is_staff=True, slug='foo',
                                          status=CONTENT_STATUS_PUBLISHED)
-        assert pers.profile_url == profile.get_absolute_url()
+
+        # non-staff profile, should fall back to external
+        profile.is_staff = False
+        profile.save()
+        assert pers.profile_url == ext_profile_url
 
 
 class TestProfile(TestCase):
@@ -471,6 +475,87 @@ class TestViews(TestCase):
         response = self.client.get(reverse('people:staff'))
         assert profile not in response.context['current']
         assert profile in response.context['past']
+
+        # should link to other people pages
+        self.assertContains(response, reverse('people:postdocs'))
+        self.assertContains(response, reverse('people:students'))
+
+    def test_postdoc_list(self):
+        postdoc = Person.objects.create(username='postdoc')
+        postdoc_profile = Profile.objects.create(
+            user=postdoc, status=CONTENT_STATUS_PUBLISHED, is_staff=True,
+            slug='postdoc')
+        postdoc_title = Title.objects.get_or_create(title='Postdoctoral Fellow')[0]
+        Position.objects.create(user=postdoc, title=postdoc_title,
+                                start_date=date(2015, 1, 1))
+
+        response = self.client.get(reverse('people:postdocs'))
+        # person should only appear once even if they have multiple positions
+        assert len(response.context['current']) == 1
+        # postdoc profile should be included
+        assert postdoc_profile in response.context['current']
+
+        self.assertContains(response, postdoc_profile.title)
+        self.assertContains(response, postdoc_profile.current_title)
+        self.assertContains(response, postdoc_profile.get_absolute_url())
+
+    def test_student_list(self):
+        # grad, undergrad assistant
+        grad = Person.objects.create(username='grad')
+        grad_profile = Profile.objects.create(
+            user=grad, slug='grad', is_staff=True, title='Graduate Student',
+            status=CONTENT_STATUS_PUBLISHED)
+        grad_title = Title.objects.create(title='Graduate Assistant')
+        Position.objects.create(user=grad, title=grad_title,
+                                start_date='2016-06-01')
+        undergrad = Person.objects.create(username='undergrad')
+        undergrad_profile = Profile.objects.create(
+            user=undergrad, slug='undergrad', is_staff=True,
+            title='Undergraduate Student', status=CONTENT_STATUS_PUBLISHED)
+        undergrad_title = Title.objects.create(title='Undergraduate Assistant')
+        Position.objects.create(user=undergrad, title=undergrad_title,
+                                start_date='2015-06-01', end_date='2016-06-01')
+
+        # person with student status with a project
+        grad_pi = Person.objects.create(username='tom')
+        grad_pi_profile = Profile.objects.create(
+            user=grad_pi, pu_status='graduate', title='Tom M.', slug='tom',
+            is_staff=False, status=CONTENT_STATUS_PUBLISHED)
+        # project director
+        gradproj = Project.objects.create(title='Chinese Exchange Poems')
+        grtype = GrantType.objects.create(grant_type='Sponsored Project')
+        grant = Grant.objects.create(project=gradproj, grant_type=grtype,
+                                     start_date='2015-01-1', end_date='2016-01-01')
+        proj_director = Role.objects.create(title='Project Director')
+        Membership.objects.create(project=gradproj, user=grad_pi,
+                                  grant=grant, role=proj_director)
+
+        response = self.client.get(reverse('people:students'))
+        assert grad_profile in response.context['current']
+        assert undergrad_profile in response.context['past']
+        assert grad_pi_profile in response.context['current']
+
+        # grad and undergrad have profile pages
+        self.assertContains(response, grad_profile.title)
+        self.assertContains(response, grad_profile.current_title)
+        self.assertContains(response, grad_profile.get_absolute_url())
+        self.assertContains(response, undergrad_profile.title)
+        # undergrad has no current title, displays first title (with dates)
+        self.assertContains(response, undergrad.positions.first().title)
+        self.assertContains(response, undergrad_profile.get_absolute_url())
+        # grad project director does not have local profile page or title
+        self.assertContains(response, grad_pi_profile.title)
+        self.assertNotContains(response, grad_pi_profile.get_absolute_url())
+
+        # add a website url resource to grad pi
+        website = ResourceType.objects.get_or_create(name='Website')[0]
+        ext_profile_url = 'http://person.me'
+        UserResource.objects.create(user=grad_pi, resource_type=website,
+                                    url=ext_profile_url)
+        assert grad_pi.profile_url == ext_profile_url
+        response = self.client.get(reverse('people:students'))
+        self.assertContains(response, grad_pi_profile.title)
+        self.assertContains(response, ext_profile_url)
 
     def test_profile_detail(self):
          # create test person and add two positions

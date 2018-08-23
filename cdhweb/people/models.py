@@ -90,7 +90,9 @@ class Person(User):
             if self.profile.is_staff and self.published():
                 return self.get_absolute_url()
         except ObjectDoesNotExist:
-            return self.website_url
+            pass
+
+        return self.website_url
 
     def __str__(self):
         '''Custom person display to make it easier to choose people
@@ -122,15 +124,19 @@ class ProfileQuerySet(PublishedQuerySetMixin):
         return self.exclude(user__positions__title__title__icontains=self.postdoc_title)
 
     student_titles = ['Graduate Assistant', 'Undergraduate Assistant']
+    student_pu_status = ['graduate', 'undergraduate']
 
     def students(self):
         '''Return CDH student assistants and grantees. based on role title'''
         # TODO: find grantees
         return self.filter(
             models.Q(user__positions__title__title__in=self.student_titles) |
-            ((models.Q(pu_status='graduate') | models.Q(pu_status='undergraduate'))
+            ((models.Q(pu_status__in=self.student_pu_status))
              & models.Q(user__membership__role__title='Project Director')))
 
+    def not_student_staff(self):
+        '''Filter out people with CDH student titles'''
+        return self.exclude(user__positions__title__title__in=self.student_titles)
 
     def _current_position_query(self):
         return (models.Q(user__positions__end_date__isnull=True) |
@@ -157,9 +163,7 @@ class ProfileQuerySet(PublishedQuerySetMixin):
 
 
 class Profile(Displayable, AdminThumbMixin):
-    user = models.OneToOneField(User)
-    is_staff = models.BooleanField(default=False,
-        help_text='If checked, this person will be listed on the CDH staff page.')
+    user = models.OneToOneField(Person)
     is_staff = models.BooleanField(
         default=False,
         help_text='CDH staff or Postdoctoral Fellow. If checked, person ' +

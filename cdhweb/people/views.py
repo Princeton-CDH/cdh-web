@@ -76,10 +76,11 @@ class StaffListView(ProfileListView):
 
     def get_queryset(self):
         # filter to profiles with staff flag set and exclude postdocs
+        # and students
         # (already ordered by job title sort order and then by last name)
-        return super().get_queryset().staff().not_postdocs()
-        # NOTE: this won't work correctly if we ever have someone who
-        # goes from a postdoc to a staff position
+        return super().get_queryset().staff().not_postdocs().not_student_staff()
+        # NOTE: this won't filter correctly if we ever have someone who
+        # goes from a postdoc or student role to a staff position
 
 class PostdocListView(ProfileListView):
     '''Display current and past postdoctoral fellows'''
