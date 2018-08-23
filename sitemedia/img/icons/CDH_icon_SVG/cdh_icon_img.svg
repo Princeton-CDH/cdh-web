@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #00edff;
+      }
+
+      .cls-2 {
+        fill: none;
+      }
+    </style>
+  </defs>
+  <title>cdh_icon_img</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <polygon class="cls-1" points="55 9 55 55 9 55 9 61 61 61 61 9 55 9"/>
+  </g>
+  <g id="Layer_2" data-name="Layer 2">
+    <path d="M20,27a8,8,0,1,1,8-8A8.00917,8.00917,0,0,1,20,27Zm0-12a4,4,0,1,0,4,4A4.00427,4.00427,0,0,0,20,15Z"/>
+    <path d="M3,3V55H55V3ZM51,51H7V48.56641l9.47949-13.147,5.50586,7.63574a1.99967,1.99967,0,0,0,3.34277-.15088l11.2373-18.979L51,48.30389Zm0-10.54645L38.28613,18.981a1.99963,1.99963,0,0,0-3.44141,0L23.44336,38.23779l-5.3418-7.40771a1.9999,1.9999,0,0,0-3.24414,0L7,41.72736V7H51V40.45355Z"/>
+  </g>
+  <g id="Isolation_Mode" data-name="Isolation Mode">
+    <rect class="cls-2" width="64" height="64"/>
+  </g>
+</svg>

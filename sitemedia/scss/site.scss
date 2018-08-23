@@ -40,7 +40,11 @@ header, div, p, img, section, article {
 
 	#maincontent {
 		position: relative;
-		margin-top: 30px;
+        margin-top: 30px;
+        
+        section:nth-child(1) {
+            margin-top: 50px;
+        }
 	}
 
 	&.with-carousel {
@@ -957,7 +961,8 @@ $event-card-img-height: 240px;
 			}
 	  	}
 	}
-	.contributors {
+
+	.contributors, .links {
 		font-size: 18px;
 
 		@media (min-width: $medium-min-width) {
@@ -968,6 +973,7 @@ $event-card-img-height: 240px;
 			list-style-type: none;
 			color: $dark-grey;
 			padding: 0;
+			margin-top: -15px;
 			font-family: $font-stack-headline;
 
 			li.role {
@@ -991,6 +997,115 @@ $event-card-img-height: 240px;
 	    	font-size: 18px;
 	    }
 
+	    .cdh-built {
+			@include cdh-shadow-label;
+			margin-top: 25px;
+			display: inline-block;
+	    }
+
+	}
+
+	/* link section spans both columns; links in the left sidebar,
+   	   project website in the main column to make it more visible */
+	.links {
+		/* duplicate grid to line up project url with main column */
+		@media (min-width: $medium-min-width) {
+		    @include grid-column(9);
+
+		    @media (min-width: $large-min-width) {
+			    @include grid-column(12);
+		  	}
+		}
+
+		margin-bottom: 25px;
+
+		li.website a {
+			@media (min-width: $medium-min-width) {
+				@include grid-container;
+				span {
+				    @include grid-column(3);
+				}
+			}
+
+			/* secondary display of website url, to emphasize */
+			.url {
+				/* hide on mobile */
+				@media (max-width: $small-max-width) {
+					display: none;
+				}
+
+				@media (min-width: $medium-min-width) {
+			  		@include grid-push(3);
+				    @include grid-column(9);
+			  }
+			  font-size: 115%;
+			  text-indent: 0;
+			}
+		}
+
+		a:hover {
+		    background-color: $light-cdh-blue;
+  	 	}
+
+  	 	/* TODO: refactor similar styles, reuse on profile page */
+
+		/* icons for different link types */
+		li.website a {
+			background-image: url('../img/icons/CDH_icon_link.svg');
+			background-repeat: no-repeat;
+			background-size: 30px 30px;
+			text-indent: 35px;  /* padding pushes the grid */
+			@media (max-width: $small-max-width) {
+				/* tweak size & indent to align with other icons */
+				background-size: contain;
+				padding-left: 30px;
+				margin-left: 5px;
+				text-indent: 0px;
+			}
+		}
+
+		/* github uses font-awesome */
+		li.github a {
+			&::before {
+			    display: inline-block;
+			    font-style: normal;
+			    font-variant: normal;
+			    text-rendering: auto;
+			    -webkit-font-smoothing: antialiased;
+			    // font-family: "Font Awesome 5 Free";
+			    font-family: "Font Awesome 5 Brands";
+			    font-weight: 900;
+			    content: "\f09b";  /* github  */
+			    // content: "\f092";  /* github square */
+			    // content: "\f121"; /* code */
+			    width:30px;
+			    text-align: center;
+			    font-size: 20px;
+			    color: $dark-grey;
+			}
+			padding-left: 0;
+		}
+
+		/* twitter also uses font-awesome */
+		li.twitter a {
+			&::before {
+			    display: inline-block;
+			    font-style: normal;
+			    font-variant: normal;
+			    text-rendering: auto;
+			    -webkit-font-smoothing: antialiased;
+			    font-family: "Font Awesome 5 Brands";
+			    font-weight: 900;
+			    content: "\f099";  /* github  */
+			    width:30px;
+			    text-align: center;
+			    font-size: 20px;
+			    color: $dark-grey;
+			}
+			padding-left: 0;
+		}
+
+
 	}
 
 	.description {
@@ -1008,7 +1123,7 @@ $event-card-img-height: 240px;
 
 		img {
 			max-width: 100%;
-			margin: 50px auto;
+			margin: 0 auto 50px;
 		}
 		p {
 			margin-top: 0;
@@ -1219,7 +1334,7 @@ $event-card-img-height: 240px;
 
 }
 
-section.blogposts, section.people, section.events {
+section.blogposts, section.people, section.events, section.projects {
 	@include grid-container;
 
 	h1 {

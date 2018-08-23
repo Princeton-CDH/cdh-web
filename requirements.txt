@@ -1,8 +1,7 @@
-# stay on 1.10.x for mezzanine/filebrowser_safe compatibiliity
-django>=1.10,<1.11
+Django>=1.11,<2.0
 # manually pin a compatible version of pillow for mezzanine image preview
 pillow<4.2
-mezzanine
+mezzanine<=4.3
 django-compressor
 django-compressor-autoprefixer
 mysqlclient

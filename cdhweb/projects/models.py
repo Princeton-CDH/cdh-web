@@ -4,43 +4,56 @@ from django.utils import timezone
 
 from mezzanine.core.fields import RichTextField, FileField
 from mezzanine.core.models import Displayable
-from mezzanine.core.managers import DisplayableManager
 from mezzanine.utils.models import AdminThumbMixin, upload_to
 from taggit.managers import TaggableManager
 
 from cdhweb.people.models import Person
-from cdhweb.resources.models import ResourceType, Attachment, ExcerptMixin
+from cdhweb.resources.models import ResourceType, Attachment, ExcerptMixin, \
+    PublishedQuerySetMixin
 
 
-class ProjectQuerySet(models.QuerySet):
+class ProjectQuerySet(PublishedQuerySetMixin):
 
     def highlighted(self):
         '''return projects that are marked as highlighted'''
         return self.filter(highlight=True)
 
-    def current(self):
-        '''current projects with an active grant'''
+    def _current_grant_query(self):
+        '''QuerySet filter to find projects with a current grant,
+        based on start date before current date and end date after current
+        date or not set.
+        '''
         today = timezone.now()
-        # current projects means an active grant
-        # filter for projects with grants where start and end date
-        # come before and after the current date
-        return self.filter(grant__start_date__lt=today) \
-            .filter(grant__end_date__gt=today)
-
-
-class ProjectManager(DisplayableManager):
-    '''Custom manager for :class:`Project`.  Extends
-    :class:`mezzanine.core.managers.DisplayableManager` to preserve
-    capability to find published items.'''
-
-    def get_queryset(self):
-        return ProjectQuerySet(self.model, using=self._db)
-
-    def highlighted(self):
-        return self.get_queryset().highlighted()
+        return (models.Q(grant__start_date__lt=today) &
+                (models.Q(grant__end_date__gt=today) |
+                 models.Q(grant__end_date__isnull=True)))
 
     def current(self):
-        return self.get_queryset().current()
+        '''Projects with a current grant, based on dates'''
+        return self.filter(self._current_grant_query())
+
+    def not_current(self):
+        '''Projects with no current grant, based on dates'''
+        return self.exclude(self._current_grant_query())
+
+    #: grant types that indicate staff or postdoc project
+    staff_postdoc_grants = ['Staff R&D', 'Postdoctoral Research Project']
+
+    def staff_or_postdoc(self):
+        '''Staff and postdoc projects, based on grant type'''
+        return self.filter(grant__grant_type__grant_type__in=self.staff_postdoc_grants)
+
+    def not_staff_or_postdoc(self):
+        '''Exclude staff and postdoc projects, based on grant type'''
+        return self.exclude(grant__grant_type__grant_type__in=self.staff_postdoc_grants)
+
+    def order_by_newest_grant(self):
+        '''order by grant start date, most recent grants first; secondary
+        sort by project title'''
+        # NOTE: using annotation to get just the most recent start date
+        # to avoid issues with projects appearing multiple times.
+        return self.annotate(last_start=models.Max('grant__start_date')) \
+                   .order_by('-last_start', 'title')
 
 
 class Project(Displayable, AdminThumbMixin, ExcerptMixin):
@@ -73,7 +86,7 @@ class Project(Displayable, AdminThumbMixin, ExcerptMixin):
     attachments = models.ManyToManyField(Attachment, blank=True)
 
     # custom manager and queryset
-    objects = ProjectManager()
+    objects = ProjectQuerySet.as_manager()
 
     admin_thumb_field = "thumb"
 
@@ -123,11 +136,11 @@ class Grant(models.Model):
     project = models.ForeignKey(Project)
     grant_type = models.ForeignKey(GrantType)
     start_date = models.DateField()
-    end_date = models.DateField()
+    end_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return '%s: %s (%s-%s)' % (self.project.title, self.grant_type.grant_type,
-            self.start_date.year, self.end_date.year)
+            self.start_date.year, self.end_date.year if self.end_date else '')
 
 
 # fixme: where does resource type go, for associated links?
@@ -181,3 +194,11 @@ class ProjectResource(models.Model):
     resource_type = models.ForeignKey(ResourceType, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     url = models.URLField()
+
+    def display_url(self):
+        '''url cleaned up for display, with leading http(s):// removed'''
+        if self.url.startswith('https://'):
+            return self.url[8:]
+        elif self.url.startswith('http://'):
+            return self.url[7:]
+

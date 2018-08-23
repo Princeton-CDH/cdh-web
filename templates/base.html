@@ -30,7 +30,7 @@
     {# <link rel='stylesheet' type='text/css' href='{% static "css/base-prefixed.css" %}'> #}
     {% endcompress %}
 
-    <script src="https://use.fontawesome.com/46070f4452.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"
     integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
     crossorigin="anonymous"></script>
@@ -45,17 +45,19 @@
     <a href='#maincontent' aria-label='Main Content'></a>
     <a href='#footermenu' aria-label='Footer Menu'></a>
     <header class="nav">
-        <nav class='mobile-nav'>
-            <a class="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a>
-        </nav>
-        <nav id='mainmenu'>
-            <a href='{% url 'home' %}' class='home-page'>
-              <img
-              alt='The Center for Digital Humanities @ Princeton'
-              src='{% static "img/CDH_logo.svg" %}' />
-            </a>
-            {% page_menu "snippets/primary_navigation.html" %}
-        </nav>
+        <div class="nav-wrap">
+            <nav class='mobile-nav'>
+                <a class="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a>
+            </nav>
+            <nav id='mainmenu'>
+                <a href='{% url 'home' %}' class='home-page'>
+                  <img
+                  alt='The Center for Digital Humanities @ Princeton'
+                  src='{% static "img/CDH_logo.svg" %}' />
+                </a>
+                {% page_menu "snippets/primary_navigation.html" %}
+            </nav>
+        </div>
     </header>
     {% include 'snippets/test_banner.html' %}
 
@@ -76,7 +78,10 @@
         {% endblock %}
     {% endblock content %}
 
+
     <footer>
+        {% include 'snippets/subscribe.html' %}
+
         <section class="footer-menu" id="footermenu">
             {% page_menu "snippets/footer_menu.html" %}
         </section>
@@ -108,12 +113,12 @@
             {# social links #}
             <div class="social">
                 <ul>
-                <li><a href='https://www.facebook.com/princetoncdh/' property="schema:sameAs" title="Facebook"><span class='fa fa-facebook-square'
+                <li><a href='https://www.facebook.com/princetoncdh/' property="schema:sameAs" title="Facebook"><span class='fab fa-facebook-square fa-2x'
                     aria-label='CDH Facebook' title="Facebook"></span></a>
-                    <a href='https://twitter.com/PrincetonDH' property="schema:sameAs" title="Twitter"><span class='fa fa-twitter' title="Twitter"
+                    <a href='https://twitter.com/PrincetonDH' property="schema:sameAs" title="Twitter"><span class='fab fa-twitter fa-2x' title="Twitter"
                      aria-label='CDH Twitter'></span></a>
                      <a href="https://www.instagram.com/claus.the.chicken/" title="Instagram">
-                        <span class="fa fa-instagram" title="Instagram" aria-label="CDH Instagram"></span></a>
+                        <span class="fab fa-instagram fa-2x" title="Instagram" aria-label="CDH Instagram"></span></a>
                 </li>
                 </ul>
 

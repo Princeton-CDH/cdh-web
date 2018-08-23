@@ -12,7 +12,7 @@ $base-line-height: 1.5;
 $heading-line-height: 1.2;
 
 // Other Sizes
-$base-border-radius: 3px;
+$base-border-radius: 0;
 $base-spacing: 1.5em;
 $small-spacing: $base-spacing / 2;
 $base-z-index: 0;
@@ -28,7 +28,7 @@ $black: #000000;
 // NOTE: #d8d8d8 is also in use; create a variable? useful to distinguish/name?
 
 // local items
-$header-nav-height: 100px;
+$header-nav-height: 65px;
 $small-header-nav-height: 50px;
 $carousel-height: 680px;
 $small-carousel-height: 520px;
@@ -52,8 +52,8 @@ $base-font-color: $black;
 $action-color: $cdh-blue;
 
 // Border
-$base-border-color: $light-grey;
-$base-border: 1px solid $base-border-color;
+$base-border-color: #9b9b9b; /* $light-grey; */
+$base-border: 2px solid $base-border-color;
 
 // Background Colors
 $base-background-color: #fff;

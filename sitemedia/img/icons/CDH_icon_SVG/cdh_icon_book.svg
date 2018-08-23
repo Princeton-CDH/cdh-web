@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #00edff;
+      }
+
+      .cls-2 {
+        fill: none;
+      }
+    </style>
+  </defs>
+  <title>cdh_icon_book</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <path class="cls-1" d="M57,12H53V58H13.65137a9.23892,9.23892,0,0,1-2.45435-.33362A8.53751,8.53751,0,0,0,19.65137,64H59V12Z"/>
+  </g>
+  <g id="Layer_2" data-name="Layer 2">
+    <path d="M51,6H49V54H13.65137C11.08691,54,9,52.19482,9,49.97607,9,47.78369,11.08691,46,13.65137,46H46V0H13.58105A8.62568,8.62568,0,0,0,5,8.65039V50h.00128c.01416,4.41327,3.88831,8,8.65009,8H53V6ZM13.58105,4H42V42H13.65137A9.12526,9.12526,0,0,0,9,43.26184V8.65039A4.621,4.621,0,0,1,13.58105,4Z"/>
+    <rect x="16" y="48" width="30" height="4"/>
+  </g>
+  <g id="Isolation_Mode" data-name="Isolation Mode">
+    <rect class="cls-2" width="64" height="64"/>
+  </g>
+</svg>

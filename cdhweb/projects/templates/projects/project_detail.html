@@ -13,9 +13,24 @@
     {% endif %}
 </header>
 
+<div class="links">
+  <ul>
+    {% for link in project.projectresource_set.all %}
+        {% with link_type=link.resource_type.name %}
+        <li class="{{ link_type|lower }}"><a href="{{ link.url }}">
+            {# Special case: display project URL to make it visible & memorable  #}
+            {% if link_type == 'Website' %}<span>Project Website</span> <span class="url">{{ link.display_url }}</span>
+        {% else %}{{ link_type }}{% endif %}</a>
+        </li>
+        {% endwith %}
+    {% endfor %}
+    </ul>
+</div>
+
 <div class="contributors">
+
     <ul>
-        {# TODO: display current *or* latest grant #}
+    {# display project members for the current (or most recent) grant #}
     {% for membership in project.current_membership %}
         {% ifchanged %}<li class="role"><h3>{{ membership.role }}</h3></li>{% endifchanged %}
         <li>{{ membership.user }}</li>
@@ -29,14 +44,8 @@
     {% endif %}
     </ul>
 
-    <ul class="links">
-    {% for link in project.projectresource_set.all %}
-        {% with link_type=link.resource_type.name %}
-        <li><a href="{{ link.url }}">{% if link_type == 'website' %}Project Website{% else %}{{ link_type }}{% endif %}</a></li>
-        {% endwith %}
-    {% endfor %}
-    </ul>
 
+{% if project.cdh_built %}<div class="cdh-built">Built by CDH</div>{% endif %}
 
 </div>
 

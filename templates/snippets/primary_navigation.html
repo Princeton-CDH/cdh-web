@@ -1,20 +1,28 @@
 {% load pages_tags i18n %}
 {# top level menu, with secondary nav for current site section #}
 {# adapted from mezzanine pages/menus/primary.html template #}
-<section>
-    <ul class='primary-nav'>
+<div class="nav-main">
+    <ul class='primary-nav' role="menubar" aria-label="main navigation">
         {# top-level pages #}
         {% for page in page_branch %}
             {% if page.in_menu %}
-            <li id="{{ page.html_id }}">
-                <a href="{{ page.get_absolute_url }}"
-                   {% if page.is_current_or_ascendant %}class="current-page"{% endif %}>
-                    {{ page.title }}</a>
-
-            {# include all submenus; active will be displayed, others displayed on hover  #}
-            {% page_menu page "snippets/secondary_navigation.html" %}
+            <li>
+                <a
+                    id="{{ page.html_id }}"
+                    role="menuitem"
+                    tabindex="-1"
+                    aria-owns="{{ page.html_id }}-secondary"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    href="{{ page.get_absolute_url }}"
+                    {% if page.is_current_or_ascendant %}class="current-page"{% endif %}>{{ page.title }}</a>
             </li>
             {% endif %}
         {% endfor %}
     </ul>
-</section>
+</div>
+{% for page in page_branch %}
+    {% if page.has_children_in_menu %}
+        {% page_menu page "snippets/navigation_card.html" %}
+    {% endif %}
+{% endfor %}

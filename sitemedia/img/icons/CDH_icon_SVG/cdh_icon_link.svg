@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+
+      .cls-2 {
+        fill: #00edff;
+      }
+
+      .cls-3 {
+        fill: none;
+      }
+    </style>
+  </defs>
+  <title>cdh_icon_link</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <polygon class="cls-1" points="52 3 22 3 22 7 7 7 7 17 7 41 7 51 51 51 51 37 55 37 55 5.917 52 3"/>
+    <path class="cls-2" d="M59.43478,9H44.56522c-.63281,0-1.20372,5.38137-1.446,5.96641a1.56437,1.56437,0,0,0,.33933,1.70546L58.32813,31.54144A1.56508,1.56508,0,0,0,61,30.43478V10.56522A1.56529,1.56529,0,0,0,59.43478,9Z"/>
+    <rect class="cls-2" x="9" y="43" width="52" height="18"/>
+    <g>
+      <polyline class="cls-1" points="53 37 53 53 5 53 5 5 22 5"/>
+      <polygon points="55 55 3 55 3 3 22 3 22 7 7 7 7 51 51 51 51 37 55 37 55 55"/>
+    </g>
+    <g>
+      <polygon class="cls-1" points="53 24 34 5 53 5 53 24"/>
+      <path d="M53,26a1.99787,1.99787,0,0,1-1.41406-.58594l-19-19A1.99994,1.99994,0,0,1,34,3H53a2.0001,2.0001,0,0,1,2,2V24a2,2,0,0,1-2,2ZM38.82813,7,51,19.17139V7Z"/>
+    </g>
+    <rect x="25.8934" y="19.50021" width="21.2132" height="3.99957" transform="translate(-4.51219 32.1066) rotate(-45)"/>
+  </g>
+  <g id="Isolation_Mode" data-name="Isolation Mode">
+    <rect class="cls-3" width="64" height="64"/>
+  </g>
+</svg>

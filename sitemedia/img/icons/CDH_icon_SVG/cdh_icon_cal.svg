@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #00edff;
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+
+      .cls-3 {
+        fill: none;
+      }
+    </style>
+  </defs>
+  <title>cdh_icon_cal</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <g id="_Group_" data-name="&lt;Group&gt;">
+      <g>
+        <rect class="cls-1" x="11" y="13" width="48" height="48"/>
+        <path class="cls-1" d="M61,63H9V11H61ZM13,59H57V15H13Z"/>
+      </g>
+      <g>
+        <rect class="cls-2" x="5" y="7" width="48" height="48"/>
+        <path d="M55,57H3V5H55ZM7,53H51V9H7Z"/>
+      </g>
+    </g>
+    <g id="_Group_2" data-name="&lt;Group&gt;">
+      <rect x="5" y="18" width="48" height="4"/>
+    </g>
+    <g id="_Group_3" data-name="&lt;Group&gt;">
+      <rect x="14" width="4" height="12"/>
+    </g>
+    <g id="_Group_4" data-name="&lt;Group&gt;">
+      <rect x="40.0835" width="4" height="12"/>
+    </g>
+    <g id="_Group_5" data-name="&lt;Group&gt;">
+      <rect x="14" y="30" width="4" height="4"/>
+    </g>
+    <g id="_Group_6" data-name="&lt;Group&gt;">
+      <rect x="14" y="41" width="4" height="4"/>
+    </g>
+    <g id="_Group_7" data-name="&lt;Group&gt;">
+      <rect x="27" y="30" width="4" height="4"/>
+    </g>
+    <g id="_Group_8" data-name="&lt;Group&gt;">
+      <rect x="27" y="41" width="4" height="4"/>
+    </g>
+    <g id="_Group_9" data-name="&lt;Group&gt;">
+      <rect x="40" y="30" width="4" height="4"/>
+    </g>
+    <g id="_Group_10" data-name="&lt;Group&gt;">
+      <rect x="40" y="41" width="4" height="4"/>
+    </g>
+  </g>
+  <g id="Isolation_Mode" data-name="Isolation Mode">
+    <rect class="cls-3" width="64" height="64"/>
+  </g>
+</svg>

@@ -1,0 +1,27 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #00edff;
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+
+      .cls-3 {
+        fill: none;
+      }
+    </style>
+  </defs>
+  <title>cdh_icon_email</title>
+  <g id="_Rectangle_" data-name="&lt;Rectangle&gt;">
+    <rect class="cls-1" x="8" y="18" width="56" height="38"/>
+    <g>
+      <rect class="cls-2" x="4" y="14" width="52" height="34"/>
+      <path d="M58,50H2V12H58ZM6,46H54V16H6Z"/>
+    </g>
+  </g>
+  <polygon points="30 36.433 2.862 17.645 5.138 14.355 30 31.567 54.862 14.355 57.138 17.645 30 36.433"/>
+  <rect class="cls-3" width="64" height="64"/>
+</svg>

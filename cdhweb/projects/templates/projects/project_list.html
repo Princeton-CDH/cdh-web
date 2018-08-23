@@ -6,9 +6,33 @@
 
 {% block main %}
 <section class="projects">
-<h1>Projects</h1>
-{% for project in object_list %}
+<h1>{{ title }}</h1>
+
+{# TODO: first continue person refactor first and then adapt here  #}
+{# drop-down nav adapted from profile list page #}
+<div class="archive-nav">
+  <a class="toggle">
+    Projects
+    <i class="fa fa-chevron-down" aria-hidden="true"></i></a>
+  <ul class="submenu">
+    {% url 'project:list' as projects_url %}
+    {% url 'project:staff' as staff_projects_url %}
+    <li {% if request.path == projects_url %}class="current"{% endif %}><a href="{{ projects_url }}">Projects</a></li>
+    <li {% if request.path == staff_projects_url %}class="current"{% endif %}><a href="{{ staff_projects_url }}">Staff and Postdoctoral Fellow Projects</a></li>
+  </ul>
+</div>
+
+
+{% for project in project_list %}
     {% include 'projects/snippets/project_card.html' with large=1 %}
 {% endfor %}
+
+{% if past_projects %} {# display past if any; currently only on staff project page #}
+<h2>Past Projects</h1>
+{% for project in past_projects %}
+    {% include 'projects/snippets/project_card.html' with large=1 %}
+{% endfor %}
+{% endif %}
+
 </section>
 {% endblock %}

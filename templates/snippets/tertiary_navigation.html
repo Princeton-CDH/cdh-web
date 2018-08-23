@@ -1,0 +1,12 @@
+{% load pages_tags %}
+{# tertiary navigation, where applicable #}
+<ul id="{{ page.html_id }}-tertiary" class="tertiary-nav" role="menubar" aria-labelledby="{{ page.html_id }}">
+    {% for page in page_branch %}
+    <li role="none">
+        <a
+            role="menuitem"
+            href="{{ page.get_absolute_url }}"
+            tabindex="-1">{{ page.title }}</a>
+    </li>
+    {% endfor %}
+</ul>

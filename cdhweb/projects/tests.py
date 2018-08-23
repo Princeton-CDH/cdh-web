@@ -1,10 +1,11 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 from django.contrib.auth import get_user_model
 from django.contrib.sites.models import Site
 from django.test import TestCase
 from django.urls import resolve, reverse
 from django.utils.html import escape
+from mezzanine.core.models import CONTENT_STATUS_PUBLISHED, CONTENT_STATUS_DRAFT
 
 from cdhweb.people.models import Profile
 from cdhweb.projects.models import Grant, GrantType, Project, Role, \
@@ -156,9 +157,148 @@ class TestProjectQuerySet(TestCase):
 
         assert not Project.objects.current().exists()
 
+        # grant ends in the future
         grant.end_date = today + timedelta(days=1)
         grant.save()
         assert Project.objects.current().exists()
+
+        # grant end date is not set
+        grant.end_date = None
+        grant.save()
+        assert Project.objects.current().exists()
+
+
+    def test_not_current(self):
+        today = datetime.today()
+        proj = Project.objects.create(title="Derrida's Margins")
+        grtype = GrantType.objects.create(grant_type='Sponsored Project')
+        # asocciated grant has ended
+        grant = Grant.objects.create(project=proj, grant_type=grtype,
+            start_date=today - timedelta(days=2),
+            end_date=today - timedelta(days=1))
+
+        assert Project.objects.not_current().exists()
+
+        # grant end date in the future
+        grant.end_date = today + timedelta(days=1)
+        grant.save()
+        assert not Project.objects.not_current().exists()
+
+        # grant end date is not set
+        grant.end_date = None
+        grant.save()
+        assert not Project.objects.not_current().exists()
+
+    def test_staff_or_postdoc(self):
+        # create staff, postdoc, and other project
+        start = datetime.today() - timedelta(days=30)
+        staff_proj = Project.objects.create(title="Pliny Project")
+        staff_rd = GrantType.objects.get_or_create(grant_type='Staff R&D')[0]
+        Grant.objects.create(project=staff_proj, grant_type=staff_rd,
+                             start_date=start)
+        postdoc_proj = Project.objects.create(title="Linked Global Networks of Cultural Production")
+        postdoc_grant = GrantType.objects.get_or_create(grant_type='Postdoctoral Research Project')[0]
+        Grant.objects.create(project=postdoc_proj, grant_type=postdoc_grant,
+                             start_date=start)
+        other_proj = Project.objects.create(title="Derrida's Margins")
+
+        staff_postdoc_projects = Project.objects.staff_or_postdoc()
+        assert staff_proj in staff_postdoc_projects
+        assert postdoc_proj in staff_postdoc_projects
+        assert other_proj not in staff_postdoc_projects
+
+    def test_not_staff_or_postdoc(self):
+        # create staff, postdoc, and other project
+        start = datetime.today() - timedelta(days=30)
+        staff_proj = Project.objects.create(title="Pliny Project")
+        staff_rd = GrantType.objects.get_or_create(grant_type='Staff R&D')[0]
+        Grant.objects.create(project=staff_proj, grant_type=staff_rd,
+                             start_date=start)
+        postdoc_proj = Project.objects.create(title="Linked Global Networks of Cultural Production")
+        postdoc_grant = GrantType.objects.get_or_create(grant_type='Postdoctoral Research Project')[0]
+        Grant.objects.create(project=postdoc_proj, grant_type=postdoc_grant,
+                             start_date=start)
+        other_proj = Project.objects.create(title="Derrida's Margins")
+
+        non_staff_postdoc_projects = Project.objects.not_staff_or_postdoc()
+        assert staff_proj not in non_staff_postdoc_projects
+        assert postdoc_proj not in non_staff_postdoc_projects
+        assert other_proj in non_staff_postdoc_projects
+
+    def test_order_by_newest_grant(self):
+        # create three test projects with grants in successive years
+        sponsored = GrantType.objects.get_or_create(grant_type='Sponsored Project')[0]
+        p1 = Project.objects.create(title="One")
+        Grant.objects.create(project=p1, grant_type=sponsored,
+                             start_date=date(2015, 9, 1))
+        p2 = Project.objects.create(title="Two")
+        Grant.objects.create(project=p2, grant_type=sponsored,
+                             start_date=date(2016, 9, 1))
+        p3 = Project.objects.create(title="Three")
+        Grant.objects.create(project=p3, grant_type=sponsored,
+                             start_date=date(2017, 9, 1))
+
+        ordered = Project.objects.order_by_newest_grant()
+        # should be ordered newest first
+        assert ordered[0] == p3
+        assert ordered[1] == p2
+        assert ordered[2] == p1
+
+        # with multiple grants, still orders based on newest grant
+        Grant.objects.create(project=p3, grant_type=sponsored,
+                             start_date=date(2015, 9, 1))
+
+        ordered = Project.objects.order_by_newest_grant()
+        # should be ordered newest first
+        assert ordered[0] == p3
+
+    def test_published(self):
+        # technically a mixin method, testing here for convenience
+
+        staffer = get_user_model().objects.create(username='staffer',
+                                                  is_staff=True)
+        nonstaffer = get_user_model().objects.create(username='nonstaffer',
+                                                    is_staff=False)
+
+
+        # careate project in draft status
+        proj = Project.objects.create(title="Derrida's Margins",
+                                      status=CONTENT_STATUS_DRAFT)
+
+        # draft displayable only listed for staff user
+        assert proj not in Project.objects.published()
+        assert proj not in Project.objects.published(nonstaffer)
+        assert proj in Project.objects.published(staffer)
+
+        # set to published, no dates
+        proj.status = CONTENT_STATUS_PUBLISHED
+        proj.save()
+
+        # published displayable listed for everyone
+        assert proj in Project.objects.published()
+        assert proj in Project.objects.published(nonstaffer)
+        assert proj in Project.objects.published(staffer)
+
+        # publish date in future - only visible to staff user
+        proj.publish_date = datetime.today() + timedelta(days=2)
+        proj.save()
+        assert proj not in Project.objects.published()
+        assert proj not in Project.objects.published(nonstaffer)
+        assert proj in Project.objects.published(staffer)
+
+        # publish date in past - visible to all
+        proj.publish_date = datetime.today() - timedelta(days=2)
+        proj.save()
+        assert proj in Project.objects.published()
+        assert proj in Project.objects.published(nonstaffer)
+        assert proj in Project.objects.published(staffer)
+
+        # expiration date in past - only visible to staff user
+        proj.expiry_date = datetime.today() - timedelta(days=2)
+        proj.save()
+        assert proj not in Project.objects.published()
+        assert proj not in Project.objects.published(nonstaffer)
+        assert proj in Project.objects.published(staffer)
 
 
 class TestGrant(TestCase):
@@ -216,12 +356,37 @@ class TestMembershipQuerySet(TestCase):
         assert Membership.objects.current().exists()
 
 
+class TestProjectResource(TestCase):
+
+    def test_display_url(self):
+        base_url = 'derridas-margins.princeton.edu'
+        project_url = 'http://%s' % base_url
+        proj = Project.objects.create(title="Derrida's Margins")
+        website = ResourceType.objects.get(name='Website')
+        res = ProjectResource.objects.create(project=proj, resource_type=website,
+                                             url=project_url)
+        assert res.display_url() == base_url
+
+        # https
+        res.url = 'https://%s' % base_url
+        assert res.display_url() == base_url
+
+
 class TestViews(TestCase):
     fixtures = ['test-pages.json']
 
     def test_list(self):
+        # create test project
         proj = Project.objects.create(title="Derrida's Margins")
+        # add a grant that is current (has not ended)
+        today = datetime.today()
+        grtype = GrantType.objects.create(grant_type='Sponsored Project')
+        Grant.objects.create(project=proj, grant_type=grtype,
+                             start_date=today - timedelta(days=30),
+                             end_date=today + timedelta(days=30))
+
         response = self.client.get(reverse('project:list'))
+        assert proj in response.context['project_list']
         self.assertContains(response, escape(proj.title))
         self.assertContains(response, proj.get_absolute_url())
         self.assertContains(response, proj.short_description)
@@ -242,7 +407,38 @@ class TestViews(TestCase):
         self.assertContains(response, project_url)
         self.assertContains(response, 'Built by CDH')
 
-        # TODO: test thumbnail image
+        # check past projects
+        proj = Project.objects.create(title="Derrida's Margins")
+        response = self.client.get(reverse('project:list'))
+        assert proj not in response.context['project_list']
+        assert proj in response.context['past_projects']
+
+        # TODO: test thumbnail image?
+
+    def test_staff_list(self):
+        # create staff, postdoc, and other project
+        start = datetime.today() - timedelta(days=30)
+        staff_proj = Project.objects.create(title="Pliny Project")
+        staff_rd = GrantType.objects.get_or_create(grant_type='Staff R&D')[0]
+        Grant.objects.create(project=staff_proj, grant_type=staff_rd,
+                             start_date=start)
+        postdoc_proj = Project.objects.create(title="Linked Global Networks of Cultural Production")
+        postdoc_grant = GrantType.objects.get_or_create(grant_type='Postdoctoral Research Project')[0]
+        Grant.objects.create(project=postdoc_proj, grant_type=postdoc_grant,
+                             start_date=start)
+        other_proj = Project.objects.create(title="Derrida's Margins")
+
+        response = self.client.get(reverse('project:staff'))
+        # sponsored project not on staff page
+        self.assertNotContains(response, other_proj.get_absolute_url())
+
+        # staff & post-doc projects are displayed
+        self.assertContains(response, staff_proj.title)
+        self.assertContains(response, staff_proj.get_absolute_url())
+        self.assertContains(response, postdoc_proj.title)
+        self.assertContains(response, postdoc_proj.get_absolute_url())
+
+        # not testing display specifics since re-used from main project list
 
     def test_detail(self):
         proj = Project.objects.create(title="Derrida's Margins",

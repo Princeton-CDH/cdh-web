@@ -22,7 +22,8 @@ p {
   margin: 0 0 $small-spacing;
 }
 
-#maincontent p a {
+/* mixin for body link style*/
+@mixin body-link-style {
   color: black;
   text-decoration: none;
   text-decoration-skip: ink;
@@ -49,6 +50,10 @@ p {
     background-color: white;
     background-image: none;
   }
+}
+
+#maincontent p a {
+  @include body-link-style;
 }
 
 body {

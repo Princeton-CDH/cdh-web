@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #00edff;
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+
+      .cls-3 {
+        fill: none;
+      }
+    </style>
+  </defs>
+  <title>cdh_icon_doc</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <g id="_Group_" data-name="&lt;Group&gt;">
+      <g>
+        <rect class="cls-1" x="15" y="8" width="42" height="54"/>
+        <path class="cls-1" d="M59,64H13V6H59ZM17,60H55V10H17Z"/>
+      </g>
+      <g>
+        <rect class="cls-2" x="9" y="2" width="42" height="54"/>
+        <path d="M53,58H7V0H53ZM11,54H49V4H11Z"/>
+      </g>
+    </g>
+    <g id="_Group_2" data-name="&lt;Group&gt;">
+      <rect x="17" y="13" width="25" height="4"/>
+    </g>
+    <g id="_Group_3" data-name="&lt;Group&gt;">
+      <rect x="17" y="24" width="25" height="4"/>
+    </g>
+    <g id="_Group_4" data-name="&lt;Group&gt;">
+      <rect x="17" y="35" width="15" height="4"/>
+    </g>
+  </g>
+  <g id="Isolation_Mode" data-name="Isolation Mode">
+    <rect class="cls-3" width="64" height="64"/>
+  </g>
+</svg>
