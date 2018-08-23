@@ -122,10 +122,16 @@ class ProfileQuerySet(models.QuerySet):
         '''Exclude CDH Postdoctoral Fellows, based on role title'''
         return self.exclude(user__positions__title__title__icontains=self.postdoc_title)
 
+    student_titles = ['Graduate Assistant', 'Undergraduate Assistant']
+
     def students(self):
         '''Return CDH student assistants and grantees. based on role title'''
         # TODO: find grantees
-        return self.filter(user__positions__title__title__icontains='graduate')
+        return self.filter(
+            models.Q(user__positions__title__title__in=self.student_titles) |
+            ((models.Q(pu_status='graduate') | models.Q(pu_status='undergraduate'))
+             & models.Q(user__membership__role__title='Project Director')))
+
 
     def _current_position_query(self):
         return (models.Q(user__positions__end_date__isnull=True) |
@@ -274,6 +280,9 @@ def init_profile_from_ldap(user, ldapinfo):
         profile = user.profile
     except ObjectDoesNotExist:
         profile = Profile.objects.create(user=user)
+        # set profiles to draft by default when creating a new profile *only
+        # so we don't get a new page for every account we initialize
+        profile.status = CONTENT_STATUS_DRAFT
 
     # populate profile with data we can pull from ldap
     # - set user's display name as page title
@@ -289,9 +298,6 @@ def init_profile_from_ldap(user, ldapinfo):
     # set PU status
     profile.pu_status = str(ldapinfo.pustatus)
 
-    # set profiles to draft by default so we don't get a new page
-    # for every account we initialize
-    profile.status = CONTENT_STATUS_DRAFT
     profile.save()
 
     # NOTE: job title is available in LDAP; attaching to a person

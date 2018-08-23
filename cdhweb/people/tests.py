@@ -338,6 +338,12 @@ def test_init_profile_from_ldap():
     # title should be created
     assert Title.objects.filter(title='Freeloader').exists()
 
+    # when updating, profile status should not change
+    profile.status = CONTENT_STATUS_PUBLISHED
+    profile.save()
+    init_profile_from_ldap(staffer, ldapinfo)
+    assert profile.status == CONTENT_STATUS_PUBLISHED
+
     # ldap info with telephone and street
     ldapinfo.telephoneNumber = '4800'
     ldapinfo.street = '801B'
