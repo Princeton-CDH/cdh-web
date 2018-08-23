@@ -141,7 +141,7 @@ class ProfileQuerySetTest(TestCase):
         grad = Person.objects.create(username='grad')
         grad_profile = Profile.objects.create(user=grad, is_staff=False)
 
-        staff = Profile.objects.all().staff()
+        staff = Profile.objects.staff()
         assert staff.count() == 1
         assert staff_profile in staff
         assert grad_profile not in staff
@@ -155,7 +155,7 @@ class ProfileQuerySetTest(TestCase):
         prev_post = Position.objects.create(user=staffer, title=postdoc,
             start_date='2015-01-01', end_date='2015-12-31')
 
-        assert not Profile.objects.all().current().exists()
+        assert not Profile.objects.current().exists()
 
         # current post - no end date
         cur_post = Position.objects.create(user=staffer, title=staff_title,
@@ -179,7 +179,7 @@ class ProfileQuerySetTest(TestCase):
         cur_post = Position.objects.create(user=staffer, title=staff_title,
             start_date='2016-06-01')
 
-        assert not Profile.objects.all().not_current().exists()
+        assert not Profile.objects.not_current().exists()
 
         # past fellow
         fellow = Person.objects.create(username='fellow')
@@ -188,7 +188,7 @@ class ProfileQuerySetTest(TestCase):
         # previous post
         prev_post = Position.objects.create(user=fellow, title=postdoc,
             start_date='2015-01-01', end_date='2015-12-31')
-        not_current = Profile.objects.all().not_current()
+        not_current = Profile.objects.not_current()
         assert not_current.exists()
         assert fellow_profile in not_current
         assert staff_profile not in not_current
@@ -213,7 +213,7 @@ class ProfileQuerySetTest(TestCase):
         cur_post = Position.objects.create(user=staffer, title=staff_title,
             start_date='2016-06-01')
 
-        profiles = Profile.objects.all().order_by_position()
+        profiles = Profile.objects.order_by_position()
         # sort by position title order
         assert director_profile == profiles[0]
         assert staff_profile == profiles[1]
@@ -234,26 +234,26 @@ class ProfileQuerySetTest(TestCase):
         postdoc = Person.objects.create(username='nora')
         postdoc_profile = Profile.objects.create(user=postdoc)
         # no position, not in postdoc filter
-        assert postdoc_profile not in Profile.objects.all().postdocs()
+        assert postdoc_profile not in Profile.objects.postdocs()
 
         # add position, should be in postdoc filter
         postdoc_title = Title.objects.get_or_create(title='Postdoctoral Fellow')[0]
         Position.objects.create(user=postdoc, title=postdoc_title,
             start_date='2016-12-01')
-        assert postdoc_profile in Profile.objects.all().postdocs()
+        assert postdoc_profile in Profile.objects.postdocs()
 
     def test_not_postdocs(self):
         # create test person
         postdoc = Person.objects.create(username='jim')
         postdoc_profile = Profile.objects.create(user=postdoc)
         # no position, should be in not-postdoc filter
-        assert postdoc_profile in Profile.objects.all().not_postdocs()
+        assert postdoc_profile in Profile.objects.not_postdocs()
 
         # add position, should no longer be in not-postdoc filter
         postdoc_title = Title.objects.get_or_create(title='Postdoctoral Fellow')[0]
         Position.objects.create(user=postdoc, title=postdoc_title,
             start_date='2016-12-01')
-        assert postdoc_profile not in Profile.objects.all().not_postdocs()
+        assert postdoc_profile not in Profile.objects.not_postdocs()
 
 
 class TestPosition(TestCase):
