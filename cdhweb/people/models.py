@@ -146,6 +146,11 @@ class Profile(Displayable, AdminThumbMixin):
     user = models.OneToOneField(User)
     is_staff = models.BooleanField(default=False,
         help_text='If checked, this person will be listed on the CDH staff page.')
+    is_staff = models.BooleanField(
+        default=False,
+        help_text='CDH staff or Postdoctoral Fellow. If checked, person ' +
+        'will be listed on the CDH staff page (except for ' +
+        'postdocs) and will have a profile page on the site.')
     education = RichTextField()
     bio = RichTextField()
     # NOTE: could use regex here, but how standard are staff phone

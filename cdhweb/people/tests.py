@@ -329,16 +329,29 @@ class TestViews(TestCase):
             user=staffer, title='Amazing Contributor',
             status=CONTENT_STATUS_PUBLISHED, is_staff=True)
         staff_title = Title.objects.create(title='staff')
-        postdoc = Title.objects.create(title='post-doc')
+        fellow = Title.objects.create(title='Graduate Fellow')
         prev_post = Position.objects.create(
-            user=staffer, title=postdoc,
+            user=staffer, title=fellow,
             start_date=date(2015, 1, 1), end_date=date(2015, 12, 31))
         cur_post = Position.objects.create(
             user=staffer, title=staff_title, start_date=date(2016, 6, 1))
 
+        # postdoc with is staff should not be listed
+        postdoc = Person.objects.create(username='postdoc')
+        postdoc_profile = Profile.objects.create(
+            user=postdoc, status=CONTENT_STATUS_PUBLISHED, is_staff=True)
+        postdoc_title = Title.objects.get_or_create(title='Postdoctoral Fellow')[0]
+        Position.objects.create(user=postdoc, title=postdoc_title,
+                                start_date=date(2015, 1, 1))
+
         response = self.client.get(reverse('people:staff'))
         # person should only appear once even if they have multiple positions
         assert len(response.context['current']) == 1
+
+        # staffer profile should be included
+        assert profile in response.context['current']
+        # postdoc profile should not
+        assert postdoc_profile not in response.context['current']
 
         self.assertContains(response, profile.title)
         self.assertContains(response, profile.current_title)
@@ -365,17 +378,28 @@ class TestViews(TestCase):
         profile = Profile.objects.create(user=staffer, title='Amazing Contributor',
             status=CONTENT_STATUS_PUBLISHED, is_staff=True, slug='staffer')
         staff_title = Title.objects.create(title='staff')
-        fellow = Title.objects.create(title='fellow')
         postdoc = Title.objects.create(title='post-doc')
         prev_post = Position.objects.create(user=staffer, title=postdoc,
             start_date=date(2015, 1, 1), end_date=date(2015, 12, 31))
         cur_post = Position.objects.create(user=staffer, title=staff_title,
             start_date=date(2016, 6,1))
 
-        response = self.client.get(reverse('people:profile', args=[profile.slug]))
+        profile_url = reverse('people:profile', args=[profile.slug])
+        response = self.client.get(profile_url)
         self.assertContains(response, profile.title)
         self.assertContains(response, cur_post.title)
         self.assertContains(response, prev_post.title)
         self.assertContains(response, prev_post.years)
         self.assertNotContains(response, cur_post.years)
+
+        # published but not is_staff
+        profile.is_staff = False
+        profile.save()
+        assert self.client.get(profile_url).status_code == 404
+
+        # not published - should 404
+        profile.status = CONTENT_STATUS_DRAFT
+        profile.is_staff = True
+        profile.save()
+        assert self.client.get(profile_url).status_code == 404
 

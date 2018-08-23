@@ -23,8 +23,11 @@ class ProfileMixinView(object):
         return Profile.objects.published() # TODO: published(for_user=self.request.user)
 
 
-
 class ProfileDetailView(ProfileMixinView, DetailView, LastModifiedMixin):
+
+    def get_queryset(self):
+        # only published profiles with staff flag get a detail page
+        return super().get_queryset().staff()
 
     def get_context_data(self, *args, **kwargs):
         context = super(ProfileDetailView, self).get_context_data(*args, **kwargs)
@@ -40,7 +43,7 @@ class ProfileDetailView(ProfileMixinView, DetailView, LastModifiedMixin):
         return context
 
 
-class ProfileListView(ProfileMixinView, ListView):
+class ProfileListView(ProfileMixinView, ListView, LastModifiedListMixin):
     '''Base class for profile list views'''
     page_title = ''
     nav_title = ''
@@ -57,7 +60,6 @@ class ProfileListView(ProfileMixinView, ListView):
             'past': self.object_list.not_current(),
             'title': self.page_title,
             'nav_title': self.nav_title,
-            # TODO: generate this from mezzanine menu so it can be re-ordered
             'archive_nav_urls': [
                 ('Staff', reverse('people:staff')),
                 ('Postdoctoral Fellows', reverse('people:postdocs')),
@@ -73,10 +75,11 @@ class StaffListView(ProfileListView):
     nav_title = 'Staff'
 
     def get_queryset(self):
-        # filter to profiles with staff flag set
-        # order by job title sort order and then by last name
-        return super().get_queryset().staff()
-
+        # filter to profiles with staff flag set and exclude postdocs
+        # (already ordered by job title sort order and then by last name)
+        return super().get_queryset().staff().not_postdocs()
+        # NOTE: this won't work correctly if we ever have someone who
+        # goes from a postdoc to a staff position
 
 class PostdocListView(ProfileListView):
     '''Display current and past postdoctoral fellows'''
