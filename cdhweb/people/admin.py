@@ -29,7 +29,7 @@ class PersonAdmin(admin.ModelAdmin):
     # NOTE: if we switched to profile instead of person here, is_staff
     # and published could be made list editable
     fields = ('username', 'first_name', 'last_name', 'email')
-    search_fields = ('first_name', 'last_name')
+    search_fields = ('first_name', 'last_name', 'username')
     inlines = [PositionInline, UserResourceInline]
     list_filter = ('profile__status', 'profile__is_staff')
 
@@ -45,6 +45,8 @@ class ProfileAdmin(DisplayableAdmin):
     list_display = ('title', 'status', 'is_staff', 'pu_status', "admin_link",
                     "admin_thumb")
     list_filter = ('status', 'is_staff', 'pu_status')
+    search_fields = ('title', 'user__last_name', 'user__username',
+                     'user__first_name', 'bio')
     prepopulated_fields = {"slug": ("title",)}
     filter_horizontal = ('attachments', )
     # customized fieldset based on DisplayableAdmin field set
