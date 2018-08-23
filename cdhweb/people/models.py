@@ -76,6 +76,23 @@ class Person(User):
         except ObjectDoesNotExist:
             pass
 
+    @property
+    def website_url(self):
+        '''personal website url, if set'''
+        website = self.userresource_set \
+            .filter(resource_type__name='Website').first()
+        if website:
+            return website.url
+
+    @property
+    def profile_url(self):
+        '''local profile url, user has a profile, or website url if there is one'''
+        try:
+            if self.profile.is_staff and self.published():
+                return self.get_absolute_url()
+        except ObjectDoesNotExist:
+            return self.website_url
+
     def __str__(self):
         '''Custom person display to make it easier to choose people
         in admin menus.  Uses profile title if available, otherwise combines

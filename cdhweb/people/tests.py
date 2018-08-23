@@ -7,7 +7,9 @@ from django.utils.text import slugify
 from mezzanine.core.models import CONTENT_STATUS_DRAFT, CONTENT_STATUS_PUBLISHED
 import pytest
 
-from .models import Title, Person, Position, init_profile_from_ldap, Profile
+from cdhweb.people.models import Title, Person, Position, \
+    init_profile_from_ldap, Profile
+from cdhweb.resources.models import ResourceType, UserResource
 
 
 @pytest.mark.django_db
@@ -61,6 +63,40 @@ class TestPerson(TestCase):
         profile.is_staff = True
         profile.save()
         assert pers.cdh_staff()
+
+    def test_get_absolute_url(self):
+        pers = Person.objects.create(username='foo')
+        assert pers.get_absolute_url() is None
+        profile = Profile.objects.create(user=pers, slug='foo-bar')
+        assert pers.get_absolute_url() == profile.get_absolute_url()
+
+    def test_website_url(self):
+        pers = Person.objects.create(username='foo')
+        assert pers.website_url is None
+
+        # add a website url
+        website = ResourceType.objects.get_or_create(name='Website')[0]
+        ext_profile_url = 'http://person.me'
+        UserResource.objects.create(user=pers, resource_type=website,
+                                    url=ext_profile_url)
+        assert pers.website_url == ext_profile_url
+
+    def test_profile_url(self):
+        pers = Person.objects.create(username='foo')
+        # no urls
+        assert pers.profile_url is None
+
+        # add a website url resource
+        website = ResourceType.objects.get_or_create(name='Website')[0]
+        ext_profile_url = 'http://person.me'
+        UserResource.objects.create(user=pers, resource_type=website,
+                                    url=ext_profile_url)
+        assert pers.profile_url == ext_profile_url
+
+        # add local profile - takes precedence over external
+        profile = Profile.objects.create(user=pers, is_staff=True, slug='foo',
+                                         status=CONTENT_STATUS_PUBLISHED)
+        assert pers.profile_url == profile.get_absolute_url()
 
 
 class TestProfile(TestCase):
