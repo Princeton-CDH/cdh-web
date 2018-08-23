@@ -587,7 +587,7 @@ $event-card-img-height: 240px;
 			right: 55px;
 			width: 30px;
 			height: 30px;
-			background-image: url('../img/icons/CDH_icon_link.svg');
+			background-image: url('../img/cdh-icons/link.svg');
 			background-repeat: no-repeat;
 			background-color: transparent;
 		}
@@ -673,6 +673,7 @@ $event-card-img-height: 240px;
 		}
 	}
 
+    /* attachment cards */
 	&.attachment {
 		@include small-card;
 		background: none;
@@ -724,7 +725,7 @@ $event-card-img-height: 240px;
 				right: 15px;
 				width: 42px;
 				height: 52px;
-				background-image: url('../img/icons/CDH_icon_doc.svg');
+				background-image: url('../img/cdh-icons/doc.svg');
 				background-size: contain;
 				background-repeat: no-repeat;
 			}
@@ -733,17 +734,17 @@ $event-card-img-height: 240px;
 		/* variant icons */
 		&.pdf {
 			a::after {
-				background-image: url('../img/icons/CDH_icon_pdf.svg');
+				background-image: url('../img/cdh-icons/pdf.svg');
 			}
 		}
 		&.video {
 			a::after {
-				background-image: url('../img/icons/CDH_icon_vid.svg');
+				background-image: url('../img/cdh-icons/vid.svg');
 			}
 		}
 		&.url {
 			a::after {
-				background-image: url('../img/icons/CDH_icon_link.svg');
+				background-image: url('../img/cdh-icons/link.svg');
 			}
 		}
 	}
@@ -800,22 +801,22 @@ $event-card-img-height: 240px;
 }
 
 .events > h2, .events h1 {
-	background-image: url('../img/icons/CDH_icon_cal.svg');
+	background-image: url('../img/cdh-icons/cal.svg');
 	@include header-with-icon;
 }
 
 .projects > h2, .projects h1 {
-	background-image: url('../img/icons/CDH_icon_folder.svg');
+	background-image: url('../img/cdh-icons/folder.svg');
 	@include header-with-icon;
 }
 
 .people > h2, .people h1 {
-	background-image: url('../img/icons/CDH_icon_ppl.svg');
+	background-image: url('../img/cdh-icons/ppl.svg');
 	@include header-with-icon;
 }
 
 .blogposts h1 {
-	background-image: url('../img/icons/CDH_icon_doc.svg');
+	background-image: url('../img/cdh-icons/doc.svg');
 	@include header-with-icon;
 }
 
@@ -1054,7 +1055,7 @@ $event-card-img-height: 240px;
 
 		/* icons for different link types */
 		li.website a {
-			background-image: url('../img/icons/CDH_icon_link.svg');
+			background-image: url('../img/cdh-icons/link.svg');
 			background-repeat: no-repeat;
 			background-size: 30px 30px;
 			text-indent: 35px;  /* padding pushes the grid */
@@ -1303,7 +1304,7 @@ $event-card-img-height: 240px;
     		margin-top: 37px;
     		padding-top: 75px;
     		display: inline-block;
-			background-image: url('../img/icons/CDH_icon_cal.svg');
+			background-image: url('../img/cdh-icons/cal.svg');
 			background-size: 50px 54px;
 			background-repeat: no-repeat;
     	}
