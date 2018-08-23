@@ -9,6 +9,7 @@ import pytest
 
 from cdhweb.people.models import Title, Person, Position, \
     init_profile_from_ldap, Profile
+from cdhweb.projects.models import Project, Grant, GrantType, Role, Membership
 from cdhweb.resources.models import ResourceType, UserResource
 
 
@@ -254,6 +255,63 @@ class ProfileQuerySetTest(TestCase):
         Position.objects.create(user=postdoc, title=postdoc_title,
             start_date='2016-12-01')
         assert postdoc_profile not in Profile.objects.not_postdocs()
+
+    def test_students(self):
+        # test student profile filter
+
+        # staff person - not student
+        staffer = Person.objects.create(username='staffer')
+        staff_profile = Profile.objects.create(user=staffer)
+        staff_title = Title.objects.create(title='staff')
+        Position.objects.create(user=staffer, title=staff_title,
+                                start_date='2016-06-01')
+        assert staff_profile not in Profile.objects.students()
+
+        # grad, undergrad assistant
+        grad = Person.objects.create(username='grad')
+        grad_profile = Profile.objects.create(user=grad)
+        grad_title = Title.objects.create(title='Graduate Assistant')
+        Position.objects.create(user=grad, title=grad_title,
+                                start_date='2016-06-01')
+        undergrad = Person.objects.create(username='undergrad')
+        undergrad_profile = Profile.objects.create(user=undergrad)
+        undergrad_title = Title.objects.create(title='Undergraduate Assistant')
+        Position.objects.create(user=undergrad, title=undergrad_title,
+                                start_date='2016-06-01')
+        assert grad_profile in Profile.objects.students()
+        assert undergrad_profile in Profile.objects.students()
+
+        # person with student status with a project
+        grad2 = Person.objects.create(username='tom')
+        grad2_profile = Profile.objects.create(user=grad2, pu_status='graduate')
+        # graduate flag but no project
+        assert grad2_profile not in Profile.objects.students()
+        # project role but not director
+        gradproj = Project.objects.create(title='Chinese Exchange Poems')
+        researcher = Role.objects.create(title='Researcher')
+        grtype = GrantType.objects.create(grant_type='Sponsored Project')
+        grant = Grant.objects.create(project=gradproj, grant_type=grtype,
+            start_date='2015-01-1', end_date='2016-01-01')
+        Membership.objects.create(project=gradproj,
+            user=grad2, grant=grant, role=researcher)
+        assert grad2_profile not in Profile.objects.students()
+
+        # project director
+        proj_director = Role.objects.create(title='Project Director')
+        Membership.objects.create(project=gradproj,
+            user=grad2, grant=grant, role=proj_director)
+
+        assert grad2_profile in Profile.objects.students()
+
+        # also valid with undergrad flag
+        grad2_profile.pu_status = 'undergraduate'
+        grad2_profile.save()
+        assert grad2_profile in Profile.objects.students()
+
+        # but not with anything else
+        grad2_profile.pu_status = 'stf'
+        grad2_profile.save()
+        assert grad2_profile not in Profile.objects.students()
 
 
 class TestPosition(TestCase):
