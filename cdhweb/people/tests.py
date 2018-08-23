@@ -193,6 +193,32 @@ class ProfileQuerySetTest(TestCase):
         assert staff_profile == profiles[0]
         assert staff2_profile == profiles[1]
 
+    def test_postdocs(self):
+        # create test person
+        postdoc = Person.objects.create(username='nora')
+        postdoc_profile = Profile.objects.create(user=postdoc)
+        # no position, not in postdoc filter
+        assert postdoc_profile not in Profile.objects.all().postdocs()
+
+        # add position, should be in postdoc filter
+        postdoc_title = Title.objects.get_or_create(title='Postdoctoral Fellow')[0]
+        Position.objects.create(user=postdoc, title=postdoc_title,
+            start_date='2016-12-01')
+        assert postdoc_profile in Profile.objects.all().postdocs()
+
+    def test_not_postdocs(self):
+        # create test person
+        postdoc = Person.objects.create(username='jim')
+        postdoc_profile = Profile.objects.create(user=postdoc)
+        # no position, should be in not-postdoc filter
+        assert postdoc_profile in Profile.objects.all().not_postdocs()
+
+        # add position, should no longer be in not-postdoc filter
+        postdoc_title = Title.objects.get_or_create(title='Postdoctoral Fellow')[0]
+        Position.objects.create(user=postdoc, title=postdoc_title,
+            start_date='2016-12-01')
+        assert postdoc_profile not in Profile.objects.all().not_postdocs()
+
 
 class TestPosition(TestCase):
 
