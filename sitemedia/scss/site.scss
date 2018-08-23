@@ -41,7 +41,7 @@ header, div, p, img, section, article {
 	#maincontent {
 		position: relative;
         margin-top: 30px;
-        
+
         section:nth-child(1) {
             margin-top: 50px;
         }
@@ -623,6 +623,9 @@ $event-card-img-height: 240px;
 		display: block;
 		position: relative;
 		background: none; /* no blue stripes */
+
+        /* fallback display for people without a photo */
+        @include dark-blue-gradient;
 
 		/* styles for image as photo */
 		background-size: contain;
