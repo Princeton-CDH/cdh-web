@@ -219,11 +219,15 @@ class ProfileQuerySetTest(TestCase):
         cur_post = Position.objects.create(user=staffer, title=staff_title,
             start_date='2016-06-01')
         assert not Profile.objects.not_current().exists()
+        # both current post and past post - should not be in not current
+        postdoc = Title.objects.create(title='post-doc')
+        Position.objects.create(user=staffer, title=postdoc,
+            start_date='2015-06-01', end_date='2016-05-30')
+        assert not Profile.objects.not_current().exists()
 
         # past fellow
         fellow = Person.objects.create(username='fellow')
         fellow_profile = Profile.objects.create(user=fellow)
-        postdoc = Title.objects.create(title='post-doc')
         # previous post
         Position.objects.create(user=fellow, title=postdoc, start_date='2015-01-01',
                                 end_date='2015-12-31')
