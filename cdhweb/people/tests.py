@@ -229,8 +229,9 @@ class ProfileQuerySetTest(TestCase):
         fellow = Person.objects.create(username='fellow')
         fellow_profile = Profile.objects.create(user=fellow)
         # previous post
-        Position.objects.create(user=fellow, title=postdoc, start_date='2015-01-01',
-                                end_date='2015-12-31')
+        Position.objects.create(user=fellow, title=postdoc, start_date=date(2015, 1, 1),
+                                end_date=date(2015, 12, 31))
+
         not_current = Profile.objects.not_current()
         assert not_current.exists()
         assert fellow_profile in not_current
@@ -258,6 +259,15 @@ class ProfileQuerySetTest(TestCase):
         grant.end_date = date.today() - timedelta(days=30)
         grant.save()
         assert grad_profile in Profile.objects.not_current()
+
+        # new grant with no end date
+        # NOTE: this is currently not supported due to exclude query limitations
+        # new_grant = Grant.objects.create(project=gradproj, grant_type=grtype,
+        #                                  start_date=date.today())
+        # Membership.objects.create(project=gradproj, user=grad, grant=new_grant,
+        #                           role=proj_director)
+        # assert grad_profile not in Profile.objects.not_current()
+
 
     def test_order_by_position(self):
         director_title = Title.objects.create(title='director', sort_order=1)
@@ -451,9 +461,9 @@ class TestViews(TestCase):
             user=staffer, title='Amazing Contributor',
             status=CONTENT_STATUS_PUBLISHED, is_staff=True)
         staff_title = Title.objects.create(title='staff')
-        fellow = Title.objects.create(title='Graduate Fellow')
+        assoc = Title.objects.create(title='Associate')
         prev_post = Position.objects.create(
-            user=staffer, title=fellow,
+            user=staffer, title=assoc,
             start_date=date(2015, 1, 1), end_date=date(2015, 12, 31))
         cur_post = Position.objects.create(
             user=staffer, title=staff_title, start_date=date(2016, 6, 1))

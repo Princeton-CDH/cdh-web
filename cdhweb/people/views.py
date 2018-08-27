@@ -45,7 +45,11 @@ class ProfileDetailView(ProfileMixinView, DetailView, LastModifiedMixin):
 
 class ProfileListView(ProfileMixinView, ListView, LastModifiedListMixin):
     '''Base class for profile list views'''
+
+    #: page title for html and label for main people
     page_title = ''
+    #: label for past people in this category of people
+    past_title = ''
 
     def get_queryset(self):
         # get published profile ordered by position (job title then start date)
@@ -58,6 +62,7 @@ class ProfileListView(ProfileMixinView, ListView, LastModifiedListMixin):
             'current': self.object_list.current(),
             'past': self.object_list.not_current(),
             'title': self.page_title,
+            'past_title': self.past_title,
             'archive_nav_urls': [
                 ('Staff', reverse('people:staff')),
                 ('Postdoctoral Fellows', reverse('people:postdocs')),
@@ -70,6 +75,7 @@ class ProfileListView(ProfileMixinView, ListView, LastModifiedListMixin):
 class StaffListView(ProfileListView):
     '''Display current and past CDH staff'''
     page_title = 'Staff'
+    past_title = 'Staff Alumni'
 
     def get_queryset(self):
         # filter to profiles with staff flag set and exclude postdocs
@@ -77,12 +83,13 @@ class StaffListView(ProfileListView):
         # (already ordered by job title sort order and then by last name)
         return super().get_queryset().staff().not_postdocs().not_student_staff()
         # NOTE: this won't filter correctly if we ever have someone who
-        # goes from a postdoc or student role to a staff position
+        # goes from a postdoc or student role to a staff position, however
+        # filtering only on current role messes up staff alumni
 
 class PostdocListView(ProfileListView):
     '''Display current and past postdoctoral fellows'''
     page_title = 'Postdoctoral Fellows'
-    nav_title = page_title
+    past_title = 'Postoctoral Fellow Alumni'
 
     def get_queryset(self):
         # filter to just postdocs
@@ -93,6 +100,7 @@ class StudentListView(ProfileListView):
     '''Display current and past graduate fellows, graduate and undergraduate
     assistants.'''
     page_title = 'Students'
+    past_title = 'Student Alumni'
 
     def get_queryset(self):
         # filter to just students

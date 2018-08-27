@@ -26,9 +26,12 @@
 
 {# alumni / past members or affiliates #}
 {% if past %}
-  <h2>Alumni</h2>
+  <h2>{{ past_title|default:"Alumni" }}</h2>
   {% for profile in past %}
+  {# people with current role and past grant are complicated, so add extra check here to avoid double display #}
+    {% if profile not in current %}
     {% include 'people/snippets/profile_card.html' %}
+    {% endif %}
   {% endfor %}
 {% endif %}
 

@@ -131,12 +131,15 @@ class ProfileQuerySet(PublishedQuerySetMixin):
         '''Exclude CDH Postdoctoral Fellows, based on role title'''
         return self.exclude(user__positions__title__title__icontains=self.postdoc_title)
 
-    student_titles = ['Graduate Assistant', 'Undergraduate Assistant']
+    #: position titles that indicate a staff person is a student
+    student_titles = ['Graduate Fellow', 'Graduate Assistant',
+                      'Undergraduate Assistant']
+    #: student status codes from LDAP
     student_pu_status = ['graduate', 'undergraduate']
 
     def students(self):
-        '''Return CDH student assistants and grantees. based on role title'''
-        # TODO: find grantees
+        '''Return CDH student assistants and grantees based on Project Director
+        project role.'''
         return self.filter(
             models.Q(user__positions__title__title__in=self.student_titles) |
             ((models.Q(pu_status__in=self.student_pu_status))
@@ -153,7 +156,7 @@ class ProfileQuerySet(PublishedQuerySetMixin):
             models.Q(user__positions__isnull=False) &
             (models.Q(user__positions__end_date__isnull=True) |
              models.Q(user__positions__end_date__gte=date.today())
-             )
+            )
         )
 
     def _current_grant_query(self):
@@ -165,8 +168,6 @@ class ProfileQuerySet(PublishedQuerySetMixin):
               models.Q(user__membership__grant__end_date__isnull=True))
             )
         )
-
-    # split out? current position vs current grant? or combine?
 
     def current(self):
         '''Return profiles for users with a current position *or*
@@ -181,11 +182,31 @@ class ProfileQuerySet(PublishedQuerySetMixin):
         set or an end date in the future.
         '''
         today = timezone.now()
-        return self.filter(
-            models.Q(user__positions__end_date__lt=date.today()) |
-            (models.Q(user__membership__role__title='Project Director') &
-             models.Q(user__membership__grant__end_date__lt=today))
-        )
+        # NOTE: due to limitations with the exclude filter, this query
+        # cannot be handled with an exclude of the current position and grant queries
+
+        # - annotate to find the most recent position and grant end dates
+        # find either:
+        #  - people with no unset end date and last position end date before today
+        # OR
+        # - people with a project grant with no unset end dates and last
+        #   end date is before today
+        return self.annotate(max_position_end=models.Max('user__positions__end_date'),
+                             max_grant_end=models.Max('user__membership__grant__end_date')) \
+                   .filter(
+                       (~models.Q(user__positions__end_date__isnull=True) &
+                        models.Q(max_position_end__lt=today)) |
+                       (models.Q(user__membership__role__title='Project Director') &
+                        # ~models.Q(user__membership__grant__end_date__isnull=True) &
+                        models.Q(max_grant_end__lt=today)
+                       )
+                   )
+
+        # FIXME: this query will fail for a grant with an unset end date,
+        # but the query errors when the not filter is included:
+        #     django.db.utils.OperationalError: (1054, "Unknown column 'test_cdhweb.auth_user.id' in 'where clause'")
+        # Possiblely a django bug that we can revisit when we upgrade to a newer version?
+
 
     def order_by_position(self):
         '''order by job title sort order and then by start date'''
