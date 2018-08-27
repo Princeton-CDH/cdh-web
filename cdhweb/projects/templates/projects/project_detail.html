@@ -33,7 +33,10 @@
     {# display project members for the current (or most recent) grant #}
     {% for membership in project.current_membership %}
         {% ifchanged %}<li class="role"><h3>{{ membership.role }}</h3></li>{% endifchanged %}
-        <li>{{ membership.user }}</li>
+           {% with membership.user.profile_url as profile_url %} {# local or external profile, if available #}
+           {% with profile_url|yesno:"a,span" as tag %} {# link if we have a url, otherwise span #}
+            <li><{{ tag }} {% if profile_url %}href="{{ profile_url }}"{% endif %}>{{ membership.user }}</{{ tag }}></li>
+           {% endwith %}{% endwith %}
     {% endfor %}
     {# include project alumni  #}
     {% if project.alumni_members %}
