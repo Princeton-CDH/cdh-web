@@ -6,6 +6,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
 from cdhweb.people.models import Profile
+from cdhweb.blog.models import BlogPost
 from cdhweb.resources.views import LastModifiedMixin, LastModifiedListMixin
 from cdhweb.resources.utils import absolutize_url
 
@@ -27,10 +28,15 @@ class ProfileDetailView(ProfileMixinView, DetailView, LastModifiedMixin):
 
     def get_context_data(self, *args, **kwargs):
         context = super(ProfileDetailView, self).get_context_data(*args, **kwargs)
+
+        # retrieve 3 most recent published blog posts with the current user as author
+        recent_posts = BlogPost.objects.filter(users__id=self.object.user.id).published()[:3]
+
         # also set object as page for common page display functionality
         context.update({
             'page': self.object,
-            'opengraph_type': 'profile'
+            'opengraph_type': 'profile',
+            'recent_posts': recent_posts,
         })
         if self.object.thumb:
             context['preview_image'] = absolutize_url(''.join([settings.MEDIA_URL,

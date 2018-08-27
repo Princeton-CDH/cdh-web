@@ -7,6 +7,7 @@ from django.utils.text import slugify
 from mezzanine.core.models import CONTENT_STATUS_DRAFT, CONTENT_STATUS_PUBLISHED
 import pytest
 
+from cdhweb.blog.models import BlogPost
 from .models import Title, Person, Position, init_profile_from_ldap, Profile
 
 
@@ -379,3 +380,20 @@ class TestViews(TestCase):
         self.assertContains(response, prev_post.years)
         self.assertNotContains(response, cur_post.years)
 
+        # create another person and make some blog posts that belong to the people
+        staffer2 = Person.objects.create(username='staff2')
+        profile2 = Profile.objects.create(user=staffer2, title='Great Writer',
+            status=CONTENT_STATUS_PUBLISHED, is_staff=True, slug='staffer2')
+        post = BlogPost.objects.create(title='Solo blog post')
+        post2 = BlogPost.objects.create(title='Collaborative blog post')
+        post.users.add(staffer) # written by one user
+        post2.users.add(staffer, staffer2) # written by two users together
+
+        response = self.client.get(reverse('people:profile', args=[profile.slug]))
+        self.assertContains(response, post.title) # show both blog posts
+        self.assertContains(response, post2.title)
+        self.assertContains(response, profile2.title) # indicate that one post has another author
+        response = self.client.get(reverse('people:profile', args=[profile2.slug]))
+        self.assertNotContains(response, post.title) # only posts from this author
+        self.assertContains(response, post2.title)
+        self.assertContains(response, profile.title)
