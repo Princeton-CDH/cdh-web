@@ -46,7 +46,6 @@ class ProfileDetailView(ProfileMixinView, DetailView, LastModifiedMixin):
 class ProfileListView(ProfileMixinView, ListView, LastModifiedListMixin):
     '''Base class for profile list views'''
     page_title = ''
-    nav_title = ''
 
     def get_queryset(self):
         # get published profile ordered by position (job title then start date)
@@ -59,7 +58,6 @@ class ProfileListView(ProfileMixinView, ListView, LastModifiedListMixin):
             'current': self.object_list.current(),
             'past': self.object_list.not_current(),
             'title': self.page_title,
-            'nav_title': self.nav_title,
             'archive_nav_urls': [
                 ('Staff', reverse('people:staff')),
                 ('Postdoctoral Fellows', reverse('people:postdocs')),
@@ -71,8 +69,7 @@ class ProfileListView(ProfileMixinView, ListView, LastModifiedListMixin):
 
 class StaffListView(ProfileListView):
     '''Display current and past CDH staff'''
-    page_title = 'Who we are'
-    nav_title = 'Staff'
+    page_title = 'Staff'
 
     def get_queryset(self):
         # filter to profiles with staff flag set and exclude postdocs
@@ -96,7 +93,6 @@ class StudentListView(ProfileListView):
     '''Display current and past graduate fellows, graduate and undergraduate
     assistants.'''
     page_title = 'Students'
-    nav_title = page_title
 
     def get_queryset(self):
         # filter to just students
