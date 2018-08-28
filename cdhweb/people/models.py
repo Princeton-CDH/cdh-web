@@ -149,6 +149,18 @@ class ProfileQuerySet(PublishedQuerySetMixin):
         '''Filter out people with CDH student titles'''
         return self.exclude(user__positions__title__title__in=self.student_titles)
 
+    def faculty_affiliates(self):
+        '''Faculty affiliates based on PU status and Project Director
+        project role.'''
+        return self.filter(pu_status='fac',
+                           user__membership__role__title='Project Director')
+
+    def grant_years(self):
+        return self.filter(user__membership__role__title='Project Director') \
+                   .annotate(first_start=models.Min('user__membership__grant__start_date'),
+                             last_end=models.Max('user__membership__grant__end_date')) \
+
+
     def _current_position_query(self):
         # query to find a user with a current cdh position
         # user *has* a position and it has no end date or date after today
@@ -175,6 +187,14 @@ class ProfileQuerySet(PublishedQuerySetMixin):
         set or an end date in the future.'''
         return self.filter(models.Q(self._current_position_query()) |
                            models.Q(self._current_grant_query()))
+
+    def current_grant(self):
+        '''Return profiles for users with a current grant.'''
+        return self.filter(self._current_grant_query())
+
+    def current_position(self):
+        '''Return profiles for users with a  current position.'''
+        return self.filter(self._current_position_query())
 
     def order_by_position(self):
         '''order by job title sort order and then by start date'''

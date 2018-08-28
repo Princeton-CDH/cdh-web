@@ -56,15 +56,23 @@ class ProfileListView(ProfileMixinView, ListView, LastModifiedListMixin):
     page_title = ''
     #: label for past people in this category of people
     past_title = ''
+    #: show person positions on profile card (true by default)
+    show_position = True
 
     def get_queryset(self):
         # get published profile ordered by position (job title then start date)
         return super().get_queryset().order_by_position().distinct()
 
+    def get_current_profiles(self):
+        '''Get current profiles from the queryset. Override to customize
+        which filter is used. By default, uses generic current logic that
+        checks both positions and grants.'''
+        return self.object_list.current()
+
     def get_context_data(self):
         context = super().get_context_data()
         # update context to display current and past people separately
-        current = self.object_list.current()
+        current = self.get_current_profiles()
         # filter past based current ids, rather than trying to do the complicated
         # query to find not current people
         past = self.object_list.exclude(id__in=current.values('id'))
@@ -77,7 +85,9 @@ class ProfileListView(ProfileMixinView, ListView, LastModifiedListMixin):
                 ('Staff', reverse('people:staff')),
                 ('Postdoctoral Fellows', reverse('people:postdocs')),
                 ('Students', reverse('people:students')),
-            ]
+                ('Faculty Affiliates', reverse('people:faculty')),
+            ],
+            'show_position': self.show_position
         })
         return context
 
@@ -96,6 +106,11 @@ class StaffListView(ProfileListView):
         # goes from a postdoc or student role to a staff position, however
         # filtering only on current role messes up staff alumni
 
+    def get_current_profiles(self):
+        # we only care about current position, grant doesn't matter
+        return self.object_list.current_position()
+
+
 class PostdocListView(ProfileListView):
     '''Display current and past postdoctoral fellows'''
     page_title = 'Postdoctoral Fellows'
@@ -104,6 +119,10 @@ class PostdocListView(ProfileListView):
     def get_queryset(self):
         # filter to just postdocs
         return super().get_queryset().postdocs()
+
+    def get_current_profiles(self):
+        # we only care about current position, grant doesn't matter
+        return self.object_list.current_position()
 
 
 class StudentListView(ProfileListView):
@@ -114,5 +133,22 @@ class StudentListView(ProfileListView):
 
     def get_queryset(self):
         # filter to just students
-        return super().get_queryset().students()
+        return super().get_queryset().students().grant_years()
+
+
+class FacultyListView(ProfileListView):
+    '''Display current and past faculty affiliates'''
+    page_title = 'Faculty Affiliates'
+    past_title = 'Past {}'.format(page_title)
+    #: do not show person positions; want grant information instead
+    show_position = False
+
+    def get_queryset(self):
+        # filter to faculty affiliates
+        return super().get_queryset().faculty_affiliates().grant_years()
+
+    def get_current_profiles(self):
+        # we only care about current grants, position doesn't matter
+        return self.object_list.current_grant()
+
 

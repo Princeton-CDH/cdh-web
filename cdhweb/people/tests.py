@@ -327,6 +327,30 @@ class ProfileQuerySetTest(TestCase):
         grad2_profile.save()
         assert grad2_profile not in Profile.objects.students()
 
+    def test_faculty_affiliates(self):
+        # test faculty affiliates filter
+
+        # faculty person
+        fac = Person.objects.create(username='Meredith')
+        fac_profile = Profile.objects.create(user=fac, pu_status='fac')
+        # insufficient to be faculty affiliate
+        assert fac_profile not in Profile.objects.faculty_affiliates()
+
+        # project director
+        proj_director = Role.objects.create(title='Project Director')
+        ppa_proj = Project.objects.create(title='PPA')
+        grtype = GrantType.objects.create(grant_type='Sponsored Project')
+        grant = Grant.objects.create(project=ppa_proj, grant_type=grtype,
+            start_date='2015-01-1', end_date='2016-01-01')
+        Membership.objects.create(project=ppa_proj,
+            user=fac, grant=grant, role=proj_director)
+        assert fac_profile in Profile.objects.faculty_affiliates()
+
+        # non-faculty project director != faculty affiliate
+        fac_profile.pu_status = 'graduate'
+        fac_profile.save()
+        assert fac_profile not in Profile.objects.faculty_affiliates()
+
 
 class TestPosition(TestCase):
 
@@ -529,6 +553,46 @@ class TestViews(TestCase):
         response = self.client.get(reverse('people:students'))
         self.assertContains(response, grad_pi_profile.title)
         self.assertContains(response, ext_profile_url)
+
+    def test_faculty_affiliates_list(self):
+        # faculty person
+        fac = Person.objects.create(username='Meredith')
+        fac_profile = Profile.objects.create(user=fac, pu_status='fac')
+        # cdh position should not be displayed here
+        fac_director_title = Title.objects.create(title='Faculty Director')
+        Position.objects.create(user=fac, title=fac_director_title,
+            start_date=date(2015, 1, 1))
+        # current project director
+        proj_director = Role.objects.create(title='Project Director')
+        ppa_proj = Project.objects.create(title='PPA')
+        grtype = GrantType.objects.create(grant_type='Sponsored Project')
+        # old grant
+        grant1 = Grant.objects.create(project=ppa_proj, grant_type=grtype,
+            start_date='2015-01-01', end_date='2016-01-01')
+        Membership.objects.create(project=ppa_proj,
+            user=fac, grant=grant1, role=proj_director)
+        # newer grant
+        end_date = date.today() + timedelta(days=30)
+        grant2 = Grant.objects.create(project=ppa_proj, grant_type=grtype,
+            start_date='2017-01-1', end_date=end_date)
+        Membership.objects.create(project=ppa_proj,
+            user=fac, grant=grant2, role=proj_director)
+
+        response = self.client.get(reverse('people:faculty'))
+        assert fac_profile in response.context['current']
+        # should display grant role, not cdh role
+        self.assertNotContains(response, proj_director.title)
+        self.assertContains(response, '{} Grant Recipient'.format(grtype.grant_type))
+        # should display date range from start of earliest to end of last grant
+        self.assertContains(response, '2015–{}'.format(end_date.year))
+
+        # non current grant - should shift to past list
+        grant2.end_date = '2018-01-01'
+        grant2.save()
+        response = self.client.get(reverse('people:faculty'))
+        assert fac_profile not in response.context['current']
+        assert fac_profile in response.context['past']
+
 
     def test_profile_detail(self):
          # create test person and add two positions
