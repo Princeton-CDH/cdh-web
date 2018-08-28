@@ -1,14 +1,2 @@
-Django>=1.11,<2.0
-# manually pin a compatible version of pillow for mezzanine image preview
-pillow<4.2
-mezzanine<=4.3
-django-compressor
-django-compressor-autoprefixer
-mysqlclient
-django-admin-sortable2
-django-taggit
-pucas>=0.5
-python-dateutil
-icalendar
-attrdict
-django-fullurl
+-r requirements/prod.txt
+

@@ -55,7 +55,8 @@ class ProfileAdmin(DisplayableAdmin):
             "fields": ["title", "pu_status", "is_staff", "education", "bio",
                        "phone_number", "office_location",
                        "image", "thumb",
-                       "status", ("publish_date", "expiry_date")],
+                       "status", ("publish_date", "expiry_date"),
+                       'attachments'],
         }),
         ("Page Metadata", {
             "fields": ["_meta_title", "slug",

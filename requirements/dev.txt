@@ -1,6 +1,7 @@
-pytest>=3.6 # required for pytest-django
-pytest-django
-pytest-cov
+# all requirements for production, test, and dev
+-r prod.txt
+-r test.txt
+
 # sugar is optional but pretty
 pytest-sugar
 django-debug-toolbar
