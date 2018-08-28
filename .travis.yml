@@ -9,6 +9,7 @@ cache:
 before_install:
 - rvm install 2.0
 - gem install sass
+- npm install -g postcss-cli autoprefixer
 install:
 - pip install -r requirements/test.txt
 - pip install codecov
