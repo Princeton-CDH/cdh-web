@@ -52,7 +52,9 @@ p {
   }
 }
 
-#maincontent p a {
+/* link style for links in content paragraphs, rich text content links,
+  and blogpost description links (but not blogpost sidebare links) */
+#maincontent p a, .description li a, .richtextpage #maincontent li a {
   @include body-link-style;
 }
 

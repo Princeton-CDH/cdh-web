@@ -373,7 +373,6 @@ class TestProjectResource(TestCase):
 
 
 class TestViews(TestCase):
-    fixtures = ['test-pages.json']
 
     def test_list(self):
         # create test project

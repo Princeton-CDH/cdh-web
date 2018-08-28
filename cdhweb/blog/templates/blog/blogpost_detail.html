@@ -63,6 +63,22 @@
     <div class="keywords">Keywords: {{ blogpost.keywords.all|join:', ' }}</div>
     {% endif %}
 
-</article>
 
+</article>
+{% endblock %}
+
+{% block content-footer %}
+    {# display next & previous blog post links #}
+    {% if next or previous %}
+    <div class="next-previous">
+        {% if previous %}
+        <p class="prev"><a rel="prev" href="{{ previous.get_absolute_url }}">{{ previous }}</a></p>
+        {% endif %}
+        {% if next %}
+        <p class="next"><a rel="next" href="{{ next.get_absolute_url }}">{{ next }}</a></p>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {{ block.super }}
 {% endblock %}

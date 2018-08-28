@@ -71,7 +71,9 @@ class BlogDetailView(BlogPostMixinView, DetailView, LastModifiedMixin):
         # also set object as page for common page display functionality
         context.update({
             'page': self.object,
-            'opengraph_type': 'article'
+            'opengraph_type': 'article',
+            'next': self.object.get_next_by_publish_date(),
+            'previous': self.object.get_previous_by_publish_date(),
         })
         return context
 

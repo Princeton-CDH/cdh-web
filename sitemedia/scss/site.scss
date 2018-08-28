@@ -3,6 +3,9 @@
 @import "base/base";
 @import "grid-settings";
 @import "fonts";
+@import "fontawesome/fontawesome.scss";
+@import "fontawesome/solid.scss";
+@import "fontawesome/brands.scss";
 
 
 /* nearly all block elements should be full-width on mobile */
@@ -11,6 +14,24 @@ header, div, p, img, section, article {
 		@include full-grid-width();
 	}
 }
+
+@mixin content-page {
+	/* for blog posts and text content pages */
+	padding: 0;
+	margin-bottom: 50px;
+
+
+    @media (min-width: $medium-min-width) {
+		@include grid-push(1);
+		@include grid-column(7);
+	}
+
+    @media (min-width: $large-min-width) {
+		@include grid-push(2);
+		@include grid-column(8);
+	}
+}
+
 
 /* container with max-width for large, medium, and small viewports */
 .responsive-container {
@@ -124,12 +145,18 @@ div.spacer {
 	padding: 1px 5px;
 }
 
+@mixin cdh-icon($name) {
+	background-image: url('../img/cdh-icons/#{$name}.svg');
+}
+
+
 article.landing-page {
 	/* undo default body margin to clear top nav */
 	margin-top: -($header-nav-height*2);
     @media (max-width: $small-max-width) {
     	margin-top: -120px;  /* ?? */
     }
+
 	// padding-top: 90px;
 	width: 100%;
 	position: relative;
@@ -226,7 +253,7 @@ article.landing-page {
 	}
 
 	.attachments {
-		background-color: white;
+		margin-top: 50px;
 	}
 
 }
@@ -238,6 +265,7 @@ article.landing-page {
 	@media (min-width: $medium-min-width) {
 		@include grid-container;
 	}
+
 }
 
 
@@ -587,7 +615,7 @@ $event-card-img-height: 240px;
 			right: 55px;
 			width: 30px;
 			height: 30px;
-			background-image: url('../img/cdh-icons/link.svg');
+			@include cdh-icon('link');
 			background-repeat: no-repeat;
 			background-color: transparent;
 		}
@@ -676,7 +704,7 @@ $event-card-img-height: 240px;
     /* attachment cards */
 	&.attachment {
 		@include small-card;
-		background: none;
+		background: white;
 		position: relative;
 
 		/* use this to make the card square -
@@ -734,19 +762,61 @@ $event-card-img-height: 240px;
 		/* variant icons */
 		&.pdf {
 			a::after {
-				background-image: url('../img/cdh-icons/pdf.svg');
+				@include cdh-icon('pdf');
 			}
 		}
 		&.video {
 			a::after {
-				background-image: url('../img/cdh-icons/vid.svg');
+				@include cdh-icon('vid');
 			}
 		}
 		&.url {
 			a::after {
-				background-image: url('../img/cdh-icons/link.svg');
+				@include cdh-icon('link');
 			}
 		}
+		&.ppl {
+			a::after {
+				@include cdh-icon('ppl');
+			}
+		}
+		&.cal {
+			a::after {
+				@include cdh-icon('cal');
+			}
+		}
+		&.folder {
+			a::after {
+				@include cdh-icon('folder');
+			}
+		}
+		&.email {
+			a::after {
+				@include cdh-icon('email');
+			}
+		}
+		&.grant {
+			a::after {
+				@include cdh-icon('grant');
+			}
+		}
+		&.seed {
+			a::after {
+				@include cdh-icon('seed');
+			}
+		}
+		&.medal {
+			a::after {
+				@include cdh-icon('medal');
+			}
+		}
+		&.location {
+			a::after {
+				@include cdh-icon('location');
+			}
+		}
+
+
 	}
 
 }
@@ -759,6 +829,11 @@ $event-card-img-height: 240px;
 	h2 {
 		@include full-grid-width;
 	}
+
+	.richtext {
+		@include content-page;
+	}
+
 }
 
 @mixin header-with-icon {
@@ -801,22 +876,22 @@ $event-card-img-height: 240px;
 }
 
 .events > h2, .events h1 {
-	background-image: url('../img/cdh-icons/cal.svg');
+	@include cdh-icon('cal');
 	@include header-with-icon;
 }
 
 .projects > h2, .projects h1 {
-	background-image: url('../img/cdh-icons/folder.svg');
+	@include cdh-icon('folder');
 	@include header-with-icon;
 }
 
 .people > h2, .people h1 {
-	background-image: url('../img/cdh-icons/ppl.svg');
+	@include cdh-icon('ppl');
 	@include header-with-icon;
 }
 
 .blogposts h1 {
-	background-image: url('../img/cdh-icons/doc.svg');
+	@include cdh-icon('doc');
 	@include header-with-icon;
 }
 
@@ -1055,7 +1130,7 @@ $event-card-img-height: 240px;
 
 		/* icons for different link types */
 		li.website a {
-			background-image: url('../img/cdh-icons/link.svg');
+			@include cdh-icon('link');
 			background-repeat: no-repeat;
 			background-size: 30px 30px;
 			text-indent: 35px;  /* padding pushes the grid */
@@ -1071,20 +1146,12 @@ $event-card-img-height: 240px;
 		/* github uses font-awesome */
 		li.github a {
 			&::before {
-			    display: inline-block;
-			    font-style: normal;
-			    font-variant: normal;
-			    text-rendering: auto;
-			    -webkit-font-smoothing: antialiased;
-			    // font-family: "Font Awesome 5 Free";
-			    font-family: "Font Awesome 5 Brands";
-			    font-weight: 900;
-			    content: "\f09b";  /* github  */
-			    // content: "\f092";  /* github square */
-			    // content: "\f121"; /* code */
+				@include fa-icon;
+				@extend .fab;
+	        	content: fa-content($fa-var-github);
+
 			    width:30px;
 			    text-align: center;
-			    font-size: 20px;
 			    color: $dark-grey;
 			}
 			padding-left: 0;
@@ -1093,14 +1160,10 @@ $event-card-img-height: 240px;
 		/* twitter also uses font-awesome */
 		li.twitter a {
 			&::before {
-			    display: inline-block;
-			    font-style: normal;
-			    font-variant: normal;
-			    text-rendering: auto;
-			    -webkit-font-smoothing: antialiased;
-			    font-family: "Font Awesome 5 Brands";
-			    font-weight: 900;
-			    content: "\f099";  /* github  */
+				@include fa-icon;
+				@extend .fab;
+	        	content: fa-content($fa-var-twitter);
+
 			    width:30px;
 			    text-align: center;
 			    font-size: 20px;
@@ -1234,7 +1297,8 @@ $event-card-img-height: 240px;
 		margin-top: 0;
 	}
 
-	.bio {
+    .bio,
+    .recent-posts {
 		@media (min-width: $medium-min-width) {
 			@include grid-column(6);
 			@include grid-push(3);
@@ -1243,7 +1307,15 @@ $event-card-img-height: 240px;
 			@include grid-column(8);
 		}
 
-	}
+    }
+
+    .recent-posts {
+        margin-top: 50px;
+
+        .blogpost h3 {
+            font-size: 20px;
+        }
+    }
 
 
 }
@@ -1304,7 +1376,7 @@ $event-card-img-height: 240px;
     		margin-top: 37px;
     		padding-top: 75px;
     		display: inline-block;
-			background-image: url('../img/cdh-icons/cal.svg');
+			@include cdh-icon('cal');
 			background-size: 50px 54px;
 			background-repeat: no-repeat;
     	}
@@ -1384,22 +1456,6 @@ section.blogposts, section.people, section.events, section.projects {
 	}
 }
 
-@mixin content-page {
-	/* for blog posts and text content pages */
-	padding: 0;
-	margin-bottom: 50px;
-
-
-    @media (min-width: $medium-min-width) {
-		@include grid-push(1);
-		@include grid-column(7);
-	}
-
-    @media (min-width: $large-min-width) {
-		@include grid-push(2);
-		@include grid-column(8);
-	}
-}
 
 
 body.blogpost {
@@ -1429,12 +1485,31 @@ body.blogpost {
 			margin-bottom: 50px;
 
 			.authors {
-				padding-right: 37px;
 				display: inline-block;
 
+				/* commas after authors names except last author */
+				&::after {
+					content: ", ";
+				}
 				@media (max-width: $small-max-width) {
 					display: block;
-					padding-right: 0;
+
+					/* no commas on mobile */
+					&::after {
+						content: "";
+					}
+				}
+
+				&:last-of-type::after {
+					content: "";
+				}
+			}
+
+
+			.date-published {
+				padding-left: 40px;
+				@media (max-width: $small-max-width) {
+					padding-left: 0;
 				}
 			}
 		}
@@ -1453,6 +1528,59 @@ body.blogpost {
 		font-size: 90%;
 		color: $dark-grey;
 	}
+}
+
+.next-previous {
+	@extend .responsive-container;
+	@include content-page;
+
+	&::after {
+		content: " ";
+		display: block;
+		clear: both;
+	}
+
+	p {
+		margin-bottom: 25px;
+
+		a {
+  		  @include body-link-style;
+		}
+
+		&.prev {
+			text-align: left;
+
+		  	&::before {
+				@include fa-icon;
+				@extend .fas;
+	        	content: fa-content($fa-var-angle-double-left);
+
+			    width:30px;
+			    text-align: center;
+			    font-size: 20px;
+			    color: $dark-grey;
+		  	}
+
+	}
+
+	  &.next {
+	  	float: right;
+
+	  	&::after {
+				@include fa-icon;
+				@extend .fas;
+	        	content: fa-content($fa-var-angle-double-right);
+
+			    width:30px;
+			    text-align: center;
+			    font-size: 20px;
+			    color: $dark-grey;
+		  	}
+		}
+
+	}
+
+
 }
 
 /* same width/side margins as blog post content */

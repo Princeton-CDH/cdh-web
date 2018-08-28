@@ -30,7 +30,6 @@
     {# <link rel='stylesheet' type='text/css' href='{% static "css/base-prefixed.css" %}'> #}
     {% endcompress %}
 
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"
     integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
     crossorigin="anonymous"></script>
@@ -69,6 +68,11 @@
     <div id='maincontent'>
         {% block main %}{% endblock %}
     </div>
+
+    {# display child pages as attachments if this page has any children #}
+    {% if page.children.exists %}
+        {% page_menu page 'snippets/child_pages.html' %}
+    {% endif %}
 
     {% if page.attachments.exists %}
         {% include 'snippets/attachments.html' with attachments=page.attachments.all %}
@@ -117,6 +121,9 @@
                     aria-label='CDH Facebook' title="Facebook"></span></a>
                     <a href='https://twitter.com/PrincetonDH' property="schema:sameAs" title="Twitter"><span class='fab fa-twitter fa-2x' title="Twitter"
                      aria-label='CDH Twitter'></span></a>
+                    <a href='https://github.com/Princeton-CDH' property="schema:sameAs" title="GitHub"><span class='fab fa-github fa-2x' title="Twitter"
+                     aria-label='Princeton-CDH GitHub Organization'></span></a>
+
                      <a href="https://www.instagram.com/claus.the.chicken/" title="Instagram">
                         <span class="fab fa-instagram fa-2x" title="Instagram" aria-label="CDH Instagram"></span></a>
                 </li>

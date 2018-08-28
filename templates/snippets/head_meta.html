@@ -1,12 +1,14 @@
-{% load static %}
+{% load static cdh_tags %}
 {# html metadata #}
     <meta name="keywords" content="{% block meta_keywords %}{{ page.keywords.all|join:', ' }}{% endblock %}"/>
     <meta name="description" content="{% block meta_description %}{{ page.description }}{% endblock %}"/>
+    {# determine preview image: specified by page, cdh icon based on url, or default image #}
+    {% firstof preview_image page.get_absolute_url|url_to_icon_path default_preview_image as meta_preview_image %}
     {# open graph metadata #}
     <meta property="og:title" content="{{ page.meta_title }}" />
     <meta property="og:type" content="{{ opengraph_type|default:'website' }}" />
     <meta property="og:url" content="{{ request.build_absolute_uri }}" />
-    <meta property="og:image" content="{% firstof preview_image default_preview_image %}" />
+    <meta property="og:image" content="{{ meta_preview_image }}" />
     <meta property="og:description" content="{{ page.description }}"/>
     <meta property="og:site_name" content="Center for Digital Humanities @ Princeton University"/>
     {# twitter card #}
@@ -14,5 +16,5 @@
     <meta name="twitter:site" content="@PrincetonDH" />
     <meta name="twitter:title" content="{{ page.meta_title }}"/>
     <meta name="twitter:description" content="{{ page.description }}" />
-    <meta name="twitter:image" content="{% firstof twitter_image preview_image default_preview_image %}" />
+    <meta name="twitter:image" content="{% firstof twitter_image meta_preview_image %}" />
 

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load mezzanine_tags %}
 
 {% block content %} {# add a class to main content for home-page specific styles #}
 <div class="homepage{% if updates %} with-carousel{% endif %}">
@@ -12,6 +13,13 @@
 {% block bodyattrs %}class="with-cards"{% endblock %}
 
 {% block main %}
+
+{# display editable page content; wrapped for formatting reasons #}
+<section>
+    <div class="richtext">
+    {{ page.richtextpage.content|richtext_filters }}
+    </div>
+</section>
 
 <section class="events">
 <h2><a href="{% url 'event:upcoming' %}">Upcoming Events</a></h2>

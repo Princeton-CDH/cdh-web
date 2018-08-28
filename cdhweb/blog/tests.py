@@ -31,7 +31,7 @@ class TestBlog(TestCase):
         # do nothing for titles < 75char
         post = BlogPost(title="Congratulations!")
         assert post.short_title == post.title
-    
+
     def test_short_description(self):
         '''test that truncated descriptions are correctly generated'''
         # truncate with ellipsis for descriptions > 250char
@@ -93,7 +93,8 @@ class TestViews(TestCase):
         self.assertContains(response, reverse('blog:atom'), count=2)
 
     def test_blogpost_detail(self):
-        post = BlogPost.objects.first()
+        post = BlogPost.objects.order_by('publish_date').first()
+        second_post = BlogPost.objects.order_by('publish_date')[1]
         response = self.client.get(post.get_absolute_url())
 
         self.assertContains(response, post.title)
@@ -110,10 +111,24 @@ class TestViews(TestCase):
         self.assertContains(response,
             '<meta name="description" content="%s"/>' % post.description)
 
-
         # feed links should occur twice: once in header, once in body
         self.assertContains(response, reverse('blog:rss'), count=2)
         self.assertContains(response, reverse('blog:atom'), count=2)
+
+        # next/previous links
+        # first post has next and no previous
+        self.assertContains(response, second_post.title)
+        self.assertContains(response, second_post.get_absolute_url())
+        self.assertContains(response, 'rel="next"')
+        self.assertNotContains(response, 'rel="prev"')
+
+        # second post has previous and no next
+        response = self.client.get(second_post.get_absolute_url())
+        self.assertContains(response, post.title)
+        self.assertContains(response, post.get_absolute_url())
+        self.assertContains(response, 'rel="prev"')
+        self.assertNotContains(response, 'rel="next"')
+
 
     def test_blogs_by_year(self):
         response = self.client.get(reverse('blog:by-year', kwargs={'year': 2017}))

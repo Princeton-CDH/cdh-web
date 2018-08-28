@@ -1,0 +1,15 @@
+{% load pages_tags cdh_tags %}
+{# child pages rendered as attachment cards #}
+<div class="attachments page-children">
+    {% for page in page_branch %}
+        {% if page.in_menu %}
+        {% with page_url=page.get_absolute_url %}
+            <div class="attachment card {{ page_url|url_to_icon }}">
+                <a href="{{ page_url }}">
+                    <h2>{{ page.title }}</h2>
+                </a>
+            </div>
+        {% endwith %}
+        {% endif %}
+    {% endfor %}
+</div>

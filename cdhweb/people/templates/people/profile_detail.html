@@ -45,5 +45,12 @@
 {{ profile.bio|safe }}
 </div>
 
+{% if recent_posts %}
+<div class="recent-posts">
+    <h2>Recent Posts</h2>
+    {% include 'blog/blogpost_list.html' with blogposts=recent_posts %}
+</div>
+{% endif %}
+
 </div>
 {% endblock %}
