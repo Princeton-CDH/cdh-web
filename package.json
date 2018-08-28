@@ -1,0 +1,17 @@
+{
+  "name": "cdh-web",
+  "description": "Django web application for the CDH Website",
+  "repository": "https://github.com/Princeton-CDH/cdh-web.git",
+  "author": "The Center for Digital Humanities at Princeton <cdhdevteam@princeton.edu>",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "autoprefixer": "^9.1.3",
+    "postcss-cli": "^6.0.0"
+  },
+  "scripts": {
+    "pa11y": "pa11y-ci --sitemap http://localhost:8000/sitemap.xml"
+  },
+  "devDependencies": {
+    "pa11y-ci": "^2.1.1"
+  }
+}
