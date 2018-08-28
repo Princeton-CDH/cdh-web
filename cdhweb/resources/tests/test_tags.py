@@ -12,6 +12,7 @@ def test_url_to_icon():
     assert cdh_tags.url_to_icon('/graduate-fellowships/') == 'medal'
     assert cdh_tags.url_to_icon('/grants/') == 'grant'
     assert cdh_tags.url_to_icon('/unknown/') == ''
+    assert cdh_tags.url_to_icon(None) == ''
 
 
 @pytest.mark.django_db

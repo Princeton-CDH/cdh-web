@@ -26,6 +26,8 @@ URL_ICON_MAPPING = OrderedDict([
 @register.filter
 def url_to_icon(value):
     '''Return an appropriate CDH icon name based on URL.'''
+    if not value:
+        return ''
     for url, icon in URL_ICON_MAPPING.items():
         if url in value:
             return icon
