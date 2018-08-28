@@ -15,6 +15,24 @@ header, div, p, img, section, article {
 	}
 }
 
+@mixin content-page {
+	/* for blog posts and text content pages */
+	padding: 0;
+	margin-bottom: 50px;
+
+
+    @media (min-width: $medium-min-width) {
+		@include grid-push(1);
+		@include grid-column(7);
+	}
+
+    @media (min-width: $large-min-width) {
+		@include grid-push(2);
+		@include grid-column(8);
+	}
+}
+
+
 /* container with max-width for large, medium, and small viewports */
 .responsive-container {
     max-width: $large-content-width;
@@ -127,12 +145,18 @@ div.spacer {
 	padding: 1px 5px;
 }
 
+@mixin cdh-icon($name) {
+	background-image: url('../img/cdh-icons/#{$name}.svg');
+}
+
+
 article.landing-page {
 	/* undo default body margin to clear top nav */
 	margin-top: -($header-nav-height*2);
     @media (max-width: $small-max-width) {
     	margin-top: -120px;  /* ?? */
     }
+
 	// padding-top: 90px;
 	width: 100%;
 	position: relative;
@@ -229,7 +253,7 @@ article.landing-page {
 	}
 
 	.attachments {
-		background-color: white;
+		margin-top: 50px;
 	}
 
 }
@@ -241,6 +265,7 @@ article.landing-page {
 	@media (min-width: $medium-min-width) {
 		@include grid-container;
 	}
+
 }
 
 
@@ -590,7 +615,7 @@ $event-card-img-height: 240px;
 			right: 55px;
 			width: 30px;
 			height: 30px;
-			background-image: url('../img/cdh-icons/link.svg');
+			@include cdh-icon('link');
 			background-repeat: no-repeat;
 			background-color: transparent;
 		}
@@ -676,7 +701,7 @@ $event-card-img-height: 240px;
     /* attachment cards */
 	&.attachment {
 		@include small-card;
-		background: none;
+		background: white;
 		position: relative;
 
 		/* use this to make the card square -
@@ -725,7 +750,7 @@ $event-card-img-height: 240px;
 				right: 15px;
 				width: 42px;
 				height: 52px;
-				background-image: url('../img/cdh-icons/doc.svg');
+				@include cdh-icon('doc');
 				background-size: contain;
 				background-repeat: no-repeat;
 			}
@@ -734,19 +759,61 @@ $event-card-img-height: 240px;
 		/* variant icons */
 		&.pdf {
 			a::after {
-				background-image: url('../img/cdh-icons/pdf.svg');
+				@include cdh-icon('pdf');
 			}
 		}
 		&.video {
 			a::after {
-				background-image: url('../img/cdh-icons/vid.svg');
+				@include cdh-icon('vid');
 			}
 		}
 		&.url {
 			a::after {
-				background-image: url('../img/cdh-icons/link.svg');
+				@include cdh-icon('link');
 			}
 		}
+		&.people {
+			a::after {
+				@include cdh-icon('ppl');
+			}
+		}
+		&.cal {
+			a::after {
+				@include cdh-icon('cal');
+			}
+		}
+		&.folder {
+			a::after {
+				@include cdh-icon('folder');
+			}
+		}
+		&.email {
+			a::after {
+				@include cdh-icon('email');
+			}
+		}
+		&.grant {
+			a::after {
+				@include cdh-icon('grant');
+			}
+		}
+		&.seed {
+			a::after {
+				@include cdh-icon('seed');
+			}
+		}
+		&.medal {
+			a::after {
+				@include cdh-icon('medal');
+			}
+		}
+		&.location {
+			a::after {
+				@include cdh-icon('location');
+			}
+		}
+
+
 	}
 
 }
@@ -759,6 +826,11 @@ $event-card-img-height: 240px;
 	h2 {
 		@include full-grid-width;
 	}
+
+	.richtext {
+		@include content-page;
+	}
+
 }
 
 @mixin header-with-icon {
@@ -801,22 +873,22 @@ $event-card-img-height: 240px;
 }
 
 .events > h2, .events h1 {
-	background-image: url('../img/cdh-icons/cal.svg');
+	@include cdh-icon('cal');
 	@include header-with-icon;
 }
 
 .projects > h2, .projects h1 {
-	background-image: url('../img/cdh-icons/folder.svg');
+	@include cdh-icon('folder');
 	@include header-with-icon;
 }
 
 .people > h2, .people h1 {
-	background-image: url('../img/cdh-icons/ppl.svg');
+	@include cdh-icon('ppl');
 	@include header-with-icon;
 }
 
 .blogposts h1 {
-	background-image: url('../img/cdh-icons/doc.svg');
+	@include cdh-icon('doc');
 	@include header-with-icon;
 }
 
@@ -1055,7 +1127,7 @@ $event-card-img-height: 240px;
 
 		/* icons for different link types */
 		li.website a {
-			background-image: url('../img/cdh-icons/link.svg');
+			@include cdh-icon('link');
 			background-repeat: no-repeat;
 			background-size: 30px 30px;
 			text-indent: 35px;  /* padding pushes the grid */
@@ -1301,7 +1373,7 @@ $event-card-img-height: 240px;
     		margin-top: 37px;
     		padding-top: 75px;
     		display: inline-block;
-			background-image: url('../img/cdh-icons/cal.svg');
+			@include cdh-icon('cal');
 			background-size: 50px 54px;
 			background-repeat: no-repeat;
     	}
@@ -1381,22 +1453,6 @@ section.blogposts, section.people, section.events, section.projects {
 	}
 }
 
-@mixin content-page {
-	/* for blog posts and text content pages */
-	padding: 0;
-	margin-bottom: 50px;
-
-
-    @media (min-width: $medium-min-width) {
-		@include grid-push(1);
-		@include grid-column(7);
-	}
-
-    @media (min-width: $large-min-width) {
-		@include grid-push(2);
-		@include grid-column(8);
-	}
-}
 
 
 body.blogpost {
@@ -1426,12 +1482,31 @@ body.blogpost {
 			margin-bottom: 50px;
 
 			.authors {
-				padding-right: 37px;
 				display: inline-block;
 
+				/* commas after authors names except last author */
+				&::after {
+					content: ", ";
+				}
 				@media (max-width: $small-max-width) {
 					display: block;
-					padding-right: 0;
+
+					/* no commas on mobile */
+					&::after {
+						content: "";
+					}
+				}
+
+				&:last-of-type::after {
+					content: "";
+				}
+			}
+
+
+			.date-published {
+				padding-left: 40px;
+				@media (max-width: $small-max-width) {
+					padding-left: 0;
 				}
 			}
 		}

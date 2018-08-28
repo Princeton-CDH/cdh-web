@@ -354,7 +354,7 @@ PACKAGE_NAME_GRAPPELLI = "grappelli_safe"
 # configure local nav templates so that page.in_menu works properly
 PAGE_MENU_TEMPLATES = (
     (1, "Top navigation bar", "snippets/primary_navigation.html"),
-    (2, "Left-hand tree", "pages/menus/tree.html"),  # mezzanine default
+    (2, "Show on parent page as attachment card", "snippets/child_pages.html"),
     (3, "Footer", "snippets/footer_menu.html"),
 )
 

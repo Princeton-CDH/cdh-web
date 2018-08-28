@@ -1,0 +1,101 @@
+[
+{
+  "model": "pages.page",
+  "pk": 3,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "About",
+    "slug": "about",
+    "_meta_title": null,
+    "description": "The Center for Digital Humanities&nbsp;is an interdisciplinary research center and academic unit within the Princeton University Library. At the CDH we embrace an inclusive understanding of DH that respects and investigates the myriad ways digital methods and technologies are opening new avenues for research into the human experience, past and present.&nbsp;",
+    "gen_description": true,
+    "created": "2018-08-27T15:34:47.109Z",
+    "updated": "2018-08-27T15:34:47.109Z",
+    "status": 2,
+    "publish_date": "2018-08-27T15:34:47.085Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": true,
+    "_order": 0,
+    "content_model": "richtextpage",
+    "parent": null,
+    "in_menus": "1,2,3",
+    "titles": "About",
+    "login_required": false
+  }
+},
+{
+  "model": "pages.page",
+  "pk": 4,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "Annual Report",
+    "slug": "about/annual-report",
+    "_meta_title": null,
+    "description": "In the span of five years, digital humanities at Princeton has grown from a small initiative led by a handful of faculty members, graduate students, staffers, and librarians, all meeting in a college residence dining room, to a world-class research center housed in a gorgeous new space in Firestone Library.",
+    "gen_description": true,
+    "created": "2018-08-27T15:35:08.688Z",
+    "updated": "2018-08-27T15:35:08.711Z",
+    "status": 2,
+    "publish_date": "2018-08-27T15:35:08.680Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": true,
+    "_order": 0,
+    "content_model": "richtextpage",
+    "parent": 3,
+    "in_menus": "1,2,3",
+    "titles": "About / Annual Report",
+    "login_required": false
+  }
+},
+{
+  "model": "pages.page",
+  "pk": 5,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "Home",
+    "slug": "/",
+    "_meta_title": null,
+    "description": "The Center for Digital Humanities&nbsp;is an interdisciplinary research center and academic unit within the Princeton University Library. At the CDH we embrace an inclusive understanding of DH that respects and investigates the myriad ways digital methods and technologies are opening new avenues for research into the human experience, past and present.&nbsp;",
+    "gen_description": true,
+    "created": "2018-08-27T21:23:06.344Z",
+    "updated": "2018-08-27T21:23:06.344Z",
+    "status": 2,
+    "publish_date": "2018-08-27T21:23:06.344Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": true,
+    "_order": 1,
+    "content_model": "richtextpage",
+    "parent": null,
+    "in_menus": "1,2,3",
+    "titles": "Home",
+    "login_required": false
+  }
+},
+{
+  "model": "pages.richtextpage",
+  "pk": 3,
+  "fields": {
+    "content": "<p>The Center for Digital Humanities&nbsp;is an interdisciplinary research center and academic unit within the Princeton University Library. At the CDH we embrace an inclusive understanding of DH that respects and investigates the myriad ways digital methods and technologies are opening new avenues for research into the human experience, past and present.&nbsp;</p>"
+  }
+},
+{
+  "model": "pages.richtextpage",
+  "pk": 4,
+  "fields": {
+    "content": "<p>In the span of five years, digital humanities at Princeton has grown from a small initiative led by a handful of faculty members, graduate students, staffers, and librarians, all meeting in a college residence dining room, to a world-class research center housed in a gorgeous new space in Firestone Library.</p>"
+  }
+},
+{
+  "model": "pages.richtextpage",
+  "pk": 5,
+  "fields": {
+    "content": "<p>The Center for Digital Humanities&nbsp;is an interdisciplinary research center and academic unit within the Princeton University Library. At the CDH we embrace an inclusive understanding of DH that respects and investigates the myriad ways digital methods and technologies are opening new avenues for research into the human experience, past and present.&nbsp;</p>"
+  }
+}
+]

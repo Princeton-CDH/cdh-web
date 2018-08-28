@@ -69,6 +69,11 @@
         {% block main %}{% endblock %}
     </div>
 
+    {# display child pages as attachments if this page has any children #}
+    {% if page.children.exists %}
+        {% page_menu page 'snippets/child_pages.html' %}
+    {% endif %}
+
     {% if page.attachments.exists %}
         {% include 'snippets/attachments.html' with attachments=page.attachments.all %}
     {% endif %}
