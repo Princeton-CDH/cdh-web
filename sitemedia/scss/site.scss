@@ -1237,9 +1237,8 @@ $event-card-img-height: 240px;
     .recent-posts {
         margin-top: 50px;
         
-        .blogpost .title {
-            font-family: $font-stack-headline;
-            font-style: normal;
+        .blogpost h3 {
+            font-size: 20px;
         }
     }
 

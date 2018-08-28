@@ -1,0 +1,38 @@
+{% for post in blogposts %}
+<div class="blogpost">
+    <header>
+        <a href="{{ post.get_absolute_url }}">
+            {# h3 for profile, h2 elsewhere #}
+            {% if profile %}
+            <h3>{{ post.title }}</h3>
+            {% else %}
+            <h2>{{ post.title }}</h2>
+            {% endif %}
+        </a>
+        <div class="byline">
+            {# if on archive page or there are multiple authors, show them #}
+            {% if not profile or post.users.count > 1 %}
+            <div class="authors">
+                {% if profile %}
+                <span>with </span>
+                {% endif %}
+                {% for author in post.users.all %}
+                    {# on profile page, we don't need to show author if it's the profile user #}
+                    {% if not profile or author.id is not profile.user.id %}
+                    <span property="schema:author" typeof="schema:Person">
+                        <a {% if author.profile %}property="schema:url" href="{{ author.profile.get_absolute_url }}"{% endif %}>
+                        <span property="schema:name">{{ author }}</span></a>{% if not forloop.last %}, {% endif %}
+                    </span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            {% endif %}
+            <span class="date-published">{{ post.publish_date|date:"F j, Y" }}</span>
+        </div>
+    </header>
+    {# don't display descriptions on profile #}
+    {% if not profile %}
+    <div>{{ post.description|safe }}</div>
+    {% endif %}
+</div>
+{% endfor %}

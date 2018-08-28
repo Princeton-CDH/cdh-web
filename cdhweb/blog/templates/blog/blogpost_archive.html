@@ -24,30 +24,8 @@
   </ul>
 </div>
 
+{% include 'blog/blogpost_list.html' %}
 
-
-{% for blogpost in blogposts %}
-{# TODO: convert to snippet ?  some overlap with blogpost detail #}
-<div class="blogpost">
-    <header>
-    <a href="{{ blogpost.get_absolute_url }}"><h2>{{ blogpost.title }}</h2></a>
-
-    <div class="byline">
-    {% for author in blogpost.users.all %}
-        <div class="authors">
-        <span property="schema:author" typeof="schema:Person">
-            <a {% if author.profile %}property="schema:url" href="{{ author.profile.get_absolute_url }}"{% endif %}>
-            <span property="schema:name">{{ author }}</span></a>{% if not forloop.last %}, {% endif %}
-        </span>
-    </div>
-    {% endfor %}
-    <span class="date-published">{{ blogpost.publish_date|date:"F j, Y" }}</span>
-    </div>
-    </header>
-
-    <div>{{ blogpost.description }}</div>
-</div>
-{% endfor %}
 </section>
 
 {% if is_paginated %}

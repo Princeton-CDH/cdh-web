@@ -48,30 +48,7 @@
 {% if recent_posts %}
 <div class="recent-posts">
     <h2>Recent Posts</h2>
-    {% for post in recent_posts %}
-    <div class="blogpost">
-        <header>
-            <a href="{{ post.get_absolute_url }}"><span class="title">{{ post.title }}</span></a>
-            <div class="byline">
-                {# show other authors if the user isn't the only author #}
-                {% if post.users.count > 1 %}
-                <div class="authors">
-                    <span>with </span>
-                    {% for author in post.users.all %}
-                        {% if author.id is not profile.user.id %}
-                        <span property="schema:author" typeof="schema:Person">
-                            <a {% if author.profile %}property="schema:url" href="{{ author.profile.get_absolute_url }}"{% endif %}>
-                            <span property="schema:name">{{ author }}</span></a>{% if not forloop.last %}, {% endif %}
-                        </span>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-                {% endif %}
-                <span class="date-published">{{ post.publish_date|date:"F j, Y" }}</span>
-            </div>
-        </header>
-    </div>
-    {% endfor %}
+    {% include 'blog/blogpost_list.html' with blogposts=recent_posts %}
 </div>
 {% endif %}
 
