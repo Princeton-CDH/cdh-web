@@ -58,9 +58,13 @@ class ProfileListView(ProfileMixinView, ListView, LastModifiedListMixin):
     def get_context_data(self):
         context = super().get_context_data()
         # update context to display current and past people separately
+        current = self.object_list.current()
+        # filter past based current ids, rather than trying to do the complicated
+        # query to find not current people
+        past = self.object_list.exclude(id__in=current.values('id'))
         context.update({
-            'current': self.object_list.current(),
-            'past': self.object_list.not_current(),
+            'current': current,
+            'past': past,
             'title': self.page_title,
             'past_title': self.past_title,
             'archive_nav_urls': [
