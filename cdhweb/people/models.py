@@ -176,38 +176,6 @@ class ProfileQuerySet(PublishedQuerySetMixin):
         return self.filter(models.Q(self._current_position_query()) |
                            models.Q(self._current_grant_query()))
 
-    def not_current(self):
-        '''Return profiles for users who do not have a current position *or*
-        a current grant, based on start and end dates: either no end date
-        set or an end date in the future.
-        '''
-        today = timezone.now()
-        # NOTE: due to limitations with the exclude filter, this query
-        # cannot be handled with an exclude of the current position and grant queries
-
-        # - annotate to find the most recent position and grant end dates
-        # find either:
-        #  - people with no unset end date and last position end date before today
-        # OR
-        # - people with a project grant with no unset end dates and last
-        #   end date is before today
-        return self.annotate(max_position_end=models.Max('user__positions__end_date'),
-                             max_grant_end=models.Max('user__membership__grant__end_date')) \
-                   .filter(
-                       (~models.Q(user__positions__end_date__isnull=True) &
-                        models.Q(max_position_end__lt=today)) |
-                       (models.Q(user__membership__role__title='Project Director') &
-                        # ~models.Q(user__membership__grant__end_date__isnull=True) &
-                        models.Q(max_grant_end__lt=today)
-                       )
-                   )
-
-        # FIXME: this query will fail for a grant with an unset end date,
-        # but the query errors when the not filter is included:
-        #     django.db.utils.OperationalError: (1054, "Unknown column 'test_cdhweb.auth_user.id' in 'where clause'")
-        # Possiblely a django bug that we can revisit when we upgrade to a newer version?
-
-
     def order_by_position(self):
         '''order by job title sort order and then by start date'''
         # annotate to avoid duplicates in the queryset due to multiple positions
