@@ -46,6 +46,10 @@ class TestDateRange(TestCase):
         span.end_date = date.today() - timedelta(days=3)
         assert not span.is_current
 
+        # end date = today, current
+        span.end_date = date.today()
+        assert span.is_current
+
         # start date in future
         span.start_date = date.today() + timedelta(days=3)
         assert not span.is_current

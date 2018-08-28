@@ -163,8 +163,8 @@ class ProfileQuerySet(PublishedQuerySetMixin):
         today = timezone.now()
         return (
             models.Q(user__membership__role__title='Project Director') &
-            (models.Q(user__membership__grant__start_date__lt=today) &
-             (models.Q(user__membership__grant__end_date__gt=today) |
+            (models.Q(user__membership__grant__start_date__lte=today) &
+             (models.Q(user__membership__grant__end_date__gte=today) |
               models.Q(user__membership__grant__end_date__isnull=True))
             )
         )

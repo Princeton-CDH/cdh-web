@@ -200,11 +200,18 @@ class ProfileQuerySetTest(TestCase):
                                   role=proj_director)
         assert grad_profile in Profile.objects.current()
 
-        # set grant end date to future - still current
+        # end date in future also considered current
         cur_post.end_date = date.today() + timedelta(days=30)
+        cur_post.save()
         assert grad_profile in Profile.objects.current()
         # set grant end date to past - no longer current
         cur_post.end_date = date.today() - timedelta(days=30)
+        cur_post.save()
+        assert grad_profile in Profile.objects.current()
+
+        # end today = still current
+        cur_post.end_date = date.today()
+        cur_post.save()
         assert grad_profile in Profile.objects.current()
 
     def test_order_by_position(self):

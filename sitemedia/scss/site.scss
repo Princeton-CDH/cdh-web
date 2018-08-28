@@ -611,13 +611,28 @@ $event-card-img-height: 240px;
 		a.external {
 			position: absolute;
 			display: inline-block;
-			top: -35px;
+			top: -55px;
 			right: 55px;
-			width: 30px;
-			height: 30px;
-			@include cdh-icon('link');
-			background-repeat: no-repeat;
+			width: 40px;
+			// height: 30px;
 			background-color: transparent;
+
+			/* NOTE: using font-awesome link icon instead of
+   				CDH external link for better recognizability */
+			&::before {
+				@include fa-icon;
+				@extend .fas;
+	        	content: fa-content($fa-var-link);
+
+			    text-align: center;
+			    color: $dark-grey;
+			    // color: black;
+			    text-shadow: 2px 2px $cdh-blue;
+			}
+
+			// @include cdh-icon('link');
+			// background-repeat: no-repeat;
+
 		}
 
 		.cdh-built {
@@ -1594,6 +1609,21 @@ body.richtextpage {
 		> div, h1, header {
 			@include content-page;
 		}
+	}
+
+	&.consult {
+		section {
+			@include content-page;
+
+			iframe {
+				margin: 0;
+				padding: 0;
+				border: 0;
+				width: 100%;
+				height: 750px;
+			}
+		}
+
 	}
 }
 

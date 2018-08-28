@@ -125,7 +125,7 @@ class DateRange(models.Model):
         in the future or not set'''
         today = date.today()
         return self.start_date <= today and \
-            (not self.end_date or self.end_date > today)
+            (not self.end_date or self.end_date >= today)
 
     @property
     def years(self):

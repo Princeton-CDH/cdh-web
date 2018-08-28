@@ -1,0 +1,12 @@
+{% extends "pages/richtextpage.html" %}
+
+{% block bodyattrs %}class="richtextpage consult"{% endblock %}
+
+{% block main %}
+{{ block.super }}
+
+{# embed google form for consultation request at bottom of page #}
+<section>
+<iframe src="https://docs.google.com/forms/d/e/1FAIpQLScACKxVJVlV9JT6nU18DeoBg7rO_pO78i3ZILkWVaTV3yfqTQ/viewform?embedded=true">Loading...</iframe>
+</section>
+{% endblock %}
