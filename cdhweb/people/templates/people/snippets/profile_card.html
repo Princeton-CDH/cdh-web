@@ -7,7 +7,9 @@
         <div class="content">
         {% with position=profile.user.positions.first %}
         <p class="title">
-            {% if position and show_position %}
+            {% if show_affiliation %}
+                {# show title, department #}
+            {% elif position and show_position %}
                 {% if not position.is_current %}{{ position.years }}<br/>{% endif %}
                 {{ profile.user.positions.first.title|default:'' }}
             {% else %} {# if no CDH position or on affiliate page, display grant role #}

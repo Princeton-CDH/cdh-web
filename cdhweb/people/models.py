@@ -155,7 +155,25 @@ class ProfileQuerySet(PublishedQuerySetMixin):
         return self.filter(pu_status='fac',
                            user__membership__role__title='Project Director')
 
+    exec_committee_titles = [
+        'Executive Committee Member',
+        'Sits with Executive Committee'
+    ]
+
+    def executive_committee(self):
+        '''Executive committee members; based on position title.'''
+        return self.filter(user__positions__title__title__in=self.exec_committee_titles)
+
+    def exec_member(self):
+        '''Executive committee members'''
+        return self.filter(user__positions__title__title='Executive Committee Member')
+
+    def sits_with_exec(self):
+        '''Non-faculty Executive committee members'''
+        return self.filter(user__positions__title__title='Sits with Executive Committee')
+
     def grant_years(self):
+        '''Annotate with first start and last end grant year.'''
         return self.filter(user__membership__role__title='Project Director') \
                    .annotate(first_start=models.Min('user__membership__grant__start_date'),
                              last_end=models.Max('user__membership__grant__end_date')) \

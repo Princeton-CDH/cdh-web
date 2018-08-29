@@ -86,6 +86,7 @@ class ProfileListView(ProfileMixinView, ListView, LastModifiedListMixin):
                 ('Postdoctoral Fellows', reverse('people:postdocs')),
                 ('Students', reverse('people:students')),
                 ('Faculty Affiliates', reverse('people:faculty')),
+                ('Executive Committee', reverse('people:exec-committee')),
             ],
             'show_position': self.show_position
         })
@@ -150,5 +151,31 @@ class FacultyListView(ProfileListView):
     def get_current_profiles(self):
         # we only care about current grants, position doesn't matter
         return self.object_list.current_grant()
+
+
+class ExecListView(ProfileListView):
+    '''Display current and past executive committee members.'''
+    page_title = 'Executive Committee'
+    past_title = 'Former {}'.format(page_title)
+
+    def get_queryset(self):
+        # filter to exec members
+        return super().get_queryset().executive_committee()
+
+    def get_current_profiles(self):
+        # we only care about current position, grant doesn't matter
+        return self.object_list.current_position()
+
+    def get_context_data(self):
+        context = super().get_context_data()
+        # 'Executive Committee Member',
+        current = context['current']
+        context.update({
+            'current': current.exec_member(),
+            'sits_with': current.sits_with_exec(),
+            # FIXME: will overlap with external speaker functionality
+            'show_affiliation': True
+        })
+        return context
 
 
