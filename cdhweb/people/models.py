@@ -131,23 +131,20 @@ class ProfileQuerySet(PublishedQuerySetMixin):
         '''Exclude CDH Postdoctoral Fellows, based on role title'''
         return self.exclude(user__positions__title__title__icontains=self.postdoc_title)
 
-    #: position titles that indicate a staff person is a student
-    student_titles = ['Graduate Fellow', 'Graduate Assistant',
-                      'Undergraduate Assistant']
     #: student status codes from LDAP
     student_pu_status = ['graduate', 'undergraduate']
 
-    def students(self):
-        '''Return CDH student assistants and grantees based on Project Director
-        project role.'''
+    def student_affiliates(self):
+        '''Return CDH student staff members and grantees based on Project Director
+        role.'''
         return self.filter(
-            models.Q(user__positions__title__title__in=self.student_titles) |
-            ((models.Q(pu_status__in=self.student_pu_status))
-             & models.Q(user__membership__role__title='Project Director')))
+            models.Q(pu_status__in=self.student_pu_status) &
+            (models.Q(is_staff=True) |
+             models.Q(user__membership__role__title='Project Director')))
 
-    def not_student_staff(self):
-        '''Filter out people with CDH student titles'''
-        return self.exclude(user__positions__title__title__in=self.student_titles)
+    def not_students(self):
+        '''Filter out graduate and undergraduates based on PU status'''
+        return self.exclude(pu_status__in=self.student_pu_status)
 
     def faculty_affiliates(self):
         '''Faculty affiliates based on PU status and Project Director
@@ -173,10 +170,18 @@ class ProfileQuerySet(PublishedQuerySetMixin):
         return self.filter(user__positions__title__title='Sits with Executive Committee')
 
     def grant_years(self):
-        '''Annotate with first start and last end grant year.'''
-        return self.filter(user__membership__role__title='Project Director') \
-                   .annotate(first_start=models.Min('user__membership__grant__start_date'),
-                             last_end=models.Max('user__membership__grant__end_date')) \
+        '''Annotate with first start and last end grant year for grants
+        that a person was project director.'''
+        # NOTE: filters within the aggregation query on project director
+        # but not on the entire query so that e.g. on the students
+        # page student staff without grants are still included
+        return self.annotate(
+            first_start=models.Min(models.Case(
+                models.When(user__membership__role__title='Project Director',
+                            then='user__membership__grant__start_date'))),
+            last_end=models.Max(models.Case(
+                models.When(user__membership__role__title='Project Director',
+                            then='user__membership__grant__end_date'))))
 
 
     def _current_position_query(self):

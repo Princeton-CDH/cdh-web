@@ -270,36 +270,39 @@ class ProfileQuerySetTest(TestCase):
             start_date='2016-12-01')
         assert postdoc_profile not in Profile.objects.not_postdocs()
 
-    def test_students(self):
+    def test_student_affiliates(self):
         # test student profile filter
 
         # staff person - not student
         staffer = Person.objects.create(username='staffer')
-        staff_profile = Profile.objects.create(user=staffer)
+        staff_profile = Profile.objects.create(user=staffer, pu_status='stf',
+            is_staff=True)
         staff_title = Title.objects.create(title='staff')
         Position.objects.create(user=staffer, title=staff_title,
                                 start_date='2016-06-01')
-        assert staff_profile not in Profile.objects.students()
+        assert staff_profile not in Profile.objects.student_affiliates()
 
         # grad, undergrad assistant
         grad = Person.objects.create(username='grad')
-        grad_profile = Profile.objects.create(user=grad)
-        grad_title = Title.objects.create(title='Graduate Assistant')
-        Position.objects.create(user=grad, title=grad_title,
-                                start_date='2016-06-01')
+        grad_profile = Profile.objects.create(user=grad, pu_status='graduate',
+            is_staff=True)
+        # grad_title = Title.objects.create(title='Graduate Assistant')
+        # Position.objects.create(user=grad, title=grad_title,
+                                # start_date='2016-06-01')
         undergrad = Person.objects.create(username='undergrad')
-        undergrad_profile = Profile.objects.create(user=undergrad)
-        undergrad_title = Title.objects.create(title='Undergraduate Assistant')
-        Position.objects.create(user=undergrad, title=undergrad_title,
-                                start_date='2016-06-01')
-        assert grad_profile in Profile.objects.students()
-        assert undergrad_profile in Profile.objects.students()
+        undergrad_profile = Profile.objects.create(user=undergrad, is_staff=True,
+                                                   pu_status='undergraduate')
+        # undergrad_title = Title.objects.create(title='Undergraduate Assistant')
+        # Position.objects.create(user=undergrad, title=undergrad_title,
+                                # start_date='2016-06-01')
+        assert grad_profile in Profile.objects.student_affiliates()
+        assert undergrad_profile in Profile.objects.student_affiliates()
 
         # person with student status with a project
         grad2 = Person.objects.create(username='tom')
         grad2_profile = Profile.objects.create(user=grad2, pu_status='graduate')
         # graduate flag but no project
-        assert grad2_profile not in Profile.objects.students()
+        assert grad2_profile not in Profile.objects.student_affiliates()
         # project role but not director
         gradproj = Project.objects.create(title='Chinese Exchange Poems')
         researcher = Role.objects.create(title='Researcher')
@@ -308,24 +311,24 @@ class ProfileQuerySetTest(TestCase):
             start_date='2015-01-1', end_date='2016-01-01')
         Membership.objects.create(project=gradproj,
             user=grad2, grant=grant, role=researcher)
-        assert grad2_profile not in Profile.objects.students()
+        assert grad2_profile not in Profile.objects.student_affiliates()
 
         # project director
         proj_director = Role.objects.create(title='Project Director')
         Membership.objects.create(project=gradproj,
             user=grad2, grant=grant, role=proj_director)
 
-        assert grad2_profile in Profile.objects.students()
+        assert grad2_profile in Profile.objects.student_affiliates()
 
         # also valid with undergrad flag
         grad2_profile.pu_status = 'undergraduate'
         grad2_profile.save()
-        assert grad2_profile in Profile.objects.students()
+        assert grad2_profile in Profile.objects.student_affiliates()
 
         # but not with anything else
         grad2_profile.pu_status = 'stf'
         grad2_profile.save()
-        assert grad2_profile not in Profile.objects.students()
+        assert grad2_profile not in Profile.objects.student_affiliates()
 
     def test_faculty_affiliates(self):
         # test faculty affiliates filter
@@ -501,14 +504,15 @@ class TestViews(TestCase):
         grad = Person.objects.create(username='grad')
         grad_profile = Profile.objects.create(
             user=grad, slug='grad', is_staff=True, title='Graduate Student',
-            status=CONTENT_STATUS_PUBLISHED)
+            status=CONTENT_STATUS_PUBLISHED, pu_status='graduate')
         grad_title = Title.objects.create(title='Graduate Assistant')
         Position.objects.create(user=grad, title=grad_title,
                                 start_date='2016-06-01')
         undergrad = Person.objects.create(username='undergrad')
         undergrad_profile = Profile.objects.create(
             user=undergrad, slug='undergrad', is_staff=True,
-            title='Undergraduate Student', status=CONTENT_STATUS_PUBLISHED)
+            title='Undergraduate Student', status=CONTENT_STATUS_PUBLISHED,
+            pu_status='undergraduate')
         undergrad_title = Title.objects.create(title='Undergraduate Assistant')
         Position.objects.create(user=undergrad, title=undergrad_title,
                                 start_date='2015-06-01', end_date='2016-06-01')
