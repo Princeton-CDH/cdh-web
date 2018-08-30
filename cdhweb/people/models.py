@@ -117,7 +117,14 @@ class Person(User):
 
 class ProfileQuerySet(PublishedQuerySetMixin):
 
+    #: position titles that indicate a person is a postdoc
     postdoc_title = 'Postdoctoral Fellow'
+
+    #: position titles that indicate a staff person is a student
+    student_titles = ['Graduate Fellow', 'Graduate Assistant',
+                      'Undergraduate Assistant']
+    #: student status codes from LDAP
+    student_pu_status = ['graduate', 'undergraduate']
 
     def staff(self):
         '''Return only CDH staff members'''
@@ -131,12 +138,6 @@ class ProfileQuerySet(PublishedQuerySetMixin):
         '''Exclude CDH Postdoctoral Fellows, based on role title'''
         return self.exclude(user__positions__title__title__icontains=self.postdoc_title)
 
-    #: position titles that indicate a staff person is a student
-    student_titles = ['Graduate Fellow', 'Graduate Assistant',
-                      'Undergraduate Assistant']
-    #: student status codes from LDAP
-    student_pu_status = ['graduate', 'undergraduate']
-
     def students(self):
         '''Return CDH student assistants and grantees based on Project Director
         project role.'''
@@ -145,9 +146,16 @@ class ProfileQuerySet(PublishedQuerySetMixin):
             ((models.Q(pu_status__in=self.student_pu_status))
              & models.Q(user__membership__role__title='Project Director')))
 
-    def not_student_staff(self):
+    def not_students(self):
         '''Filter out people with CDH student titles'''
         return self.exclude(user__positions__title__title__in=self.student_titles)
+
+    def speakers(self):
+        '''Return external speakers at CDH events.'''
+        return self.filter(
+            models.Q(user__event__isnull=False) &
+            models.Q(pu_status='external')
+        )
 
     def _current_position_query(self):
         # query to find a user with a current cdh position
@@ -169,12 +177,16 @@ class ProfileQuerySet(PublishedQuerySetMixin):
             )
         )
 
+    def _upcoming_speaker_query(self):
+        return models.Q(user__event__end_time__gte=timezone.now())
+
     def current(self):
-        '''Return profiles for users with a current position *or*
-        a current grant, based on start and end dates: either no end date
-        set or an end date in the future.'''
+        '''Return profiles for users with a current position,
+        a current grant, or an upcoming event,
+        based on start and end dates.'''
         return self.filter(models.Q(self._current_position_query()) |
-                           models.Q(self._current_grant_query()))
+                           models.Q(self._current_grant_query()) |
+                           models.Q(self._upcoming_speaker_query()))
 
     def order_by_position(self):
         '''order by job title sort order and then by start date'''

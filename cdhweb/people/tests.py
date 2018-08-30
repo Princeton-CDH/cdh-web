@@ -12,6 +12,7 @@ from cdhweb.people.models import Title, Person, Position, \
     init_profile_from_ldap, Profile
 from cdhweb.projects.models import Project, Grant, GrantType, Role, Membership
 from cdhweb.resources.models import ResourceType, UserResource
+from cdhweb.events.models import Event
 
 
 @pytest.mark.django_db
@@ -326,6 +327,9 @@ class ProfileQuerySetTest(TestCase):
         grad2_profile.pu_status = 'stf'
         grad2_profile.save()
         assert grad2_profile not in Profile.objects.students()
+
+    def test_speakers(self):
+        pass
 
 
 class TestPosition(TestCase):

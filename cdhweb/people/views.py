@@ -52,8 +52,10 @@ class ProfileDetailView(ProfileMixinView, DetailView, LastModifiedMixin):
 class ProfileListView(ProfileMixinView, ListView, LastModifiedListMixin):
     '''Base class for profile list views'''
 
-    #: page title for html and label for main people
+    #: title for this category of people
     page_title = ''
+    #: title for non-past people in this category of people
+    current_title = ''
     #: label for past people in this category of people
     past_title = ''
 
@@ -73,10 +75,12 @@ class ProfileListView(ProfileMixinView, ListView, LastModifiedListMixin):
             'past': past,
             'title': self.page_title,
             'past_title': self.past_title,
+            'current_title': self.current_title or self.page_title, # use main title as default
             'archive_nav_urls': [
                 ('Staff', reverse('people:staff')),
                 ('Postdoctoral Fellows', reverse('people:postdocs')),
                 ('Students', reverse('people:students')),
+                ('Speakers', reverse('people:speakers')),
             ]
         })
         return context
@@ -91,7 +95,7 @@ class StaffListView(ProfileListView):
         # filter to profiles with staff flag set and exclude postdocs
         # and students
         # (already ordered by job title sort order and then by last name)
-        return super().get_queryset().staff().not_postdocs().not_student_staff()
+        return super().get_queryset().staff().not_postdocs().not_students()
         # NOTE: this won't filter correctly if we ever have someone who
         # goes from a postdoc or student role to a staff position, however
         # filtering only on current role messes up staff alumni
@@ -116,3 +120,24 @@ class StudentListView(ProfileListView):
         # filter to just students
         return super().get_queryset().students()
 
+class SpeakerListView(ProfileListView):
+    '''Display upcoming and past speakers.'''
+    page_title = 'Speakers'
+    current_title = 'Upcoming Speakers' # set a special title for "current"
+    past_title = 'Past Speakers'
+
+    def get_queryset(self):
+        return Profile.objects.speakers()
+
+    def get_context_data(self):
+        context = super().get_context_data()
+        # use distinct() to get around duplication caused by many-many relationship with events
+        current = self.object_list.current().distinct()
+        past = self.object_list.exclude(id__in=current.values('id'))
+
+        context.update({
+            'current': current,
+            'past': past,
+            'show_events': True # show upcoming and past events associated with the speakers
+        })
+        return context
