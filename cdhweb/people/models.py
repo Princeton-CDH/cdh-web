@@ -99,8 +99,11 @@ class Person(User):
     @property
     def latest_grant(self):
         '''most recent grants where this person is project director'''
-        return self.membership_set.filter(role__title='Project Director') \
-                   .order_by('-grant__start_date').first().grant
+        mship = self.membership_set.filter(role__title='Project Director') \
+                    .order_by('-grant__start_date').first()
+        if mship:
+            return mship.grant
+
 
     def __str__(self):
         '''Custom person display to make it easier to choose people
@@ -152,10 +155,10 @@ class ProfileQuerySet(PublishedQuerySetMixin):
         return self.filter(pu_status='fac',
                            user__membership__role__title='Project Director')
 
-    exec_committee_titles = [
-        'Executive Committee Member',
-        'Sits with Executive Committee'
-    ]
+    exec_member = 'Executive Committee Member'
+    with_exec = 'Sits with Executive Committee'
+
+    exec_committee_titles = [exec_member, with_exec]
 
     def executive_committee(self):
         '''Executive committee members; based on position title.'''
@@ -163,11 +166,11 @@ class ProfileQuerySet(PublishedQuerySetMixin):
 
     def exec_member(self):
         '''Executive committee members'''
-        return self.filter(user__positions__title__title='Executive Committee Member')
+        return self.filter(user__positions__title__title=self.exec_member)
 
     def sits_with_exec(self):
         '''Non-faculty Executive committee members'''
-        return self.filter(user__positions__title__title='Sits with Executive Committee')
+        return self.filter(user__positions__title__title=self.with_exec)
 
     def grant_years(self):
         '''Annotate with first start and last end grant year for grants
@@ -182,7 +185,6 @@ class ProfileQuerySet(PublishedQuerySetMixin):
             last_end=models.Max(models.Case(
                 models.When(user__membership__role__title='Project Director',
                             then='user__membership__grant__end_date'))))
-
 
     def _current_position_query(self):
         # query to find a user with a current cdh position
@@ -216,8 +218,15 @@ class ProfileQuerySet(PublishedQuerySetMixin):
         return self.filter(self._current_grant_query())
 
     def current_position(self):
-        '''Return profiles for users with a  current position.'''
+        '''Return profiles for users with a current position.'''
         return self.filter(self._current_position_query())
+
+    def current_position_nonexec(self):
+        '''Return profiles for users with a current position, excluding
+        executive committee positions.'''
+        return self.filter(models.Q(self._current_position_query()) &
+                           ~models.Q(user__positions__title__title__in=self.exec_committee_titles) )
+
 
     def order_by_position(self):
         '''order by job title sort order and then by start date'''
@@ -226,7 +235,7 @@ class ProfileQuerySet(PublishedQuerySetMixin):
         # not be from the same position)
         return self.annotate(max_title=models.Max('user__positions__title__sort_order'),
                              min_start=models.Min('user__positions__start_date')) \
-                   .order_by('max_title', 'min_start')
+                   .order_by('max_title', 'min_start', 'user__last_name')
 
 
 class Profile(Displayable, AdminThumbMixin):
@@ -350,8 +359,8 @@ def init_profile_from_ldap(user, ldapinfo):
         profile.department = str(ldapinfo.ou)
     # Store job title as string.
     # NOTE: we may want to split title and only use the first portion.
-    if ldapinfo.title and not profile.job_title:
-        profile.job_title = str(ldapinfo.title)
+    # if ldapinfo.title and not profile.job_title:
+    profile.job_title = str(ldapinfo.title).split('.')[0]
 
     # always update PU status to current
     profile.pu_status = str(ldapinfo.pustatus)

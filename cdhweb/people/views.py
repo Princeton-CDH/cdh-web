@@ -1,7 +1,4 @@
-from datetime import date
-
 from django.conf import settings
-from django.db.models import Q
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.urls import reverse
@@ -56,8 +53,16 @@ class ProfileListView(ProfileMixinView, ListView, LastModifiedListMixin):
     page_title = ''
     #: label for past people in this category of people
     past_title = ''
-    #: show person positions on profile card (true by default)
-    show_position = True
+    #: show CDH position on profile card (true by default)
+    show_cdh_position = True
+    #: show grant recepient information on profle card (true by default)
+    show_grant = True
+    #: show official job title (false by default)
+    show_job_title = False
+    #: show departmental or instutional affiliation (false by default)
+    show_affiliation = False
+    #: show related events (i.e. for speakers)
+    show_events = False
 
     def get_queryset(self):
         # get published profile ordered by position (job title then start date)
@@ -88,7 +93,12 @@ class ProfileListView(ProfileMixinView, ListView, LastModifiedListMixin):
                 ('Faculty Affiliates', reverse('people:faculty')),
                 ('Executive Committee', reverse('people:exec-committee')),
             ],
-            'show_position': self.show_position
+            # flags for profile card display
+            'show_cdh_position': self.show_cdh_position,
+            'show_grant': self.show_grant,
+            'show_job_title': self.show_job_title,
+            'show_affiliation': self.show_affiliation,
+            'show_events': self.show_events
         })
         return context
 
@@ -97,6 +107,8 @@ class StaffListView(ProfileListView):
     '''Display current and past CDH staff'''
     page_title = 'Staff'
     past_title = 'Staff Alumni'
+    # don't show grant recipient info
+    show_grant = False
 
     def get_queryset(self):
         # filter to profiles with staff flag set and exclude postdocs
@@ -108,8 +120,9 @@ class StaffListView(ProfileListView):
         # filtering only on current role messes up staff alumni
 
     def get_current_profiles(self):
-        # we only care about current position, grant doesn't matter
-        return self.object_list.current_position()
+        # we only care about current position, grant doesn't matter;
+        # filter out past faculty directors who are current exec members
+        return self.object_list.current_position_nonexec()
 
 
 class PostdocListView(ProfileListView):
@@ -142,7 +155,7 @@ class FacultyListView(ProfileListView):
     page_title = 'Faculty Affiliates'
     past_title = 'Past {}'.format(page_title)
     #: do not show person positions; want grant information instead
-    show_position = False
+    show_cdh_position = False
 
     def get_queryset(self):
         # filter to faculty affiliates
@@ -157,6 +170,10 @@ class ExecListView(ProfileListView):
     '''Display current and past executive committee members.'''
     page_title = 'Executive Committee'
     past_title = 'Former {}'.format(page_title)
+    #: do not CDH positions or grants; show job title
+    show_cdh_position = False
+    show_grant = False
+    show_job_title = True
 
     def get_queryset(self):
         # filter to exec members
@@ -173,8 +190,6 @@ class ExecListView(ProfileListView):
         context.update({
             'current': current.exec_member(),
             'sits_with': current.sits_with_exec(),
-            # FIXME: will overlap with external speaker functionality
-            'show_affiliation': True
         })
         return context
 

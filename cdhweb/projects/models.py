@@ -112,7 +112,8 @@ class Project(Displayable, AdminThumbMixin, ExcerptMixin):
 
     def latest_grant(self):
         '''Most recent :class:`Grant`'''
-        return self.grant_set.order_by('-start_date').first()
+        if self.grant_set.count():
+            return self.grant_set.order_by('-start_date').first()
 
     def current_membership(self):
         '''Project members associated with the most recent grant.
