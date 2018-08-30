@@ -7,7 +7,6 @@ from django.utils.text import slugify
 from mezzanine.core.models import CONTENT_STATUS_DRAFT, CONTENT_STATUS_PUBLISHED
 import pytest
 
-from cdhweb.blog.models import BlogPost
 from cdhweb.people.models import Title, Person, Position, \
     init_profile_from_ldap, Profile
 from cdhweb.projects.models import Project, Grant, GrantType, Role, Membership
@@ -21,24 +20,20 @@ class TestTitle(TestCase):
     def test_num_people(self):
         # test counts against fixture data
         faculty_director = Title.objects.filter(title='Faculty Director').first()
-        assert faculty_director.num_people() == 0
+        assert faculty_director.num_people() == 1
         lead_developer = Title.objects.filter(title='Lead Developer').first()
         assert lead_developer.num_people() == 1
 
 
 @pytest.mark.django_db
 class TestPerson(TestCase):
+    fixtures = ['test_people_data.json']
 
     def test_current_title(self):
         # create test person and add two positions
-        staffer = Person.objects.create(username='staff')
-        staff_title = Title.objects.create(title='staff')
-        fellow = Title.objects.create(title='fellow')
-        Position.objects.create(user=staffer, title=fellow,
-            start_date='2015-01-01', end_date='2015-12-31')
-        Position.objects.create(user=staffer, title=staff_title,
-            start_date='2016-06-01')
-        assert staffer.current_title == staff_title
+        staffer = Person.objects.get(username='staff')
+        newest_position = staffer.positions.first()
+        assert staffer.current_title == newest_position.title
 
     def test_str(self):
         # username is used if that's all that's available only
@@ -84,25 +79,25 @@ class TestPerson(TestCase):
         assert pers.website_url == ext_profile_url
 
     def test_profile_url(self):
-        pers = Person.objects.create(username='foo')
+        pers = Person.objects.create(username='pers')
         # no urls
         assert pers.profile_url is None
 
-        # add a website url resource
-        website = ResourceType.objects.get_or_create(name='Website')[0]
-        ext_profile_url = 'http://person.me'
-        UserResource.objects.create(user=pers, resource_type=website,
-                                    url=ext_profile_url)
-        assert pers.profile_url == ext_profile_url
+        # username tom in fixture has a website url resource
+        grad_pi = Person.objects.get(username='tom')
+        ext_profile_url = grad_pi.userresource_set.first().url
+        assert grad_pi.profile_url == ext_profile_url
 
-        # add local profile - takes precedence over external
-        profile = Profile.objects.create(user=pers, is_staff=True, slug='foo',
-                                         status=CONTENT_STATUS_PUBLISHED)
+        # local profile takes precedence over external if is_staff is set
+        grad_pi.profile.is_staff = True
+        grad_pi.profile.status = CONTENT_STATUS_PUBLISHED
+        grad_pi.profile.save()
+        assert grad_pi.profile_url == grad_pi.profile.get_absolute_url()
 
         # non-staff profile, should fall back to external
-        profile.is_staff = False
-        profile.save()
-        assert pers.profile_url == ext_profile_url
+        grad_pi.profile.is_staff = False
+        grad_pi.profile.save()
+        assert grad_pi.profile_url == ext_profile_url
 
 
 class TestProfile(TestCase):
@@ -140,219 +135,125 @@ class TestProfile(TestCase):
 
 @pytest.mark.django_db
 class ProfileQuerySetTest(TestCase):
+    fixtures = ['test_people_data.json']
 
     def test_is_staff(self):
-        staffer = Person.objects.create(username='staffer')
-        staff_profile = Profile.objects.create(user=staffer, is_staff=True)
-        grad = Person.objects.create(username='grad')
-        grad_profile = Profile.objects.create(user=grad, is_staff=False)
+        staffer = Person.objects.get(username='staff')
+        grad_pi = Person.objects.get(username='tom')
 
         staff = Profile.objects.staff()
-        assert staff.count() == 1
-        assert staff_profile in staff
-        assert grad_profile not in staff
+        assert staffer.profile in staff
+        assert grad_pi.profile not in staff
 
     def test_current(self):
-        staffer = Person.objects.create(username='staffer')
-        staff_profile = Profile.objects.create(user=staffer)
-        staff_title = Title.objects.create(title='staff')
-        postdoc = Title.objects.create(title='post-doc')
         # no position - should not be in current
-        assert not Profile.objects.current().exists()
-        # previous post
-        Position.objects.create(user=staffer, title=postdoc,
-                                start_date='2015-01-01', end_date='2015-12-31')
-        assert not Profile.objects.current().exists()
+        staff2 = Person.objects.get(username='staff2')
+        assert staff2.profile not in Profile.objects.current()
 
         # current post - no end date
-        cur_post = Position.objects.create(user=staffer, title=staff_title,
-            start_date='2016-06-01')
-        current_profiles = Profile.objects.all().current()
-        assert current_profiles.exists()
-        assert staff_profile in current_profiles
+        staffer = Person.objects.get(username='staff')
+        assert staffer.profile in Profile.objects.current()
 
         # end date in future also considered current
+        cur_post = staffer.positions.first()
         cur_post.end_date = date.today() + timedelta(days=30)
         cur_post.save()
-        assert current_profiles.exists()
-        assert staff_profile in current_profiles
+        assert staffer.profile in Profile.objects.current()
 
-        staff_profile.delete()
+        # previous position = not current
+        cur_post.delete()
+        assert staffer.profile not in Profile.objects.current()
 
-        # affiliate with current grant project
-        grad = Person.objects.create(username='tom', first_name='Tom')
-        grad_profile = Profile.objects.create(user=grad, pu_status='graduate')
-        # graduate flag but no project
-        assert grad_profile not in Profile.objects.current()
-        # project role but not director
-        gradproj = Project.objects.create(title='Chinese Exchange Poems')
-        researcher = Role.objects.create(title='Researcher')
-        grtype = GrantType.objects.create(grant_type='Sponsored Project')
-        grant = Grant.objects.create(project=gradproj, grant_type=grtype,
-                                     start_date='2015-01-01')
-        Membership.objects.create(project=gradproj, user=grad, grant=grant,
-                                  role=researcher)
-        assert grad_profile not in Profile.objects.current()
-
-        # set as projext director on the same current grant
-        proj_director = Role.objects.create(title='Project Director')
-        Membership.objects.create(project=gradproj, user=grad, grant=grant,
-                                  role=proj_director)
-        assert grad_profile in Profile.objects.current()
-
-        # end date in future also considered current
-        cur_post.end_date = date.today() + timedelta(days=30)
-        cur_post.save()
-        assert grad_profile in Profile.objects.current()
-        # set grant end date to past - no longer current
-        cur_post.end_date = date.today() - timedelta(days=30)
-        cur_post.save()
-        assert grad_profile in Profile.objects.current()
-
+        # grad affiliate with past grant project
+        grad_pi = Person.objects.get(username='tom')
+        assert grad_pi.profile not in Profile.objects.current()
+        grant = grad_pi.latest_grant
+        # no end date = current
+        grant.end_date = None
+        grant.save()
+        assert grad_pi.profile in Profile.objects.current()
+        # end date in future = current
+        grant.end_date = date.today() + timedelta(days=30)
+        grant.save()
+        assert grad_pi.profile in Profile.objects.current()
         # end today = still current
-        cur_post.end_date = date.today()
-        cur_post.save()
-        assert grad_profile in Profile.objects.current()
+        grant.end_date = date.today()
+        grant.save()
+        assert grad_pi.profile in Profile.objects.current()
 
     def test_order_by_position(self):
-        director_title = Title.objects.create(title='director', sort_order=1)
-        staff_title = Title.objects.create(title='staff', sort_order=2)
-
-        director = Person.objects.create(username='director')
-        director_profile = Profile.objects.create(user=director)
-        Position.objects.create(user=director, title=director_title,
-            start_date='2016-06-01')
-
-        staffer = Person.objects.create(username='staffer')
-        staff_profile = Profile.objects.create(user=staffer)
-        cur_post = Position.objects.create(user=staffer, title=staff_title,
-            start_date='2016-06-01')
-
-        profiles = Profile.objects.order_by_position()
+        director = Person.objects.get(username='Meredith')
+        staff = Person.objects.get(username='staff')
+        profiles = Profile.objects.filter(user__username__in=['Meredith', 'staff']) \
+                                  .order_by_position()
         # sort by position title order
-        assert director_profile == profiles[0]
-        assert staff_profile == profiles[1]
+        assert director.profile == profiles[0]
+        assert staff.profile == profiles[1]
 
-        # second staffer with later start
-        staffer2 = Person.objects.create(username='staffer2')
-        staff2_profile = Profile.objects.create(user=staffer2)
-        Position.objects.create(user=staffer2, title=staff_title,
-            start_date='2016-12-01')
+        # second staffer with same title as staffer but later start
+        staffer = Person.objects.get(username='staff')
+        staffer2 = Person.objects.get(username='staff2')
+        Position.objects.create(user=staffer2, title=staffer.current_title,
+                                start_date=date(2016, 12, 1))
         profiles = Profile.objects \
             .filter(user__positions__title__title='staff').order_by_position()
         # should sort by start date, earliest first
-        assert staff_profile == profiles[0]
-        assert staff2_profile == profiles[1]
+        assert staffer.profile == profiles[0]
+        assert staffer2.profile == profiles[1]
 
     def test_postdocs(self):
-        # create test person
-        postdoc = Person.objects.create(username='nora')
-        postdoc_profile = Profile.objects.create(user=postdoc)
-        # no position, not in postdoc filter
-        assert postdoc_profile not in Profile.objects.postdocs()
-
-        # add position, should be in postdoc filter
-        postdoc_title = Title.objects.get_or_create(title='Postdoctoral Fellow')[0]
-        Position.objects.create(user=postdoc, title=postdoc_title,
-            start_date='2016-12-01')
-        assert postdoc_profile in Profile.objects.postdocs()
+        # staff with a position
+        staffer = Person.objects.get(username='staff')
+        # staff with no position
+        staffer2 = Person.objects.get(username='staff2')
+        # postdoc
+        postdoc = Person.objects.get(username='postdoc')
+        assert staffer.profile not in Profile.objects.postdocs()
+        assert staffer2.profile not in Profile.objects.postdocs()
+        assert postdoc.profile in Profile.objects.postdocs()
 
     def test_not_postdocs(self):
-        # create test person
-        postdoc = Person.objects.create(username='jim')
-        postdoc_profile = Profile.objects.create(user=postdoc)
-        # no position, should be in not-postdoc filter
-        assert postdoc_profile in Profile.objects.not_postdocs()
+        # staff with a position
+        staffer = Person.objects.get(username='staff')
+        # staff with no position
+        staffer2 = Person.objects.get(username='staff2')
+        # postdoc
+        postdoc = Person.objects.get(username='postdoc')
 
-        # add position, should no longer be in not-postdoc filter
-        postdoc_title = Title.objects.get_or_create(title='Postdoctoral Fellow')[0]
-        Position.objects.create(user=postdoc, title=postdoc_title,
-            start_date='2016-12-01')
-        assert postdoc_profile not in Profile.objects.not_postdocs()
+        assert staffer.profile in Profile.objects.not_postdocs()
+        assert staffer2.profile in Profile.objects.not_postdocs()
+        assert postdoc.profile not in Profile.objects.not_postdocs()
 
     def test_student_affiliates(self):
-        # test student profile filter
+        staffer = Person.objects.get(username='staff')
+        grad = Person.objects.get(username='grad')
+        undergrad = Person.objects.get(username='undergrad')
+        grad_pi = Person.objects.get(username='tom')
 
-        # staff person - not student
-        staffer = Person.objects.create(username='staffer')
-        staff_profile = Profile.objects.create(user=staffer, pu_status='stf',
-            is_staff=True)
-        staff_title = Title.objects.create(title='staff')
-        Position.objects.create(user=staffer, title=staff_title,
-                                start_date='2016-06-01')
-        assert staff_profile not in Profile.objects.student_affiliates()
+        assert staffer.profile not in Profile.objects.student_affiliates()
+        assert grad.profile in Profile.objects.student_affiliates()
+        assert undergrad.profile in Profile.objects.student_affiliates()
+        assert grad_pi.profile in Profile.objects.student_affiliates()
 
-        # grad, undergrad assistant
-        grad = Person.objects.create(username='grad')
-        grad_profile = Profile.objects.create(user=grad, pu_status='graduate',
-            is_staff=True)
-        # grad_title = Title.objects.create(title='Graduate Assistant')
-        # Position.objects.create(user=grad, title=grad_title,
-                                # start_date='2016-06-01')
-        undergrad = Person.objects.create(username='undergrad')
-        undergrad_profile = Profile.objects.create(user=undergrad, is_staff=True,
-                                                   pu_status='undergraduate')
-        # undergrad_title = Title.objects.create(title='Undergraduate Assistant')
-        # Position.objects.create(user=undergrad, title=undergrad_title,
-                                # start_date='2016-06-01')
-        assert grad_profile in Profile.objects.student_affiliates()
-        assert undergrad_profile in Profile.objects.student_affiliates()
-
-        # person with student status with a project
-        grad2 = Person.objects.create(username='tom')
-        grad2_profile = Profile.objects.create(user=grad2, pu_status='graduate')
-        # graduate flag but no project
-        assert grad2_profile not in Profile.objects.student_affiliates()
-        # project role but not director
-        gradproj = Project.objects.create(title='Chinese Exchange Poems')
-        researcher = Role.objects.create(title='Researcher')
-        grtype = GrantType.objects.create(grant_type='Sponsored Project')
-        grant = Grant.objects.create(project=gradproj, grant_type=grtype,
-            start_date='2015-01-1', end_date='2016-01-01')
-        Membership.objects.create(project=gradproj,
-            user=grad2, grant=grant, role=researcher)
-        assert grad2_profile not in Profile.objects.student_affiliates()
-
-        # project director
-        proj_director = Role.objects.create(title='Project Director')
-        Membership.objects.create(project=gradproj,
-            user=grad2, grant=grant, role=proj_director)
-
-        assert grad2_profile in Profile.objects.student_affiliates()
-
-        # also valid with undergrad flag
-        grad2_profile.pu_status = 'undergraduate'
-        grad2_profile.save()
-        assert grad2_profile in Profile.objects.student_affiliates()
-
-        # but not with anything else
-        grad2_profile.pu_status = 'stf'
-        grad2_profile.save()
-        assert grad2_profile not in Profile.objects.student_affiliates()
+        # grad pi affiliation based on project membership
+        grad_pi.membership_set.all().delete()
+        assert grad_pi.profile not in Profile.objects.student_affiliates()
 
     def test_faculty_affiliates(self):
-        # test faculty affiliates filter
-
-        # faculty person
-        fac = Person.objects.create(username='Meredith')
-        fac_profile = Profile.objects.create(user=fac, pu_status='fac')
-        # insufficient to be faculty affiliate
-        assert fac_profile not in Profile.objects.faculty_affiliates()
-
-        # project director
-        proj_director = Role.objects.create(title='Project Director')
-        ppa_proj = Project.objects.create(title='PPA')
-        grtype = GrantType.objects.create(grant_type='Sponsored Project')
-        grant = Grant.objects.create(project=ppa_proj, grant_type=grtype,
-            start_date='2015-01-1', end_date='2016-01-01')
-        Membership.objects.create(project=ppa_proj,
-            user=fac, grant=grant, role=proj_director)
-        assert fac_profile in Profile.objects.faculty_affiliates()
+        # faculty person who is also project director
+        fac = Person.objects.get(username='Meredith')
+        assert fac.profile in Profile.objects.faculty_affiliates()
 
         # non-faculty project director != faculty affiliate
-        fac_profile.pu_status = 'graduate'
-        fac_profile.save()
-        assert fac_profile not in Profile.objects.faculty_affiliates()
+        fac.profile.pu_status = 'graduate'
+        fac.profile.save()
+        assert fac.profile not in Profile.objects.faculty_affiliates()
+
+        # faculty without project membership
+        fac.profile.pu_status = 'fac'
+        fac.profile.save()
+        fac.membership_set.all().delete()
+        assert fac.profile not in Profile.objects.faculty_affiliates()
 
 
 class TestPosition(TestCase):
@@ -421,6 +322,7 @@ def test_init_profile_from_ldap():
 
 
 class TestViews(TestCase):
+    fixtures = ['test_people_data']
 
     def test_staff_redirect(self):
         # valid id gives permanent redirect to slug url
@@ -430,39 +332,25 @@ class TestViews(TestCase):
         assert response.url == reverse('people:profile', kwargs={'slug': slug})
 
     def test_staff_list(self):
-        # create test person and add two positions
-        staffer = Person.objects.create(username='staff')
-        profile = Profile.objects.create(
-            user=staffer, title='Amazing Contributor',
-            status=CONTENT_STATUS_PUBLISHED, is_staff=True)
-        staff_title = Title.objects.create(title='staff')
-        assoc = Title.objects.create(title='Associate')
-        prev_post = Position.objects.create(
-            user=staffer, title=assoc,
-            start_date=date(2015, 1, 1), end_date=date(2015, 12, 31))
-        cur_post = Position.objects.create(
-            user=staffer, title=staff_title, start_date=date(2016, 6, 1))
-
-        # postdoc with is staff should not be listed
-        postdoc = Person.objects.create(username='postdoc')
-        postdoc_profile = Profile.objects.create(
-            user=postdoc, status=CONTENT_STATUS_PUBLISHED, is_staff=True)
-        postdoc_title = Title.objects.get_or_create(title='Postdoctoral Fellow')[0]
-        Position.objects.create(user=postdoc, title=postdoc_title,
-                                start_date=date(2015, 1, 1))
+        # fixture includes staff person with two positions
+        staffer = Person.objects.get(username='staff')
+        # postdoc with is_staff should not be listed on staff page
+        postdoc = Person.objects.get(username='postdoc')
 
         response = self.client.get(reverse('people:staff'))
         # person should only appear once even if they have multiple positions
         assert len(response.context['current']) == 1
 
         # staffer profile should be included
-        assert profile in response.context['current']
+        assert staffer.profile in response.context['current']
         # postdoc profile should not
-        assert postdoc_profile not in response.context['current']
+        assert postdoc.profile not in response.context['current']
 
-        self.assertContains(response, profile.title)
-        self.assertContains(response, profile.current_title)
-        self.assertContains(response, profile.get_absolute_url())
+        cur_post = staffer.positions.first()
+        prev_post = staffer.positions.all()[1]
+        self.assertContains(response, staffer.profile.title)
+        self.assertContains(response, staffer.profile.current_title)
+        self.assertContains(response, staffer.profile.get_absolute_url())
         self.assertNotContains(response, prev_post.title)
         self.assertNotContains(response, prev_post.years)
         self.assertNotContains(response, cur_post.years)
@@ -471,181 +359,116 @@ class TestViews(TestCase):
         cur_post.end_date = date.today() + timedelta(days=1)
         cur_post.save()
         response = self.client.get(reverse('people:staff'))
-        assert profile in response.context['current']
+        assert staffer.profile in response.context['current']
         # should be in past, not current, if position end date has passed
         cur_post.end_date = date.today() - timedelta(days=1)
         cur_post.save()
         response = self.client.get(reverse('people:staff'))
-        assert profile not in response.context['current']
-        assert profile in response.context['past']
+        assert staffer.profile not in response.context['current']
+        assert staffer.profile in response.context['past']
 
         # should link to other people pages
         self.assertContains(response, reverse('people:postdocs'))
         self.assertContains(response, reverse('people:students'))
 
     def test_postdoc_list(self):
-        postdoc = Person.objects.create(username='postdoc')
-        postdoc_profile = Profile.objects.create(
-            user=postdoc, status=CONTENT_STATUS_PUBLISHED, is_staff=True,
-            slug='postdoc')
-        postdoc_title = Title.objects.get_or_create(title='Postdoctoral Fellow')[0]
-        Position.objects.create(user=postdoc, title=postdoc_title,
-                                start_date=date(2015, 1, 1))
+        postdoc = Person.objects.get(username='postdoc')
 
         response = self.client.get(reverse('people:postdocs'))
         # person should only appear once even if they have multiple positions
         assert len(response.context['current']) == 1
         # postdoc profile should be included
-        assert postdoc_profile in response.context['current']
+        assert postdoc.profile in response.context['current']
 
-        self.assertContains(response, postdoc_profile.title)
-        self.assertContains(response, postdoc_profile.current_title)
-        self.assertContains(response, postdoc_profile.get_absolute_url())
+        self.assertContains(response, postdoc.profile.title)
+        self.assertContains(response, postdoc.profile.current_title)
+        self.assertContains(response, postdoc.profile.get_absolute_url())
 
     def test_student_list(self):
         # grad, undergrad assistant
-        grad = Person.objects.create(username='grad')
-        grad_profile = Profile.objects.create(
-            user=grad, slug='grad', is_staff=True, title='Graduate Student',
-            status=CONTENT_STATUS_PUBLISHED, pu_status='graduate')
-        grad_title = Title.objects.create(title='Graduate Assistant')
-        Position.objects.create(user=grad, title=grad_title,
-                                start_date='2016-06-01')
-        undergrad = Person.objects.create(username='undergrad')
-        undergrad_profile = Profile.objects.create(
-            user=undergrad, slug='undergrad', is_staff=True,
-            title='Undergraduate Student', status=CONTENT_STATUS_PUBLISHED,
-            pu_status='undergraduate')
-        undergrad_title = Title.objects.create(title='Undergraduate Assistant')
-        Position.objects.create(user=undergrad, title=undergrad_title,
-                                start_date='2015-06-01', end_date='2016-06-01')
-
+        grad = Person.objects.get(username='grad')
+        undergrad = Person.objects.get(username='undergrad')
         # person with student status with a project
-        grad_pi = Person.objects.create(username='tom')
-        grad_pi_profile = Profile.objects.create(
-            user=grad_pi, pu_status='graduate', title='Tom M.', slug='tom',
-            is_staff=False, status=CONTENT_STATUS_PUBLISHED)
-        # project director
-        gradproj = Project.objects.create(title='Chinese Exchange Poems')
-        grtype = GrantType.objects.create(grant_type='Sponsored Project')
-        grant = Grant.objects.create(project=gradproj, grant_type=grtype,
-                                     start_date='2015-01-1', end_date='2016-01-01')
-        proj_director = Role.objects.create(title='Project Director')
-        Membership.objects.create(project=gradproj, user=grad_pi,
-                                  grant=grant, role=proj_director)
+        grad_pi = Person.objects.get(username='tom')
 
         response = self.client.get(reverse('people:students'))
-        assert grad_profile in response.context['current']
-        assert undergrad_profile in response.context['past']
-        assert grad_pi_profile in response.context['past']
+        assert grad.profile in response.context['current']
+        assert undergrad.profile in response.context['past']
+        assert grad_pi.profile in response.context['past']
 
         # grad and undergrad have profile pages
-        self.assertContains(response, grad_profile.title)
-        self.assertContains(response, grad_profile.current_title)
-        self.assertContains(response, grad_profile.get_absolute_url())
-        self.assertContains(response, undergrad_profile.title)
+        self.assertContains(response, grad.profile.title)
+        self.assertContains(response, grad.profile.current_title)
+        self.assertContains(response, grad.profile.get_absolute_url())
+        self.assertContains(response, undergrad.profile.title)
         # undergrad has no current title, displays first title (with dates)
         self.assertContains(response, undergrad.positions.first().title)
-        self.assertContains(response, undergrad_profile.get_absolute_url())
+        self.assertContains(response, undergrad.profile.get_absolute_url())
         # grad project director does not have local profile page or title
-        self.assertContains(response, grad_pi_profile.title)
-        self.assertNotContains(response, grad_pi_profile.get_absolute_url())
-
-        # add a website url resource to grad pi
+        self.assertContains(response, grad_pi.profile.title)
+        self.assertNotContains(response, grad_pi.profile.get_absolute_url())
+        # grad pi does have an external website url
         website = ResourceType.objects.get_or_create(name='Website')[0]
         ext_profile_url = 'http://person.me'
         UserResource.objects.create(user=grad_pi, resource_type=website,
                                     url=ext_profile_url)
         assert grad_pi.profile_url == ext_profile_url
         response = self.client.get(reverse('people:students'))
-        self.assertContains(response, grad_pi_profile.title)
-        self.assertContains(response, ext_profile_url)
+        self.assertContains(response, grad_pi.website_url)
 
     def test_faculty_affiliates_list(self):
-        # faculty person
-        fac = Person.objects.create(username='Meredith')
-        fac_profile = Profile.objects.create(user=fac, pu_status='fac')
-        # cdh position should not be displayed here
-        fac_director_title = Title.objects.create(title='Faculty Director')
-        Position.objects.create(user=fac, title=fac_director_title,
-            start_date=date(2015, 1, 1))
-        # current project director
-        proj_director = Role.objects.create(title='Project Director')
-        ppa_proj = Project.objects.create(title='PPA')
-        grtype = GrantType.objects.create(grant_type='Sponsored Project')
-        # old grant
-        grant1 = Grant.objects.create(project=ppa_proj, grant_type=grtype,
-            start_date='2015-01-01', end_date='2016-01-01')
-        Membership.objects.create(project=ppa_proj,
-            user=fac, grant=grant1, role=proj_director)
-        # newer grant
-        end_date = date.today() + timedelta(days=30)
-        grant2 = Grant.objects.create(project=ppa_proj, grant_type=grtype,
-            start_date='2017-01-1', end_date=end_date)
-        Membership.objects.create(project=ppa_proj,
-            user=fac, grant=grant2, role=proj_director)
+        # faculty person has cdh position and is a project director
+        fac = Person.objects.get(username='Meredith')
 
         response = self.client.get(reverse('people:faculty'))
-        assert fac_profile in response.context['current']
+        assert fac.profile in response.context['current']
         # should display grant role, not cdh role
-        self.assertNotContains(response, proj_director.title)
-        self.assertContains(response, '{} Grant Recipient'.format(grtype.grant_type))
+        self.assertNotContains(response, 'Faculty Director')
+        grant = fac.latest_grant
+        self.assertContains(response, '{} Grant Recipient'.format(grant.grant_type.grant_type))
         # should display date range from start of earliest to end of last grant
-        self.assertContains(response, '2015–{}'.format(end_date.year))
+        self.assertContains(response, '2015–{}'.format(grant.end_date.year))
 
         # non current grant - should shift to past list
-        grant2.end_date = '2018-01-01'
-        grant2.save()
+        grant.end_date = date(2018, 1, 1)
+        grant.save()
         response = self.client.get(reverse('people:faculty'))
-        assert fac_profile not in response.context['current']
-        assert fac_profile in response.context['past']
-
+        assert fac.profile not in response.context['current']
+        assert fac.profile in response.context['past']
 
     def test_profile_detail(self):
          # create test person and add two positions
-        staffer = Person.objects.create(username='staff')
-        profile = Profile.objects.create(user=staffer, title='Amazing Contributor',
-            status=CONTENT_STATUS_PUBLISHED, is_staff=True, slug='staffer')
-        staff_title = Title.objects.create(title='staff')
-        postdoc = Title.objects.create(title='post-doc')
-        prev_post = Position.objects.create(user=staffer, title=postdoc,
-            start_date=date(2015, 1, 1), end_date=date(2015, 12, 31))
-        cur_post = Position.objects.create(user=staffer, title=staff_title,
-            start_date=date(2016, 6,1))
+        staffer = Person.objects.get(username='staff')
 
-        profile_url = reverse('people:profile', args=[profile.slug])
-        response = self.client.get(profile_url)
-        self.assertContains(response, profile.title)
+        response = self.client.get(staffer.get_absolute_url())
+        self.assertContains(response, staffer.profile.title)
+        cur_post = staffer.positions.first()
+        prev_post = staffer.positions.all()[1]
         self.assertContains(response, cur_post.title)
         self.assertContains(response, prev_post.title)
         self.assertContains(response, prev_post.years)
         self.assertNotContains(response, cur_post.years)
 
-        # create another person and make some blog posts that belong to the people
-        staffer2 = Person.objects.create(username='staff2')
-        profile2 = Profile.objects.create(user=staffer2, title='Great Writer',
-            status=CONTENT_STATUS_PUBLISHED, is_staff=True, slug='staffer2')
-        post = BlogPost.objects.create(title='Solo blog post')
-        post2 = BlogPost.objects.create(title='Collaborative blog post')
-        post.users.add(staffer) # written by one user
-        post2.users.add(staffer, staffer2) # written by two users together
+        # co-authored a blog post with staffer
+        staffer2 = Person.objects.get(username='staff2')
+        solo_post = staffer.blogposts.last()
+        coauth_post = staffer2.blogposts.first()
+        self.assertContains(response, solo_post.title) # show both blog posts
+        self.assertContains(response, solo_post.title)
+        self.assertContains(response, staffer2.profile.title) # indicate that one post has another author
 
-        response = self.client.get(reverse('people:profile', args=[profile.slug]))
-        self.assertContains(response, post.title) # show both blog posts
-        self.assertContains(response, post2.title)
-        self.assertContains(response, profile2.title) # indicate that one post has another author
-        response = self.client.get(reverse('people:profile', args=[profile2.slug]))
-        self.assertNotContains(response, post.title) # only posts from this author
-        self.assertContains(response, post2.title)
-        self.assertContains(response, profile.title)
+        response = self.client.get(staffer2.get_absolute_url())
+        self.assertNotContains(response, solo_post.title) # only posts from this author
+        self.assertContains(response, coauth_post.title)
+        self.assertContains(response, staffer.profile.title)
 
         # published but not is_staff
-        profile.is_staff = False
-        profile.save()
-        assert self.client.get(profile_url).status_code == 404
+        staffer.profile.is_staff = False
+        staffer.profile.save()
+        assert self.client.get(staffer.get_absolute_url()).status_code == 404
 
         # not published - should 404
-        profile.status = CONTENT_STATUS_DRAFT
-        profile.is_staff = True
-        profile.save()
-        assert self.client.get(profile_url).status_code == 404
+        staffer.profile.status = CONTENT_STATUS_DRAFT
+        staffer.profile.is_staff = True
+        staffer.profile.save()
+        assert self.client.get(staffer.get_absolute_url()).status_code == 404
