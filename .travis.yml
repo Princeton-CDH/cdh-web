@@ -25,7 +25,7 @@ before_script:
 - mysql -u root -e "create database test";  # load and run site for pa11y to check
 - python manage.py migrate
 - python manage.py loaddata pa11y_test_site
-- python manage.py runserver &
+- python manage.py runserver --insecure &  # run in insecure mode for static assets
 script:
 - py.test --cov=cdhweb
 - python manage.py compress -f -v0
