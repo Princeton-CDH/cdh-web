@@ -377,7 +377,8 @@ def test_init_profile_from_ldap():
     ldapinfo = Mock(displayName='Joe E. Schmoe',
         # no telephone or office set
         telephoneNumber=[], street=[],
-        title='Freeloader, World at large', pustatus='stf')
+        title='Freeloader, World at large', pustatus='stf',
+        ou='English')
         # job title, organizational unit
 
     init_profile_from_ldap(staffer, ldapinfo)
@@ -406,13 +407,15 @@ def test_init_profile_from_ldap():
     assert profile.title == new_title
     assert profile.status == CONTENT_STATUS_PUBLISHED
 
-    # ldap info with telephone and street
+    # ldap info with telephone, street, department
     ldapinfo.telephoneNumber = '4800'
     ldapinfo.street = '801B'
     init_profile_from_ldap(staffer, ldapinfo)
     profile = Person.objects.get(username='staff').profile
     assert profile.phone_number == ldapinfo.telephoneNumber
     assert profile.office_location == ldapinfo.street
+    assert profile.job_title == ldapinfo.title
+    assert profile.department == ldapinfo.ou
     # title should not be duplicated
     assert Title.objects.filter(title='Freeloader').count() == 1
 

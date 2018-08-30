@@ -345,6 +345,13 @@ def init_profile_from_ldap(user, ldapinfo):
     # 'street' in ldap is office location
     if ldapinfo.street and not profile.office_location:
         profile.office_location = str(ldapinfo.street)
+    # organizational unit = department
+    if ldapinfo.ou and not profile.department:
+        profile.department = str(ldapinfo.ou)
+    # Store job title as string.
+    # NOTE: we may want to split title and only use the first portion.
+    if ldapinfo.title and not profile.job_title:
+        profile.job_title = str(ldapinfo.title)
 
     # always update PU status to current
     profile.pu_status = str(ldapinfo.pustatus)
