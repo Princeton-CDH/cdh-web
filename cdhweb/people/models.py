@@ -243,6 +243,16 @@ class Profile(Displayable, AdminThumbMixin):
     phone_number = models.CharField(max_length=50, blank=True)
     office_location = models.CharField(max_length=255, blank=True)
 
+    job_title = models.CharField(
+        max_length=255, blank=True,
+        help_text='Professional title, e.g. Professor or Assistant Professor')
+    department = models.CharField(
+        max_length=255, blank=True,
+        help_text='Academic Department at Princeton or other institution (optional)')
+    institution = models.CharField(
+        max_length=255, blank=True,
+        help_text='Institutional affiliation (for people not associated with Princeton)')
+
     PU_STATUS_CHOICES = (
         ('fac', 'Faculty'),
         ('stf', 'Staff'),
