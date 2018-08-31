@@ -170,11 +170,11 @@ class ProfileQuerySet(PublishedQuerySetMixin):
 
     def exec_member(self):
         '''Executive committee members'''
-        return self.filter(user__positions__title__title=self.exec_member)
+        return self.filter(user__positions__title__title=self.exec_member_title)
 
     def sits_with_exec(self):
         '''Non-faculty Executive committee members'''
-        return self.filter(user__positions__title__title=self.with_exec)
+        return self.filter(user__positions__title__title=self.with_exec_title)
 
     def grant_years(self):
         '''Annotate with first start and last end grant year for grants
