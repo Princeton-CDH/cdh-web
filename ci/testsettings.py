@@ -7,9 +7,7 @@ import os
 # have to be manually restarted because changes will not be noticed
 # immediately.
 
-# DEBUG = False
-# NOTE: running with debug=false results in timeouts when running pa11y-ci
-DEBUG = True
+DEBUG = False
 
 DATABASES = {
     "default": {
@@ -22,7 +20,8 @@ DATABASES = {
 ALLOWED_HOSTS = ["*"]
 
 # configure django-compressor to compress css & javascript
-COMPRESS_ENABLED = True
+# NOTE: compression disabled because otherwise pa11y-ci times out
+COMPRESS_ENABLED = False
 
 # compress to the sitemedia folder
 COMPRESS_ROOT = os.path.join(BASE_DIR, 'sitemedia')
