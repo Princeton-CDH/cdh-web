@@ -185,7 +185,8 @@ class ExecListView(ProfileListView):
 
     def get_context_data(self):
         context = super().get_context_data()
-        # 'Executive Committee Member',
+        # executive committee needs an additional filter:
+        # exec members, sits with committee, then alumni as usual
         current = context['current']
         context.update({
             'current': current.exec_member(),
