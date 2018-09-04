@@ -4,6 +4,7 @@ from unittest.mock import Mock
 from django.urls import reverse
 from django.test import TestCase
 from django.utils.text import slugify
+from django.utils import timezone
 from mezzanine.core.models import CONTENT_STATUS_DRAFT, CONTENT_STATUS_PUBLISHED
 import pytest
 
@@ -444,10 +445,11 @@ class TestViews(TestCase):
         # create a test event for an external person
         speaker = Person.objects.get(username='billshakes')
         workshop = EventType.objects.get(name='workshop')
-        start_time = datetime.now() + timedelta(days=1) # starts tomorrow
+        # use django timezone util for timezone-aware datetime
+        start_time = timezone.now() + timedelta(days=1) # starts tomorrow
         end_time = start_time + timedelta(hours=2) # lasts 2 hours
         event = Event.objects.create(start_time=start_time, end_time=end_time,
-                                     event_type=workshop)
+                                     event_type=workshop, slug='workshop')
         event.speakers.add(speaker)
 
         response = self.client.get(reverse('people:speakers'))
@@ -458,12 +460,12 @@ class TestViews(TestCase):
         # event type is shown
         self.assertContains(response, event.event_type)
         # speaker institutional affiliation is shown
-        self.assertContains(response, speaker.institution)
+        self.assertContains(response, speaker.profile.institution)
         # link to event is rendered
         self.assertContains(response, speaker.event_set.first().get_absolute_url())
 
         # move event to the past
-        new_start = datetime.now() - timedelta(days=2) # 2 days ago
+        new_start = timezone.now() - timedelta(days=2) # 2 days ago
         event.start_time = new_start
         event.end_time = new_start + timedelta(hours=2) # 2 hours long
         event.save()
