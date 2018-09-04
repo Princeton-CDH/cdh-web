@@ -7,7 +7,9 @@ import os
 # have to be manually restarted because changes will not be noticed
 # immediately.
 
-DEBUG = False
+# DEBUG = False
+# NOTE: running with debug=false results in timeouts when running pa11y-ci
+DEBUG = True
 
 DATABASES = {
     "default": {
