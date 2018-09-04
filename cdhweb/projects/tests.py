@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, date
+from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
 from django.contrib.sites.models import Site
@@ -10,6 +11,7 @@ from mezzanine.core.models import CONTENT_STATUS_PUBLISHED, CONTENT_STATUS_DRAFT
 from cdhweb.people.models import Profile
 from cdhweb.projects.models import Grant, GrantType, Project, Role, \
     Membership, ProjectResource
+from cdhweb.projects.sitemaps import ProjectSitemap
 from cdhweb.resources.models import ResourceType
 
 
@@ -486,3 +488,22 @@ class TestViews(TestCase):
             self.assertContains(response, contributor.profile.title)
         self.assertContains(response, project_url)
         # TODO: test large image included
+
+
+class TestProjectSitemap(TestCase):
+
+    def test_priority(self):
+        proj = Project(title='A project')
+        # default
+        assert ProjectSitemap().priority(proj) == 0.5
+        # cdh built = higher priority
+        proj.cdh_built = True
+        assert ProjectSitemap().priority(proj) == 0.6
+        # simulate website url
+        with patch.object(Project, 'website_url', return_val='http://example.com'):
+            # cdh built + website = even higher priority
+            assert ProjectSitemap().priority(proj) == 0.7
+
+            # website but not cdh built = not quite as high
+            proj.cdh_built = False
+            assert ProjectSitemap().priority(proj) == 0.6

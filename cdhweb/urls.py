@@ -72,7 +72,7 @@ urlpatterns += [
     # override mezzanine sitemap and use locally customized sitemaps
     # NOTE: could use a sitemap index and grouped sitemaps here, but
     # may complicate testing with pa11y-ci
-    url(r"^sitemap\.xml$", sitemap, {'sitemaps': sitemaps}),
+    url(r"^sitemap\.xml$", sitemap, {'sitemaps': sitemaps}, name='sitemap'),
 
     # let mezzanine handle everything else
     url("^", include("mezzanine.urls")),
