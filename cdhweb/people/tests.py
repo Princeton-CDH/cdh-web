@@ -444,7 +444,7 @@ class TestViews(TestCase):
     def test_speakers_list(self):
         # create a test event for an external person
         speaker = Person.objects.get(username='billshakes')
-        workshop = EventType.objects.get(name='workshop')
+        workshop = EventType.objects.get(name='Workshop')
         # use django timezone util for timezone-aware datetime
         start_time = timezone.now() + timedelta(days=1) # starts tomorrow
         end_time = start_time + timedelta(hours=2) # lasts 2 hours
