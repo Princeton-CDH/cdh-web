@@ -1,43 +1,51 @@
 {# display person profile card; expects profile object as profile #}
 <div class="card profile"
     {% if profile.thumb %}style="background-image:url('{{ MEDIA_URL }}{{ profile.thumb }}')"{% endif %}>
+    {% if show_events and profile.user.event_set.upcoming %} {# link to event, if speaker has upcoming one #}
+        {% with profile.user.event_set.first as event %}
+        <a class="external event" title="event listing" href="{{ event.get_absolute_url }}"></a>
+        {% endwith %}
+    {% endif %}
     {% with profile.user.profile_url as profile_url %} {# local or external profile, if available #}
       {% with profile_url|yesno:"a,div" as tag %} {# link if we have a url, otherwise div #}
       <{{ tag }} {% if profile_url %}href="{{ profile_url }}"{% endif %} title="{{ profile.title }}">
         <div class="content">
-        {% with position=profile.user.positions.first %}
-        <p class="title">
-            {% if show_cdh_position and position %} {# show position within the cdh #}
-                {% if not position.is_current %}{{ position.years }}<br/>{% endif %}
-                {{ profile.user.positions.first.title|default:'' }}
-            {% endif %}
-            {# NOTE: right now, if someone has both grant and cdh staff role, both will show #}
-            {% if show_grant %} {# display grant role #}
-            {% with grant=profile.user.latest_grant %}
-                {% if grant %}
-                    {% if profile.first_start and profile.last_end %}
-                        {{ profile.first_start.year }}–{{ profile.last_end.year }}<br/>
-                    {% elif not grant.is_current %}{{ grant.years }}<br/>{% endif %}
-                    {{ grant.grant_type }} Grant Recipient
+            <p class="name">{{ profile.title }}</p> {# profile page title = person's name #}
+            <p class="title">
+            {% with position=profile.user.positions.first %}
+                {% if show_cdh_position and position %} {# show position within the cdh #}
+                    {% if not position.is_current %}{{ position.years }}<br/>{% endif %}
+                    {{ profile.user.positions.first.title|default:'' }}
                 {% endif %}
             {% endwith %}
+            {# NOTE: right now, if someone has both grant and cdh staff role, both will show #}
+            {% if show_grant %} {# display grant role #}
+                {% with grant=profile.user.latest_grant %}
+                    {% if grant %}
+                        {% if profile.first_start and profile.last_end %}
+                            {{ profile.first_start.year }}–{{ profile.last_end.year }}<br/>
+                        {% elif not grant.is_current %}{{ grant.years }}<br/>{% endif %}
+                        {{ grant.grant_type }} Grant Recipient
+                    {% endif %}
+                {% endwith %}
+            {% endif %}
+            {% if show_affiliation and profile.institution %} {# show institutional affiliation #}
+                {{ profile.institution }}<br/>
+            {% endif %}
+            {% if show_job_title and profile.job_title %} {# show job title (e.g. for faculty) #}
+                {{ profile.job_title }}<br/>
             {% endif %}
             {% if show_events %} {# show associated events #}
-                {% if profile.user.event_set.upcoming %}
-                {{ profile.user.event_set.first.start_time|date:"N d, P" }} {# day, month and time of nearest upcoming event #}
-                {% else %}
-                {{ profile.user.event_set.first.start_time|date:"Y" }} {# years of past events #}
-                {% endif %}
+                {% with profile.user.event_set.first as event %} {# most recent event #}
+                    {% if profile.user.event_set.upcoming %}
+                    {{ event.event_type }}: {{ event.when }} {# type and time of event #}
+                    {% else %}
+                    {{ event.start_time|date:"Y" }} {# most recent year of past event #}
+                    {% endif %}
+                {% endwith %}
+                <br/>
             {% endif %}
-            {% if show_job_title %} {# show job title (e.g. for faculty) #}
-                {{ profile.job_title }}
-            {% endif %}
-            {% if show_affiliation %} {# show title and departmental / institutional affiliation #}
-                {{ profile.department }} {{ profile.institution }}
-            {% endif %}
-        </p>
-        {% endwith %}
-        <p class="name">{{ profile.title }}</p> {# profile page title = person's name #}
+            </p>
         </div>
       </{{ tag }}>
       {% endwith %}

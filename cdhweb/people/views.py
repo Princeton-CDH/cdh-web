@@ -204,8 +204,8 @@ class SpeakerListView(ProfileListView):
     page_title = 'Speakers'
     current_title = 'Upcoming {}'.format(page_title)
     past_title = 'Past {}'.format(page_title)
-    #: show job title and info about events
-    show_job_title = True
+    #: show affiliation and info about events
+    show_affiliation = True
     show_events = True
 
     def get_queryset(self):
