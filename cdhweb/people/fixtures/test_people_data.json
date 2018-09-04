@@ -56,6 +56,46 @@
   }
 },
 {
+  "model": "people.title",
+  "pk": 8,
+  "fields": {
+    "title": "Professor of Art and Archaeology and American Studies. Associate Director",
+    "sort_order": 0
+  }
+},
+{
+  "model": "people.title",
+  "pk": 9,
+  "fields": {
+    "title": "Executive Committee Member",
+    "sort_order": 10
+  }
+},
+{
+  "model": "people.title",
+  "pk": 10,
+  "fields": {
+    "title": "Sits with Executive Committee",
+    "sort_order": 11
+  }
+},
+{
+  "model": "people.title",
+  "pk": 11,
+  "fields": {
+    "title": "Acting Faculty Director",
+    "sort_order": 0
+  }
+},
+{
+  "model": "people.title",
+  "pk": 12,
+  "fields": {
+    "title": "VP for Information Technology and Chief Information Officer",
+    "sort_order": 0
+  }
+},
+{
   "model": "people.profile",
   "pk": 1,
   "fields": {
@@ -287,6 +327,72 @@
   }
 },
 {
+  "model": "people.profile",
+  "pk": 8,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "Rachael Z. DeLue",
+    "slug": "rachael-z-delue",
+    "_meta_title": null,
+    "description": "Rachael DeLue",
+    "gen_description": true,
+    "created": "2018-09-04T14:52:31.729Z",
+    "updated": "2018-09-04T14:57:58.675Z",
+    "status": 2,
+    "publish_date": "2018-09-04T14:52:31Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": true,
+    "user": 9,
+    "is_staff": true,
+    "education": "",
+    "bio": "",
+    "phone_number": "",
+    "office_location": "307 McCormick Hall",
+    "job_title": "Professor of Art and Archaeology and American Studies",
+    "department": "Art and Archaeology",
+    "institution": "",
+    "pu_status": "fac",
+    "image": "",
+    "thumb": "",
+    "attachments": []
+  }
+},
+{
+  "model": "people.profile",
+  "pk": 10,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "Jay Dominick",
+    "slug": "jay-dominick",
+    "_meta_title": null,
+    "description": "Jay Dominick",
+    "gen_description": true,
+    "created": "2018-09-04T15:00:14.099Z",
+    "updated": "2018-09-04T15:01:02.713Z",
+    "status": 2,
+    "publish_date": "2018-09-04T15:00:14.097Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": true,
+    "user": 11,
+    "is_staff": false,
+    "education": "",
+    "bio": "",
+    "phone_number": "",
+    "office_location": "245A 701 Carnegie Center",
+    "job_title": "VP for Information Technology and Chief Information Officer, Office of the Vice President for Information Technology",
+    "department": "Office of the Vice President for Information Technology",
+    "institution": "",
+    "pu_status": "stf",
+    "image": "",
+    "thumb": "",
+    "attachments": []
+  }
+},
+{
   "model": "projects.project",
   "pk": 1,
   "fields": {
@@ -450,7 +556,9 @@
     "content": "",
     "featured_image": "",
     "is_featured": false,
-    "users": [2],
+    "users": [
+      2
+    ],
     "related_posts": [],
     "attachments": []
   }
@@ -476,7 +584,10 @@
     "content": "",
     "featured_image": "",
     "is_featured": false,
-    "users": [2, 8],
+    "users": [
+      2,
+      8
+    ],
     "related_posts": [],
     "attachments": []
   }
@@ -626,6 +737,42 @@
   }
 },
 {
+  "model": "auth.user",
+  "pk": 9,
+  "fields": {
+    "password": "",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "rdelue",
+    "first_name": "Rachael",
+    "last_name": "DeLue",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2018-09-04T14:52:31.358Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 11,
+  "fields": {
+    "password": "",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "jdominick",
+    "first_name": "Jay",
+    "last_name": "Dominick",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2018-09-04T15:00:13.753Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
   "model": "resources.resourcetype",
   "pk": 1,
   "fields": {
@@ -746,6 +893,36 @@
     "end_date": null,
     "user": 7,
     "title": 1
+  }
+},
+{
+  "model": "people.position",
+  "pk": 10,
+  "fields": {
+    "start_date": "2016-09-01",
+    "end_date": null,
+    "user": 9,
+    "title": 9
+  }
+},
+{
+  "model": "people.position",
+  "pk": 11,
+  "fields": {
+    "start_date": "2017-01-01",
+    "end_date": "2017-12-31",
+    "user": 9,
+    "title": 11
+  }
+},
+{
+  "model": "people.position",
+  "pk": 12,
+  "fields": {
+    "start_date": "2016-09-01",
+    "end_date": null,
+    "user": 11,
+    "title": 10
   }
 }
 ]

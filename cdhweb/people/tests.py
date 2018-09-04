@@ -255,6 +255,37 @@ class ProfileQuerySetTest(TestCase):
         fac.membership_set.all().delete()
         assert fac.profile not in Profile.objects.faculty_affiliates()
 
+    def test_executive_committee(self):
+        # faculty director is not exec
+        fac = Person.objects.get(username='Meredith')
+        assert fac.profile not in Profile.objects.executive_committee()
+
+        # former acting faculty directory is also exec
+        rdelue = Person.objects.get(username='rdelue')
+        assert rdelue.profile in Profile.objects.executive_committee()
+
+        # sits with committe is also in main exec filter
+        jay = Person.objects.get(username='jdominick')
+        assert jay.profile in Profile.objects.executive_committee()
+
+    def test_exec_member(self):
+        # exec committee member
+        rdelue = Person.objects.get(username='rdelue')
+        assert rdelue.profile in Profile.objects.exec_member()
+
+        # sits with committe is not exec member
+        jay = Person.objects.get(username='jdominick')
+        assert jay.profile not in Profile.objects.exec_member()
+
+    def test_sits_with_exec(self):
+        # exec committee member
+        rdelue = Person.objects.get(username='rdelue')
+        assert rdelue.profile not in Profile.objects.sits_with_exec()
+
+        # sits with committe
+        jay = Person.objects.get(username='jdominick')
+        assert jay.profile in Profile.objects.sits_with_exec()
+
 
 class TestPosition(TestCase):
 
