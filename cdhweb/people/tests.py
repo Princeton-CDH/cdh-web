@@ -478,7 +478,7 @@ class TestViews(TestCase):
         end_time = start_time + timedelta(hours=2) # lasts 2 hours
         event = Event.objects.create(start_time=start_time, end_time=end_time,
                                      event_type=workshop, slug='workshop',
-                                     status=1)
+                                     status=CONTENT_STATUS_DRAFT)
         event.speakers.add(speaker)
 
         response = self.client.get(reverse('people:speakers'))
@@ -486,7 +486,7 @@ class TestViews(TestCase):
         assert len(response.context['current']) == 0
 
         # publish the event
-        event.status = 2
+        event.status = CONTENT_STATUS_PUBLISHED
         event.save()
 
         response = self.client.get(reverse('people:speakers'))

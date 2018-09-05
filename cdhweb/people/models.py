@@ -195,7 +195,7 @@ class ProfileQuerySet(PublishedQuerySetMixin):
         # Speakers are non-Princeton profiles (external) who are associated with
         # at least one published event
         return self.filter(user__event__isnull=False, pu_status='external',
-                           user__event__status=2)
+                           user__event__status=CONTENT_STATUS_PUBLISHED)
 
     def _current_position_query(self):
         # query to find a user with a current cdh position
