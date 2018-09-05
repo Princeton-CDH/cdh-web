@@ -257,8 +257,36 @@ class ProfileQuerySetTest(TestCase):
         fac.membership_set.all().delete()
         assert fac.profile not in Profile.objects.faculty_affiliates()
 
-    def test_speakers(self):
-        pass
+    def test_executive_committee(self):
+        # faculty director is not exec
+        fac = Person.objects.get(username='Meredith')
+        assert fac.profile not in Profile.objects.executive_committee()
+
+        # former acting faculty directory is also exec
+        rdelue = Person.objects.get(username='rdelue')
+        assert rdelue.profile in Profile.objects.executive_committee()
+
+        # sits with committe is also in main exec filter
+        jay = Person.objects.get(username='jdominick')
+        assert jay.profile in Profile.objects.executive_committee()
+
+    def test_exec_member(self):
+        # exec committee member
+        rdelue = Person.objects.get(username='rdelue')
+        assert rdelue.profile in Profile.objects.exec_member()
+
+        # sits with committe is not exec member
+        jay = Person.objects.get(username='jdominick')
+        assert jay.profile not in Profile.objects.exec_member()
+
+    def test_sits_with_exec(self):
+        # exec committee member
+        rdelue = Person.objects.get(username='rdelue')
+        assert rdelue.profile not in Profile.objects.sits_with_exec()
+
+        # sits with committe
+        jay = Person.objects.get(username='jdominick')
+        assert jay.profile in Profile.objects.sits_with_exec()
 
 
 class TestPosition(TestCase):
@@ -475,6 +503,43 @@ class TestViews(TestCase):
         assert speaker.profile in response.context['past']
         # year of past event is shown
         self.assertContains(response, new_start.strftime('%Y'))
+
+        
+    def test_executive_committee_list(self):
+        # former acting faculty directory is also exec
+        rdelue = Person.objects.get(username='rdelue')
+        assert rdelue.profile in Profile.objects.executive_committee()
+
+        # sits with committe is also in main exec filter
+        jay = Person.objects.get(username='jdominick')
+        assert jay.profile in Profile.objects.executive_committee()
+
+        response = self.client.get(reverse('people:exec-committee'))
+        # current committee member - in current
+        assert rdelue.profile in response.context['current']
+        # current member, sits with committee - in sits with
+        assert jay.profile in response.context['sits_with']
+        # alumni currently empty
+        assert response.context['past'].count() is 0
+
+        # should show job title, not cdh affiliation
+        self.assertContains(response, rdelue.profile.job_title)
+        self.assertContains(response, jay.profile.job_title)
+        # should not show rdelue's cdh position
+        self.assertNotContains(response, "Acting Faculty Director")
+
+        # set past end dates on position memberships
+        yesterday = date.today() - timedelta(days=1)
+        rdelue.positions.filter(end_date__isnull=True).update(end_date=yesterday)
+        jay.positions.update(end_date=yesterday)
+        response = self.client.get(reverse('people:exec-committee'))
+        assert response.context['current'].count() is 0
+        assert response.context['sits_with'].count() is 0
+        # both committee member and sits with in past
+        assert rdelue.profile in response.context['past']
+        assert jay.profile in response.context['past']
+        # sits with section not shown when empty
+        self.assertNotContains(response, 'Sits with Executive Committee')
 
 
     def test_profile_detail(self):

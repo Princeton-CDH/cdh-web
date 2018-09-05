@@ -196,7 +196,6 @@ article.landing-page {
 		a.home {
 			color: $cdh-blue;
 			display: inline-block;
-			font-weight: normal;
 			text-decoration: none;
 			font-family: $font-stack-headline;
 
@@ -209,7 +208,6 @@ article.landing-page {
 			font-family: $font-stack-headline;
 			display: inline-block;
 			margin-bottom: 10px;
-	    	font-weight: normal;
 
 		    @media (max-width: $small-max-width) {
 		    	font-size: 32px;
@@ -719,7 +717,6 @@ $event-card-img-height: 240px;
 			}
 			.name {
 				margin: 0;
-				font-weight: bold;
 				font-size: 18px;
 				color: black;
 			}
@@ -870,15 +867,22 @@ $event-card-img-height: 240px;
 		@include content-page;
 	}
 
+	/* editable text content embedded on a dynamic page, e.g. profile list */
+	section.textcontent {
+		@include grid-container;
+		grid-column-start: start;
+		grid-column-end: end;
+	}
+
 }
 
 @mixin header-with-icon {
 	/* font-family: BrownStd-Alt;    ?? */
 	font-family: $font-stack-headline;
 	font-size: 16px;
-	font-weight: normal;
 	font-style: normal;
-	font-stretch: normal;
+    font-stretch: normal;
+    font-weight: normal;
 	line-height: 54px;
 	letter-spacing: normal;
 	color: $dark-grey;
@@ -1098,7 +1102,6 @@ $event-card-img-height: 240px;
 		}
 
 		h3 {
-			font-weight: normal;
 			font-style: italic;
 			font-size: 18px;
 			margin-bottom: 0;

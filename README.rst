@@ -37,21 +37,25 @@ Development instructions
 
 Initial setup and installation:
 
-- recommended: create and activate a python 3.5 virtualenv::
+- Recommended: create and activate a python 3.5 virtualenv::
 
     virtualenv cdhweb -p python3.5
     source cdhweb/bin/activate
 
-- pip install required python dependencies::
+- Use pip to install required python dependencies.  To install production
+  dependencies only::
 
     pip install -r requirements.txt
-    pip install -r dev-requirements.txt
 
-- copy sample local settings and configure for your environment::
+  To install all development requirements::
+
+    pip install -r requirements/dev.txt
+
+- Copy sample local settings and configure for your environment::
 
     cp cdhweb/local_settings.py.sample cdhweb/local_settings.py
 
-- download licensed fonts and install locally under /sitemedia/fonts/
+- Download licensed fonts and install locally under /sitemedia/fonts/
 
 - django-compressor dependencies: install `sass <http://sass-lang.com/install>`_
   for your operating system as appropriate. If you have Ruby gems installed,
@@ -65,9 +69,10 @@ Unit Testing
 
 Unit tests are written with `py.test <http://doc.pytest.org/>`_ but use
 Django fixture loading and convenience testing methods when that makes
-things easier.  To run them, first install development requirements::
+things easier.  To run them, first install test requirements (these are
+included in dev)::
 
-  pip install -r dev-requirements.txt
+  pip install -r requirements/test.txt
 
 Run tests using py.test::
 
@@ -79,7 +84,7 @@ Documentation
 Documentation is generated using `sphinx <http://www.sphinx-doc.org/>`__
 To generate documentation, first install development requirements::
 
-    pip install -r dev-requirements.txt
+    pip install -r requirements/dev.txt
 
 Then build the documentation using the customized make file in the `docs`
 directory::

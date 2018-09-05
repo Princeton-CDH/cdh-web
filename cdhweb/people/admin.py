@@ -56,7 +56,8 @@ class ProfileAdmin(DisplayableAdmin):
                        "bio", "phone_number", "office_location",
                        "job_title", "department", "institution",
                        "image", "thumb",
-                       "status", ("publish_date", "expiry_date")],
+                       "status", ("publish_date", "expiry_date"),
+                       'attachments'],
         }),
         ("Page Metadata", {
             "fields": ["_meta_title", "slug",

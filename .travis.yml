@@ -1,19 +1,35 @@
 language: python
 python:
 - '3.5'
+addons:
+  chrome: stable
+  firefox: latest
+cache:
+  pip: true
+  directories:
+  - downloads
+  - node_modules
 before_install:
 - rvm install 2.0
 - gem install sass
 - npm install -g postcss-cli autoprefixer
 install:
-- pip install -r requirements.txt
-- pip install -r dev-requirements.txt
+- pip install -r requirements/test.txt
 - pip install codecov
 - cp ci/testsettings.py cdhweb/local_settings.py
 - python -c "import uuid; print('SECRET_KEY = \'%s\'' % uuid.uuid4())" >> cdhweb/local_settings.py
+- npm install
+before_script:
+- sudo chown root /opt/google/chrome/chrome-sandbox
+- sudo chmod 4755 /opt/google/chrome/chrome-sandbox
+- mysql -u root -e "create database test";  # load and run site for pa11y to check
+- python manage.py migrate
+- python manage.py loaddata pa11y_test_site
+- python manage.py compress -f -v0 # compress static assets
+- python manage.py runserver --insecure &  # run in insecure mode for static assets
 script:
 - py.test --cov=cdhweb
-- python manage.py compress -f -v0
+- npm run pa11y
 after_success:
 - codecov
 notifications:

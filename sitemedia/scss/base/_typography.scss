@@ -1,9 +1,23 @@
+/* enables font antialiasing */
+@mixin font-smooth() {
+    font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* disables font antialiasing */
+@mixin no-font-smooth() {
+    font-smoothing: never;
+    -moz-osx-font-smoothing: auto;
+    -webkit-font-smoothing: auto;
+}
+
 html {
   color: $base-font-color;
   font-family: $base-font-family;
   font-size: 100%;
   line-height: $base-line-height;
-
+  @include font-smooth();
 }
 
 h1,
@@ -82,7 +96,6 @@ body {
 
 h1, h2, h3, h4 {
   font-family: $font-stack-headline-bold;
-  font-weight: bold;
 }
 
 h3 {

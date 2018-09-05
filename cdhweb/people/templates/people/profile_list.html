@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load mezzanine_tags %}
 
 {% block page-subtitle %}{{ title|default:"People" }} | {% endblock %}
 {% block bodyattrs %}class="with-cards"{% endblock %}
@@ -7,6 +8,7 @@
 <section class="people">
 
 <h1>{{ current_title }}</h1>
+
 
 {# drop-down nav adapted from events page #}
 <div class="archive-nav">
@@ -19,6 +21,14 @@
   </ul>
 </div>
 
+
+{# display editable page content; wrapped for formatting reasons #}
+<section class="textcontent">
+    <div class="richtext">
+    {{ page.richtextpage.content|richtext_filters }}
+    </div>
+</section>
+
 {# current people #}
 {% for profile in current %}
     {% include 'people/snippets/profile_card.html' %}
@@ -26,7 +36,7 @@
 
 {# executive committe page only has an additinoal current section #}
 {% if sits_with %}
-  <h2>Sits with Executive Committe</h2>
+  <h2>Sits with Executive Committee</h2>
   {% for profile in sits_with %}
     {% include 'people/snippets/profile_card.html' %}
   {% endfor %}
