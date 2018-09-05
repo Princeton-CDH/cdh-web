@@ -477,8 +477,17 @@ class TestViews(TestCase):
         start_time = timezone.now() + timedelta(days=1) # starts tomorrow
         end_time = start_time + timedelta(hours=2) # lasts 2 hours
         event = Event.objects.create(start_time=start_time, end_time=end_time,
-                                     event_type=workshop, slug='workshop')
+                                     event_type=workshop, slug='workshop',
+                                     status=1)
         event.speakers.add(speaker)
+
+        response = self.client.get(reverse('people:speakers'))
+        # no speakers, since no published events exist
+        assert len(response.context['current']) == 0
+
+        # publish the event
+        event.status = 2
+        event.save()
 
         response = self.client.get(reverse('people:speakers'))
         # speaker's profile is listed as upcoming

@@ -1,8 +1,8 @@
 {# display person profile card; expects profile object as profile #}
 <div class="card profile"
     {% if profile.thumb %}style="background-image:url('{{ MEDIA_URL }}{{ profile.thumb }}')"{% endif %}>
-    {% if show_events and profile.user.event_set.upcoming %} {# link to event, if speaker has upcoming one #}
-        {% with profile.user.event_set.upcoming.first as event %}
+    {% if show_events and profile.user.event_set.published.upcoming %} {# link to event, if speaker has upcoming one #}
+        {% with profile.user.event_set.published.upcoming.first as event %}
         <a class="external event" title="event listing" href="{{ event.get_absolute_url }}"></a>
         {% endwith %}
     {% endif %}
@@ -36,12 +36,12 @@
                 {{ profile.job_title }}<br/>
             {% endif %}
             {% if show_events %} {# show associated events #}
-                {% if profile.user.event_set.upcoming %}
-                    {% with profile.user.event_set.upcoming.first as event %}
+                {% if profile.user.event_set.published.upcoming %}
+                    {% with profile.user.event_set.published.upcoming.first as event %}
                     {{ event.event_type }}: {{ event.when }} {# type and time of event #}
                     {% endwith %}
                 {% else %}
-                {{ profile.user.event_set.first.start_time|date:"Y" }} {# most recent year of past event #}
+                {{ profile.user.event_set.published.first.start_time|date:"Y" }} {# most recent year of past event #}
                 {% endif %}
                 <br/>
             {% endif %}
