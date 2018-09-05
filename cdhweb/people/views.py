@@ -132,7 +132,7 @@ class StaffListView(ProfileListView):
 class PostdocListView(ProfileListView):
     '''Display current and past postdoctoral fellows'''
     page_title = 'Postdoctoral Fellows'
-    past_title = 'Postoctoral Fellow Alumni'
+    past_title = 'Postdoctoral Fellow Alumni'
     show_grant = False
 
     def get_queryset(self):
