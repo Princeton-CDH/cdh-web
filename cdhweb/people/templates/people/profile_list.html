@@ -34,6 +34,15 @@
     {% include 'people/snippets/profile_card.html' %}
 {% endfor %}
 
+{# executive committe page only has an additinoal current section #}
+{% if sits_with %}
+  <h2>Sits with Executive Committee</h2>
+  {% for profile in sits_with %}
+    {% include 'people/snippets/profile_card.html' %}
+  {% endfor %}
+{% endif %}
+
+
 {# alumni / past members or affiliates #}
 {% if past %}
   <h2>{{ past_title|default:"Alumni" }}</h2>

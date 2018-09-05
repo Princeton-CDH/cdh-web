@@ -1,0 +1,7 @@
+# production and test requirements
+
+-r prod.txt
+
+pytest>=3.6 # required for pytest-django
+pytest-django
+pytest-cov

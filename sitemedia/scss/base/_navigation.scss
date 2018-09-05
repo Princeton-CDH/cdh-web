@@ -151,7 +151,6 @@ header.nav {
                     font-family: $font-stack-headline-bold;
                     color: #000000;
                     padding: 15px 0 11px;
-                    font-weight: bold;
                 }
             }
 
@@ -168,7 +167,6 @@ header.nav {
             &.secondary-nav {
                 margin-top: 0;
                 font-family: $font-stack-headline;
-                font-weight: normal;
                 display: none;
                 height: auto;
                 position: absolute;
@@ -204,7 +202,6 @@ header.nav {
 
             li {
                 font-family: $font-stack-headline;
-                font-weight: normal;
                 font-size: 14px;
                 text-align: left;
             }
@@ -396,8 +393,8 @@ footer {
             }
 
             label, input {
-                font-weight: normal;
                 font-family: $font-stack-headline;
+                font-weight: normal;
             }
 
             > * {
@@ -425,7 +422,7 @@ footer {
             input[type='submit'] {
                 background-color: white;
                 border: 2px solid black;
-                font-weight: bold;
+                font-family: $font-stack-headline-bold;
                 padding: 0.85em 1.5em;
             }
 

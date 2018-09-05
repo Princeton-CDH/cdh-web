@@ -1,0 +1,2289 @@
+[
+{
+  "model": "sites.site",
+  "pk": 1,
+  "fields": {
+    "domain": "localhost:8000",
+    "name": "localhost:8000"
+  }
+},
+{
+  "model": "pages.page",
+  "pk": 1,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "About",
+    "slug": "about",
+    "_meta_title": null,
+    "description": "The Center for Digital Humanities&nbsp;is an interdisciplinary research center and academic unit within the Princeton University Library. At the CDH we embrace an inclusive understanding of DH that respects and investigates the myriad ways digital methods and technologies are opening new avenues for research into the human experience, past and present.",
+    "gen_description": true,
+    "created": "2018-08-28T18:03:59.763Z",
+    "updated": "2018-08-28T18:29:22.530Z",
+    "status": 2,
+    "publish_date": "2018-08-28T18:03:59Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": true,
+    "_order": 0,
+    "content_model": "landingpage",
+    "parent": 12,
+    "in_menus": "1,2,3",
+    "titles": "Home / About",
+    "login_required": false
+  }
+},
+{
+  "model": "pages.page",
+  "pk": 2,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "Sponsors",
+    "slug": "sponsors",
+    "_meta_title": null,
+    "description": "University Library",
+    "gen_description": true,
+    "created": "2018-08-28T18:04:45.578Z",
+    "updated": "2018-08-28T18:30:11.453Z",
+    "status": 2,
+    "publish_date": "2018-08-28T18:04:45.570Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": true,
+    "_order": 1,
+    "content_model": "richtextpage",
+    "parent": 12,
+    "in_menus": "1,2,3",
+    "titles": "Home / Sponsors",
+    "login_required": false
+  }
+},
+{
+  "model": "pages.page",
+  "pk": 3,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "Events",
+    "slug": "events",
+    "_meta_title": null,
+    "description": "[placeholder for dynamic page]",
+    "gen_description": true,
+    "created": "2018-08-28T18:06:53.018Z",
+    "updated": "2018-08-28T18:06:53.018Z",
+    "status": 2,
+    "publish_date": "2018-08-28T18:06:53.009Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": true,
+    "_order": 4,
+    "content_model": "richtextpage",
+    "parent": null,
+    "in_menus": "1,2,3",
+    "titles": "Events",
+    "login_required": false
+  }
+},
+{
+  "model": "pages.page",
+  "pk": 4,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "Updates",
+    "slug": "updates",
+    "_meta_title": null,
+    "description": "[placeholder for dynamic page]",
+    "gen_description": true,
+    "created": "2018-08-28T18:07:09.342Z",
+    "updated": "2018-08-28T18:07:09.342Z",
+    "status": 2,
+    "publish_date": "2018-08-28T18:07:09.332Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": true,
+    "_order": 3,
+    "content_model": "richtextpage",
+    "parent": null,
+    "in_menus": "1,2,3",
+    "titles": "Updates",
+    "login_required": false
+  }
+},
+{
+  "model": "pages.page",
+  "pk": 5,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "Engage",
+    "slug": "engage",
+    "_meta_title": null,
+    "description": "come work with us",
+    "gen_description": true,
+    "created": "2018-08-28T18:07:46.247Z",
+    "updated": "2018-08-28T18:07:46.247Z",
+    "status": 2,
+    "publish_date": "2018-08-28T18:07:46.240Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": true,
+    "_order": 2,
+    "content_model": "landingpage",
+    "parent": null,
+    "in_menus": "1,2,3",
+    "titles": "Engage",
+    "login_required": false
+  }
+},
+{
+  "model": "pages.page",
+  "pk": 6,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "Grants",
+    "slug": "grants",
+    "_meta_title": null,
+    "description": "grant overview page",
+    "gen_description": true,
+    "created": "2018-08-28T18:08:00.554Z",
+    "updated": "2018-08-28T18:09:44.518Z",
+    "status": 2,
+    "publish_date": "2018-08-28T18:08:00Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": true,
+    "_order": 1,
+    "content_model": "richtextpage",
+    "parent": 5,
+    "in_menus": "1,2,3",
+    "titles": "Engage / Grants",
+    "login_required": false
+  }
+},
+{
+  "model": "pages.page",
+  "pk": 7,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "Seed Grants",
+    "slug": "grants/seed-grants",
+    "_meta_title": null,
+    "description": "plant a seed",
+    "gen_description": true,
+    "created": "2018-08-28T18:08:38.024Z",
+    "updated": "2018-08-28T18:09:34.707Z",
+    "status": 2,
+    "publish_date": "2018-08-28T18:08:38Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": true,
+    "_order": 0,
+    "content_model": "richtextpage",
+    "parent": 6,
+    "in_menus": "1,2,3",
+    "titles": "Updates / Grants / Seed Grants",
+    "login_required": false
+  }
+},
+{
+  "model": "pages.page",
+  "pk": 8,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "People",
+    "slug": "people",
+    "_meta_title": null,
+    "description": "People",
+    "gen_description": true,
+    "created": "2018-08-28T18:10:11.799Z",
+    "updated": "2018-08-28T18:10:11.799Z",
+    "status": 2,
+    "publish_date": "2018-08-28T18:10:11.799Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": false,
+    "_order": 1,
+    "content_model": "link",
+    "parent": null,
+    "in_menus": "1,2,3",
+    "titles": "People",
+    "login_required": false
+  }
+},
+{
+  "model": "pages.page",
+  "pk": 9,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "Staff",
+    "slug": "people/staff",
+    "_meta_title": null,
+    "description": "[dynamic page placeholder]",
+    "gen_description": true,
+    "created": "2018-08-28T18:10:35.432Z",
+    "updated": "2018-08-28T18:10:35.451Z",
+    "status": 2,
+    "publish_date": "2018-08-28T18:10:35.426Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": true,
+    "_order": 0,
+    "content_model": "richtextpage",
+    "parent": 8,
+    "in_menus": "1,2,3",
+    "titles": "People / Staff",
+    "login_required": false
+  }
+},
+{
+  "model": "pages.page",
+  "pk": 11,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "Students",
+    "slug": "people/students",
+    "_meta_title": null,
+    "description": "[dynamic content]",
+    "gen_description": true,
+    "created": "2018-08-28T18:11:42.386Z",
+    "updated": "2018-08-28T18:11:42.408Z",
+    "status": 2,
+    "publish_date": "2018-08-28T18:11:42.378Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": true,
+    "_order": 1,
+    "content_model": "richtextpage",
+    "parent": 8,
+    "in_menus": "1,2,3",
+    "titles": "People / Students",
+    "login_required": false
+  }
+},
+{
+  "model": "pages.page",
+  "pk": 12,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "Home",
+    "slug": "/",
+    "_meta_title": null,
+    "description": "The Center for Digital Humanities&nbsp;is an interdisciplinary research center and academic unit within the Princeton University Library. At the CDH we embrace an inclusive understanding of DH that respects and investigates the myriad ways digital methods and technologies are opening new avenues for research into the human experience, past and present.",
+    "gen_description": true,
+    "created": "2018-08-28T18:28:42.444Z",
+    "updated": "2018-08-28T18:29:08.008Z",
+    "status": 2,
+    "publish_date": "2018-08-28T18:28:42Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": true,
+    "_order": 0,
+    "content_model": "richtextpage",
+    "parent": null,
+    "in_menus": "2,3",
+    "titles": "Home",
+    "login_required": false
+  }
+},
+{
+  "model": "pages.page",
+  "pk": 13,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "Projects",
+    "slug": "projects",
+    "_meta_title": null,
+    "description": "Projects",
+    "gen_description": true,
+    "created": "2018-08-28T18:29:47.841Z",
+    "updated": "2018-08-28T18:29:47.841Z",
+    "status": 2,
+    "publish_date": "2018-08-28T18:29:47.840Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": false,
+    "_order": 5,
+    "content_model": "link",
+    "parent": null,
+    "in_menus": "1,2,3",
+    "titles": "Projects",
+    "login_required": false
+  }
+},
+{
+  "model": "pages.page",
+  "pk": 14,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "Consult",
+    "slug": "engage/consult",
+    "_meta_title": null,
+    "description": "request a consultation",
+    "gen_description": true,
+    "created": "2018-08-28T18:30:35.664Z",
+    "updated": "2018-08-28T18:30:57.926Z",
+    "status": 2,
+    "publish_date": "2018-08-28T18:30:35.656Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": true,
+    "_order": 0,
+    "content_model": "richtextpage",
+    "parent": 5,
+    "in_menus": "1,2,3",
+    "titles": "Engage / Consult",
+    "login_required": false
+  }
+},
+{
+  "model": "pages.richtextpage",
+  "pk": 14,
+  "fields": {
+    "content": "<p>request a consultation</p>"
+  }
+},
+{
+  "model": "pages.richtextpage",
+  "pk": 6,
+  "fields": {
+    "content": "<p>grant overview page</p>"
+  }
+},
+{
+  "model": "pages.richtextpage",
+  "pk": 3,
+  "fields": {
+    "content": "<p>[placeholder for dynamic page]</p>"
+  }
+},
+{
+  "model": "pages.richtextpage",
+  "pk": 12,
+  "fields": {
+    "content": "<p>The Center for Digital Humanities&nbsp;is an interdisciplinary research center and academic unit within the Princeton University Library. At the CDH we embrace an inclusive understanding of DH that respects and investigates the myriad ways digital methods and technologies are opening new avenues for research into the human experience, past and present.</p>"
+  }
+},
+{
+  "model": "pages.richtextpage",
+  "pk": 2,
+  "fields": {
+    "content": "<p><a href=\"http://library.princeton.edu/\">University Library</a></p>\n<p><a href=\"http://www.princeton.edu/oit/\">Office of Information Technology</a></p>\n<p><a href=\"https://provost.princeton.edu/\">Office of the Provost</a></p>\n<p><a href=\"https://humanities.princeton.edu/\">Humanities Council </a></p>\n<p>[and lots of others]</p>"
+  }
+},
+{
+  "model": "pages.richtextpage",
+  "pk": 9,
+  "fields": {
+    "content": "<p>[dynamic page placeholder]</p>"
+  }
+},
+{
+  "model": "pages.richtextpage",
+  "pk": 11,
+  "fields": {
+    "content": "<p>[dynamic content]</p>"
+  }
+},
+{
+  "model": "pages.richtextpage",
+  "pk": 4,
+  "fields": {
+    "content": "<p>[placeholder for dynamic page]</p>"
+  }
+},
+{
+  "model": "pages.richtextpage",
+  "pk": 7,
+  "fields": {
+    "content": "<p>plant a seed</p>"
+  }
+},
+{
+  "model": "pages.link",
+  "pk": 8,
+  "fields": {}
+},
+{
+  "model": "pages.link",
+  "pk": 13,
+  "fields": {}
+},
+{
+  "model": "taggit.tag",
+  "pk": 1,
+  "fields": {
+    "name": "network analysis",
+    "slug": "network-analysis"
+  }
+},
+{
+  "model": "taggit.tag",
+  "pk": 2,
+  "fields": {
+    "name": "data visualization",
+    "slug": "data-visualization"
+  }
+},
+{
+  "model": "taggit.tag",
+  "pk": 3,
+  "fields": {
+    "name": "data modeling",
+    "slug": "data-modeling"
+  }
+},
+{
+  "model": "taggit.tag",
+  "pk": 4,
+  "fields": {
+    "name": "project management",
+    "slug": "project-management"
+  }
+},
+{
+  "model": "taggit.tag",
+  "pk": 5,
+  "fields": {
+    "name": "design",
+    "slug": "design"
+  }
+},
+{
+  "model": "taggit.tag",
+  "pk": 6,
+  "fields": {
+    "name": "mapping",
+    "slug": "mapping"
+  }
+},
+{
+  "model": "taggit.tag",
+  "pk": 7,
+  "fields": {
+    "name": "text analysis",
+    "slug": "text-analysis"
+  }
+},
+{
+  "model": "taggit.tag",
+  "pk": 8,
+  "fields": {
+    "name": "annotation",
+    "slug": "annotation"
+  }
+},
+{
+  "model": "taggit.tag",
+  "pk": 9,
+  "fields": {
+    "name": "archives",
+    "slug": "archives"
+  }
+},
+{
+  "model": "taggit.tag",
+  "pk": 10,
+  "fields": {
+    "name": "rare books",
+    "slug": "rare-books"
+  }
+},
+{
+  "model": "taggit.tag",
+  "pk": 11,
+  "fields": {
+    "name": "manuscripts",
+    "slug": "manuscripts"
+  }
+},
+{
+  "model": "taggit.tag",
+  "pk": 12,
+  "fields": {
+    "name": "history",
+    "slug": "history"
+  }
+},
+{
+  "model": "taggit.tag",
+  "pk": 13,
+  "fields": {
+    "name": "english",
+    "slug": "english"
+  }
+},
+{
+  "model": "taggit.tag",
+  "pk": 14,
+  "fields": {
+    "name": "slavic",
+    "slug": "slavic"
+  }
+},
+{
+  "model": "taggit.tag",
+  "pk": 15,
+  "fields": {
+    "name": "classics",
+    "slug": "classics"
+  }
+},
+{
+  "model": "taggit.tag",
+  "pk": 16,
+  "fields": {
+    "name": "periodical studies",
+    "slug": "periodical-studies"
+  }
+},
+{
+  "model": "taggit.tag",
+  "pk": 17,
+  "fields": {
+    "name": "literary studies",
+    "slug": "literary-studies"
+  }
+},
+{
+  "model": "django_cas_ng.sessionticket",
+  "pk": 1,
+  "fields": {
+    "session_key": "aqprqj6vnfitxif9wgxdvlkjq5gpl8r2",
+    "ticket": "ST-93303-q2VB67YAuVb7EpfZVUys-auth-a"
+  }
+},
+{
+  "model": "projects.project",
+  "pk": 1,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "Princeton Prosody Archive",
+    "slug": "princeton-prosody-archive",
+    "_meta_title": null,
+    "description": "In its most general sense, &ldquo;prosody&rdquo; refers to the study of both versification in poetry and pronunciation. Versification includes a poem&rsquo;s rhythm, meter, and rhyme and other formal features (alliteration, lineation, fixed forms like the sonnet). Pronunciation is a bit more contentious, but relates to accent, tone, cadence, pitch, and anything that concerns how a poem might sound when read out loud. Historical prosodic materials show how poets and critics theorized poetry, how it was taught in schools, and how debates about pronunciation were inflected with national discourses (e.g. eradicating or preserving dialects), and how each of these changed over time. Scholars of aesthetics, of literary history, of the history of the English language, of linguistics, of education, and of comparative literature will find that prosodic discourse reveals the genealogy of many critical concepts &ndash; such as what qualifies as a sonnet, how to distinguish between an iamb and an anapest, and where we find the influence of (for example) Aristotle&rsquo;s or Hegel&rsquo;s ideas about poetic form.",
+    "gen_description": true,
+    "created": "2018-08-28T18:19:13.350Z",
+    "updated": "2018-08-28T18:20:21.487Z",
+    "status": 2,
+    "publish_date": "2018-08-28T18:19:13Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": true,
+    "short_description": "Compelling users to rethink the past through a collection of historical prosodic works.",
+    "long_description": "<p>In its most general sense, &ldquo;prosody&rdquo; refers to the study of both versification in poetry and pronunciation. Versification includes a poem&rsquo;s rhythm, meter, and rhyme and other formal features (alliteration, lineation, fixed forms like the sonnet). Pronunciation is a bit more contentious, but relates to accent, tone, cadence, pitch, and anything that concerns how a poem might sound when read out loud. Historical prosodic materials show how poets and critics theorized poetry, how it was taught in schools, and how debates about pronunciation were inflected with national discourses (e.g. eradicating or preserving dialects), and how each of these changed over time. Scholars of aesthetics, of literary history, of the history of the English language, of linguistics, of education, and of comparative literature will find that prosodic discourse reveals the genealogy of many critical concepts &ndash; such as what qualifies as a sonnet, how to distinguish between an iamb and an anapest, and where we find the influence of (for example) Aristotle&rsquo;s or Hegel&rsquo;s ideas about poetic form.</p>\n<p>In short, the Princeton Prosody Archive (PPA) is an incomplete, yet full-text searchable database of thousands of digitized prosodic works published between 1569 and 1923. It collects historical documents and highlights discourses about the study of language, the study of poetry, and where and how these intersect and diverge. The PPA makes several arguments and welcomes new scholarship based on the work it gathers. Some of our initial questions include: What if we began to understand poetics in all of its historical, linguistic, and educational valences? What if literary concepts such as meter and rhythm are historically contingent and fundamentally unstable? What might scholars of distant reading the novel learn from a collection of materials pertaining to the study and philosophy of poetry?</p>\n<p>Rather than a static repository of historical data, the PPA compels users to rethink the past and future of organizing, navigating, conceptualizing, and historicizing large amounts of data &ndash; about a single poem or about evolving and contradictory thinking about the technology of poetic language. Active since 2007, the PPA used the 2015-2016 academic year to strategically identify and assemble the key missing prosodic texts from its core collection while sharing its findings with leading researchers in historical poetics and digital humanities. In 2017-2018 PPA will be working with the CDH development team to redesign and launch a new website - stay tuned for details!</p>",
+    "highlight": true,
+    "cdh_built": true,
+    "image": "",
+    "thumb": "",
+    "attachments": []
+  }
+},
+{
+  "model": "projects.project",
+  "pk": 2,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "Derrida\u2019s Margins",
+    "slug": "derridas-margins",
+    "_meta_title": null,
+    "description": "&ldquo;Derrida&rsquo;s Margins&rdquo; aims to create a website and online research tool for annotations from the Library of Jacques Derrida, housed at Princeton University Library. Jacques Derrida is one of the major figures of twentieth-century thought, and his library--which bears the traces of decades of close reading--represents a major intellectual archive. This phase focuses on annotations related to Derrida&rsquo;s landmark 1967 work De la grammatologie (Of Grammatology). It was in Of Grammatology that Derrida first articulated a new style of critical reading, which would become the foundation of the philosophy of &ldquo;deconstruction.&rdquo;",
+    "gen_description": true,
+    "created": "2018-08-28T18:23:58.967Z",
+    "updated": "2018-08-28T18:25:11.728Z",
+    "status": 2,
+    "publish_date": "2018-08-28T18:23:58Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": true,
+    "short_description": "An online research tool for the philosopher\u2019s annotations that provides a behind-the-scenes look at his reading practices and the philosophy of deconstruction.",
+    "long_description": "<p>&ldquo;Derrida&rsquo;s Margins&rdquo; aims to create a website and online research tool for annotations from the Library of Jacques Derrida, housed at Princeton University Library. Jacques Derrida is one of the major figures of twentieth-century thought, and his library--which bears the traces of decades of close reading--represents a major intellectual archive. This phase focuses on annotations related to Derrida&rsquo;s landmark 1967 work <em>De la grammatologie </em>(<em>Of Grammatology</em>). It was in <em>Of Grammatology</em> that Derrida first articulated a new style of critical reading, which would become the foundation of the philosophy of &ldquo;deconstruction.&rdquo;</p>\n<p><br>Our online research tool will enable scholars to study the development of this philosophy in an unprecedented way by providing comprehensive digital access to the annotations, marginalia, bookmarks, tipped-in pages, and notes from Derrida&rsquo;s library that correspond to the roughly one thousand citations found in the pages <em>Of Grammatology</em>. We begin by identifying all quotations and references in <em>Of Grammatology</em>; we then locate these references in Derrida&rsquo;s personal copies of each work, transcribing all relevant marginal annotations and other markings. Digital images and transcriptions of these annotated pages will form the basis of the website, allowing users to track and search Derrida&rsquo;s reading practices. This corpus will also serve as a pilot data set for future work with an expanded corpus, allowing us to establish protocols, workflow, and a relational database model.</p>",
+    "highlight": true,
+    "cdh_built": true,
+    "image": "",
+    "thumb": "",
+    "attachments": []
+  }
+},
+{
+  "model": "projects.project",
+  "pk": 3,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "Linked Global Networks of Cultural Production",
+    "slug": "linked-global-networks-cultural-production",
+    "_meta_title": null,
+    "description": "Victoria Ocampo, an Argentine writer, critic, and literary editor, was one of the most important Latin American intellectuals of the twentieth century. As a member of a privileged upper-class family, Ocampo was highly educated and, thus, able to travel to Europe throughout her life, spending the majority of her time in its cultural capital of Paris, and, as a result, forming close relationships with a large number of writers and artists. Although she quickly made new friends and contacts throughout the continent, who all expressed deep admiration and appreciation for her creativity, intelligence, and aesthetic sensibilities, she still felt that she was an outsider, which was only confirmed when many of these same acquaintances displayed their ignorance about South America. Fueled by her discontent with what she deemed the problem of Latin America, which was precisely its alienation and isolation from Europe, Ocampo launched a literary journal, _Sur_, that she conceptualized as a way to connect not only North and South America, but also Europe, the Americas, and even parts of Asia.",
+    "gen_description": true,
+    "created": "2018-08-28T18:27:19.392Z",
+    "updated": "2018-08-28T18:28:02.879Z",
+    "status": 2,
+    "publish_date": "2018-08-28T18:27:19Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": true,
+    "short_description": "A network analysis and mapping project focusing on Victoria Ocampo\u2019s impact and influence on Latin American literature.",
+    "long_description": "<p>Victoria Ocampo, an Argentine writer, critic, and literary editor, was one of the most important Latin American intellectuals of the twentieth century. As a member of a privileged upper-class family, Ocampo was highly educated and, thus, able to travel to Europe throughout her life, spending the majority of her time in its cultural capital of Paris, and, as a result, forming close relationships with a large number of writers and artists. Although she quickly made new friends and contacts throughout the continent, who all expressed deep admiration and appreciation for her creativity, intelligence, and aesthetic sensibilities, she still felt that she was an outsider, which was only confirmed when many of these same acquaintances displayed their ignorance about South America. Fueled by her discontent with what she deemed the problem of Latin America, which was precisely its alienation and isolation from Europe, Ocampo launched a literary journal, _Sur_, that she conceptualized as a way to connect not only North and South America, but also Europe, the Americas, and even parts of Asia.</p>\n<p><br>&ldquo;Linked Global Networks of Cultural Production&rdquo; seeks to explore the emergence of a transatlantic literary print culture in Latin America during the twentieth century, primarily through the efforts of Victoria Ocampo. The project will consist of a series of network analysis visualizations centered around Ocampo that detail her complex web of connections, both inside and outside of Latin America, through correspondence, translations, prologues, and edited editions. Making use of Princeton&rsquo;s extensive papers of Latin American writers and key figures in the publishing industry, this project not only reveals the intricate circuits of conversation, collaboration, and creation that blossomed throughout the globe during this time, but also documents an archive of metadata about the physical aspects of the letters, magazines, journals, and other ephemera that link all of the involved intellectuals. Alongside the social network analysis visualizations, and the digital archive that will fuel them, the second phase of this project will be to digitally reconstruct and map Ocampo&rsquo;s movement throughout the world in an effort to highlight the strong <em>female</em> presence in Latin American publishing.</p>",
+    "highlight": false,
+    "cdh_built": false,
+    "image": "",
+    "thumb": "",
+    "attachments": []
+  }
+},
+{
+  "model": "projects.granttype",
+  "pk": 1,
+  "fields": {
+    "grant_type": "Staff R&D"
+  }
+},
+{
+  "model": "projects.granttype",
+  "pk": 2,
+  "fields": {
+    "grant_type": "Postdoctoral Research Project"
+  }
+},
+{
+  "model": "projects.granttype",
+  "pk": 3,
+  "fields": {
+    "grant_type": "Sponsored Project"
+  }
+},
+{
+  "model": "projects.grant",
+  "pk": 1,
+  "fields": {
+    "start_date": "2017-07-01",
+    "end_date": "2018-09-06",
+    "project": 1,
+    "grant_type": 3
+  }
+},
+{
+  "model": "projects.grant",
+  "pk": 2,
+  "fields": {
+    "start_date": "2016-09-01",
+    "end_date": "2017-09-30",
+    "project": 2,
+    "grant_type": 3
+  }
+},
+{
+  "model": "projects.grant",
+  "pk": 3,
+  "fields": {
+    "start_date": "2017-07-01",
+    "end_date": "2018-06-30",
+    "project": 3,
+    "grant_type": 2
+  }
+},
+{
+  "model": "projects.role",
+  "pk": 1,
+  "fields": {
+    "title": "Project Director",
+    "sort_order": 0
+  }
+},
+{
+  "model": "projects.role",
+  "pk": 2,
+  "fields": {
+    "title": "Technical Lead",
+    "sort_order": 0
+  }
+},
+{
+  "model": "projects.role",
+  "pk": 3,
+  "fields": {
+    "title": "Web Developer",
+    "sort_order": 0
+  }
+},
+{
+  "model": "projects.role",
+  "pk": 4,
+  "fields": {
+    "title": "User Experience Designer",
+    "sort_order": 0
+  }
+},
+{
+  "model": "projects.projectresource",
+  "pk": 1,
+  "fields": {
+    "resource_type": 1,
+    "project": 1,
+    "url": "http://prosody.princeton.edu/"
+  }
+},
+{
+  "model": "projects.projectresource",
+  "pk": 2,
+  "fields": {
+    "resource_type": 3,
+    "project": 1,
+    "url": "https://github.com/Princeton-CDH/ppa-django"
+  }
+},
+{
+  "model": "projects.projectresource",
+  "pk": 3,
+  "fields": {
+    "resource_type": 1,
+    "project": 2,
+    "url": "https://derridas-margins.princeton.edu/"
+  }
+},
+{
+  "model": "projects.projectresource",
+  "pk": 4,
+  "fields": {
+    "resource_type": 3,
+    "project": 2,
+    "url": "https://github.com/Princeton-CDH/derrida-django/"
+  }
+},
+{
+  "model": "people.title",
+  "pk": 1,
+  "fields": {
+    "title": "Lead Developer",
+    "sort_order": 2
+  }
+},
+{
+  "model": "people.title",
+  "pk": 3,
+  "fields": {
+    "title": "Digital Humanities Developer",
+    "sort_order": 3
+  }
+},
+{
+  "model": "people.title",
+  "pk": 6,
+  "fields": {
+    "title": "Postdoctoral Fellow",
+    "sort_order": 4
+  }
+},
+{
+  "model": "people.title",
+  "pk": 7,
+  "fields": {
+    "title": "Faculty Director",
+    "sort_order": 1
+  }
+},
+{
+  "model": "people.title",
+  "pk": 8,
+  "fields": {
+    "title": "Research Software & Programming Analyst",
+    "sort_order": 0
+  }
+},
+{
+  "model": "resources.resourcetype",
+  "pk": 1,
+  "fields": {
+    "name": "Website",
+    "sort_order": 0
+  }
+},
+{
+  "model": "resources.resourcetype",
+  "pk": 2,
+  "fields": {
+    "name": "Twitter",
+    "sort_order": 1
+  }
+},
+{
+  "model": "resources.resourcetype",
+  "pk": 3,
+  "fields": {
+    "name": "Github",
+    "sort_order": 2
+  }
+},
+{
+  "model": "resources.attachment",
+  "pk": 1,
+  "fields": {
+    "title": "Imperfectly Civilized",
+    "author": "Meredith Martin",
+    "file": "",
+    "url": "http://muse.jhu.edu/article/583628",
+    "attachment_type": "URL",
+    "pages": []
+  }
+},
+{
+  "model": "resources.landingpage",
+  "pk": 5,
+  "fields": {
+    "content": "<p>come work with us</p>",
+    "tagline": "you know you want to",
+    "image": ""
+  }
+},
+{
+  "model": "resources.landingpage",
+  "pk": 1,
+  "fields": {
+    "content": "<p>The Center for Digital Humanities&nbsp;is an interdisciplinary research center and academic unit within the Princeton University Library. At the CDH we embrace an inclusive understanding of DH that respects and investigates the myriad ways digital methods and technologies are opening new avenues for research into the human experience, past and present.</p>\n<p>&nbsp;</p>\n<h3>Mission Statement</h3>\n<p>The CDH is Princeton&rsquo;s hub of digital humanities best practices/expertise dedicated to:</p>\n<ul>\n<li>\n<h4>producing innovative digital humanities projects</h4>\n</li>\n<li>\n<h4>training a new generation of digitally and humanistically savvy scholars</h4>\n</li>\n<li>\n<h4>contributing to the digital humanities software tools and critical methods ecosystem</h4>\n</li>\n<li>\n<h4>diffusing DH methods and tools into the teaching and research cycle of Princeton University</h4>\n</li>\n</ul>\n<h3>Research</h3>\n<p>We partner with Princeton faculty, students, and fellow library colleagues to incubate innovative digital humanities projects at multiple stages of development - from small seed grants to peer reviewed, chartered projects involving our Development and Design Team and our Project Management System. &nbsp;Most CDH staff have 20% R&amp;D time. We use this time to build research projects of our own design, present at conferences, and publish.</p>\n<h3>Consultation</h3>\n<p>Staff members consult on digital humanities projects at any stage of development to facilitate collaborations and connections on and off campus.&nbsp;The CDH also&nbsp;hosts an open lab and welcomes students, faculty, and staff to work collaboratively in our space.</p>\n<h3>Teaching</h3>\n<p>CDH staff and affiliated researchers teach hands-on workshops that relate digital methods to humanities research. We are&nbsp;also working to establish digital humanities in the graduate and undergraduate curriculum at Princeton.</p>\n<h3>Events</h3>\n<p>The CDH hosts and co-hosts a wide range of events designed to bring greater awareness of digital humanities research methods and discoveries to the Princeton community.&nbsp;The center&nbsp;fosters discussion on campus and actively engages in debates about critical issues in the field.</p>\n<h3>The Not-So-Fine Print</h3>\n<p>The Center for Digital Humanities develops <a href=\"http://www.sparc.arl.org/issues/open-access\"> open access </a> projects and open source software. &nbsp;As appropriate, CDH staff members may serve as Principal Investigator&nbsp;or Co-Principal Investigator&nbsp;on CDH projects.</p>",
+    "tagline": "What is the CDH?",
+    "image": ""
+  }
+},
+{
+  "model": "events.eventtype",
+  "pk": 1,
+  "fields": {
+    "name": "Workshop"
+  }
+},
+{
+  "model": "events.eventtype",
+  "pk": 2,
+  "fields": {
+    "name": "Guest Lecture"
+  }
+},
+{
+  "model": "events.eventtype",
+  "pk": 3,
+  "fields": {
+    "name": "Reception"
+  }
+},
+{
+  "model": "events.eventtype",
+  "pk": 4,
+  "fields": {
+    "name": "Reading Group"
+  }
+},
+{
+  "model": "events.eventtype",
+  "pk": 5,
+  "fields": {
+    "name": "Panel"
+  }
+},
+{
+  "model": "events.eventtype",
+  "pk": 6,
+  "fields": {
+    "name": "Deadline"
+  }
+},
+{
+  "model": "events.eventtype",
+  "pk": 7,
+  "fields": {
+    "name": "Working Group"
+  }
+},
+{
+  "model": "events.eventtype",
+  "pk": 8,
+  "fields": {
+    "name": "Symposium"
+  }
+},
+{
+  "model": "events.eventtype",
+  "pk": 9,
+  "fields": {
+    "name": "Course"
+  }
+},
+{
+  "model": "events.location",
+  "pk": 1,
+  "fields": {
+    "name": "Center for Digital Humanities",
+    "short_name": "CDH",
+    "address": "Firestone Library, Floor B"
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "!o4YQtdluQ66ZhmfTX5LyP6RO0sxDvYtHbefpYpsE",
+    "last_login": "2018-08-28T18:02:35.304Z",
+    "is_superuser": true,
+    "username": "rkoeser",
+    "first_name": "Rebecca",
+    "last_name": "Koeser",
+    "email": "rebecca.s.koeser@princeton.edu",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2018-08-28T18:02:34.707Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 2,
+  "fields": {
+    "password": "",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "mm4",
+    "first_name": "Meredith",
+    "last_name": "Martin",
+    "email": "mm4@princeton.edu",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2018-08-28T18:12:40.913Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 3,
+  "fields": {
+    "password": "",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "nbudak",
+    "first_name": "Nick",
+    "last_name": "Budak",
+    "email": "nbudak@princeton.edu",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2018-08-28T18:13:48.782Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 4,
+  "fields": {
+    "password": "",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "xinyili",
+    "first_name": "Xinyi",
+    "last_name": "Li",
+    "email": "xinyili@princeton.edu",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2018-08-28T18:13:49.107Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 5,
+  "fields": {
+    "password": "",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "nfrye",
+    "first_name": "Nora",
+    "last_name": "Benedict",
+    "email": "nbenedict@princeton.edu",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2018-08-28T18:17:07.001Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 6,
+  "fields": {
+    "password": "",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "kac3",
+    "first_name": "Katie",
+    "last_name": "Chenoweth",
+    "email": "kac3@princeton.edu",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2018-08-28T18:23:56.244Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 7,
+  "fields": {
+    "password": "",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "bhicks",
+    "first_name": "Benjamin",
+    "last_name": "Hicks",
+    "email": "bhicks@princeton.edu",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2018-08-28T18:46:17.831Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "people.profile",
+  "pk": 1,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "Rebecca Sutton Koeser",
+    "slug": "rebecca-sutton-koeser",
+    "_meta_title": null,
+    "description": "Rebecca Koeser",
+    "gen_description": true,
+    "created": "2018-08-28T18:02:35.188Z",
+    "updated": "2018-08-28T18:02:47.357Z",
+    "status": 1,
+    "publish_date": "2018-08-28T18:02:35.172Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": true,
+    "user": 1,
+    "is_staff": false,
+    "education": "",
+    "bio": "",
+    "phone_number": "609-258-2024",
+    "office_location": "B-9H-8 Firestone Library",
+    "pu_status": "stf",
+    "image": "",
+    "thumb": "",
+    "attachments": []
+  }
+},
+{
+  "model": "people.profile",
+  "pk": 2,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "Meredith A. Martin",
+    "slug": "meredith-martin",
+    "_meta_title": "Meredith Martin",
+    "description": "Meredith Martin specializes in anglophone poetry, historical poetics, poetry and public culture, and disciplinary and pedagogical history. In 2015 she received the Andrew Mellon New Directions Fellowship. Her book,&nbsp;The Rise and Fall of Meter 1860-1930 won the MLA Prize for a First Book in 2012. She began the Center for Digital Humanities in part to support her own project, the Princeton Prosody Archive, an archive of writing on prosody between 1570-1923 that includes thousands of searchable manuscripts, manuals, articles, grammar books, and materials; she has been editing and overseeing this project since 2007. Princeton graduate student Meagan Wilson now acts as the project manager. Martin also oversees the &ldquo;Poetry@Princeton&rdquo; website. She is working on a second project about the history and use of poetic forms in the study of language. She teaches Reading Literature: Poetry, The Literature of the Fin de Si&egrave;cle, Nineteenth-Century Poetry, Modern Poetry, graduate courses in Historical Poetics and Victorian Poetry, and Literature and War.",
+    "gen_description": true,
+    "created": "2018-08-28T18:12:41.213Z",
+    "updated": "2018-08-28T18:42:10.017Z",
+    "status": 2,
+    "publish_date": "2018-08-28T18:12:41Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": true,
+    "user": 2,
+    "is_staff": true,
+    "education": "",
+    "bio": "<p>Meredith Martin specializes in anglophone poetry, historical poetics, poetry and public culture, and disciplinary and pedagogical history. In 2015 she received the Andrew Mellon New Directions Fellowship. Her book,&nbsp;<a href=\"http://press.princeton.edu/titles/9715.html\"><em>The Rise and Fall of Meter 1860-1930</em> </a>won the MLA Prize for a First Book in 2012. She began the Center for Digital Humanities in part to support her own project, the <a href=\"http://prosody.princeton.edu/\">Princeton Prosody Archive</a>, an archive of writing on prosody between 1570-1923 that includes thousands of searchable manuscripts, manuals, articles, grammar books, and materials; she has been editing and overseeing this project since 2007. Princeton graduate student Meagan Wilson now acts as the project manager. Martin also oversees the &ldquo;<a href=\"https://p\">Poetry@Princeton</a>&rdquo; website. She is working on a second project about the history and use of poetic forms in the study of language. She teaches Reading Literature: Poetry, The Literature of the Fin de Si&egrave;cle, Nineteenth-Century Poetry, Modern Poetry, graduate courses in Historical Poetics and Victorian Poetry, and Literature and War.</p>\n<p>&nbsp;</p>",
+    "phone_number": "609-258-1863",
+    "office_location": "19 McCosh Hall",
+    "pu_status": "fac",
+    "image": "",
+    "thumb": "",
+    "attachments": [
+      1
+    ]
+  }
+},
+{
+  "model": "people.profile",
+  "pk": 3,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "Nick Budak",
+    "slug": "nick-budak",
+    "_meta_title": null,
+    "description": "Nick Budak",
+    "gen_description": true,
+    "created": "2018-08-28T18:13:49.091Z",
+    "updated": "2018-08-28T18:42:00.930Z",
+    "status": 1,
+    "publish_date": "2018-08-28T18:13:49.089Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": true,
+    "user": 3,
+    "is_staff": false,
+    "education": "",
+    "bio": "",
+    "phone_number": "609-258-0876",
+    "office_location": "B-9H-10 Firestone Library",
+    "pu_status": "stf",
+    "image": "",
+    "thumb": "",
+    "attachments": []
+  }
+},
+{
+  "model": "people.profile",
+  "pk": 4,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "Xinyi Li",
+    "slug": "xinyi-li",
+    "_meta_title": null,
+    "description": "Xinyi Li",
+    "gen_description": true,
+    "created": "2018-08-28T18:13:49.413Z",
+    "updated": "2018-08-28T18:13:49.415Z",
+    "status": 1,
+    "publish_date": "2018-08-28T18:13:49.412Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": true,
+    "user": 4,
+    "is_staff": false,
+    "education": "",
+    "bio": "",
+    "phone_number": "",
+    "office_location": "",
+    "pu_status": "xstf",
+    "image": "",
+    "thumb": "",
+    "attachments": []
+  }
+},
+{
+  "model": "people.profile",
+  "pk": 5,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "Nora C. Benedict",
+    "slug": "nora-benedict",
+    "_meta_title": "Nora Benedict",
+    "description": "\nPh.D. Spanish, University of Virginia\nM.A. Spanish, University of Wisconsin-Madison\nB.A. English &amp; Spanish, Loyola University Maryland\n",
+    "gen_description": true,
+    "created": "2018-08-28T18:17:07.391Z",
+    "updated": "2018-08-28T18:42:00.661Z",
+    "status": 2,
+    "publish_date": "2018-08-28T18:17:07Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": true,
+    "user": 5,
+    "is_staff": true,
+    "education": "<ul>\n<li>Ph.D. Spanish, University of Virginia</li>\n<li>M.A. Spanish, University of Wisconsin-Madison</li>\n<li>B.A. English &amp; Spanish, Loyola University Maryland</li>\n</ul>",
+    "bio": "<p>Nora&rsquo;s research focuses on twentieth-century Latin American literature, descriptive bibliography, book history, and questions of access and maintenance surrounding both digital and print cultures. Before coming to Princeton, she was a Digital Humanities Fellow in the Scholars&rsquo; Lab at the University of Virginia, where she developed a mapping and data visualization project that traces the role of publishers and printers in Jorge Luis Borges&rsquo;s Argentina (1930-1951).</p>\n<p>As a Postdoctoral Research Associate in the CDH at Princeton she will be working on a social network analysis project, &ldquo;Linked Literary Networks in the Global South,&rdquo; that seeks to explore the emergence of a transatlantic literary print culture in Argentina during the twentieth century, primarily through the efforts of Victoria Ocampo. Making use of Princeton&rsquo;s extensive papers of Latin American writers and key figures in the publishing industry, this project not only reveals the intricate circuits of conversation, collaboration, and creation that blossomed in Argentina during this time, but also documents an archive of metadata about the physical aspects of the letters, magazines, journals, and other ephemera that link all of the involved intellectuals.</p>",
+    "phone_number": "609-258-2022",
+    "office_location": "B-9H-4 Firestone Library",
+    "pu_status": "stf",
+    "image": "",
+    "thumb": "",
+    "attachments": []
+  }
+},
+{
+  "model": "people.profile",
+  "pk": 6,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "Katie Chenoweth",
+    "slug": "katie-chenoweth",
+    "_meta_title": null,
+    "description": "Katie Chenoweth",
+    "gen_description": true,
+    "created": "2018-08-28T18:23:56.538Z",
+    "updated": "2018-08-28T18:42:00.222Z",
+    "status": 1,
+    "publish_date": "2018-08-28T18:23:56.537Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": true,
+    "user": 6,
+    "is_staff": false,
+    "education": "",
+    "bio": "",
+    "phone_number": "609-258-7064",
+    "office_location": "327 East Pyne Building",
+    "pu_status": "fac",
+    "image": "",
+    "thumb": "",
+    "attachments": []
+  }
+},
+{
+  "model": "people.profile",
+  "pk": 7,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "Benjamin W. Hicks",
+    "slug": "benjamin-w-hicks",
+    "_meta_title": null,
+    "description": "Benjamin Hicks",
+    "gen_description": true,
+    "created": "2018-08-28T18:46:18.167Z",
+    "updated": "2018-08-28T18:46:18.169Z",
+    "status": 1,
+    "publish_date": "2018-08-28T18:46:18.166Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": true,
+    "user": 7,
+    "is_staff": false,
+    "education": "",
+    "bio": "",
+    "phone_number": "",
+    "office_location": "",
+    "pu_status": "stf",
+    "image": "",
+    "thumb": "",
+    "attachments": []
+  }
+},
+{
+  "model": "people.position",
+  "pk": 1,
+  "fields": {
+    "start_date": "2017-09-22",
+    "end_date": null,
+    "user": 5,
+    "title": 6
+  }
+},
+{
+  "model": "people.position",
+  "pk": 2,
+  "fields": {
+    "start_date": "2017-09-22",
+    "end_date": null,
+    "user": 2,
+    "title": 7
+  }
+},
+{
+  "model": "events.event",
+  "pk": 1,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "Data Visualization II",
+    "slug": "dataviz-2",
+    "_meta_title": null,
+    "description": "Visual display of data and information can be incredibly powerful. Last semester the CDH showed you how to start making your own data visualizations; join Xinyi Li and Nick Budak for this follow-up workshop and learn how to appreciate and critique visualizations critically. This workshop will present a critique framework of key aspects to consider when assessing and constructing visualizations. We will turn a critical eye to various examples, and the framework will be a tool to help you unpack the strengths, weaknesses, and hidden arguments in visual presentations.",
+    "gen_description": true,
+    "created": "2018-08-28T18:15:33.320Z",
+    "updated": "2018-08-28T18:15:33.320Z",
+    "status": 2,
+    "publish_date": "2018-08-28T18:15:33.320Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": true,
+    "content": "<p>Visual display of data and information can be incredibly powerful. Last semester the CDH showed you how to start making your own <a href=\"https://cdh.princeton.edu/events/2017/10/workshop-data-visualization-1/\">data visualizations</a>; join <a href=\"/people/xinyi-li/\">Xinyi Li</a> and Nick Budak for this follow-up workshop and learn how to appreciate and critique visualizations critically. This workshop will present a critique framework of key aspects to consider when assessing and constructing visualizations. We will turn a critical eye to various examples, and the framework will be a tool to help you unpack the strengths, weaknesses, and hidden arguments in visual presentations.</p>",
+    "sponsor": null,
+    "start_time": "2018-03-26T20:30:00Z",
+    "end_time": "2018-03-26T22:00:00Z",
+    "location": 1,
+    "event_type": 1,
+    "attendance": null,
+    "image": "",
+    "thumb": "",
+    "speakers": [
+      3,
+      4
+    ],
+    "attachments": []
+  }
+},
+{
+  "model": "events.event",
+  "pk": 2,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "Fall 2018 Course - Introduction to Digital Humanities",
+    "slug": "fall-2018-course-introduction-digital-humanities",
+    "_meta_title": null,
+    "description": "Introduction to Digital Humanities - HUM 346 / AMS 348 / LAS 385 / COM 336",
+    "gen_description": true,
+    "created": "2018-08-28T18:17:00.210Z",
+    "updated": "2018-08-28T18:17:40.685Z",
+    "status": 2,
+    "publish_date": "2018-08-28T18:17:00Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": true,
+    "content": "<p>Introduction to Digital Humanities - HUM 346 / AMS 348 / LAS 385 / COM 336</p>\n<p>T/Th: 1:30 - 2:50 PM</p>\n<p>This course will introduce students to debates and approaches in the Digital Humanities from a global perspective. We will consider the foundations of DH while also discussing concerns involving access, maintenance, and care for projects over time in regions with physical restraints such as connectivity restrictions. On seminar days, we will work through theoretical concerns and explore the possibilities and limits of existing tools. On studio days, we work in small teams to gather data from primary sources in RBSC, which we will then use with software and platforms to build skills in computational analysis, data collection, and DH research.</p>\n<p>View <a href=\"https://registrar.princeton.edu/course-offerings/course_details.xml?courseid=013536&amp;term=1192\">course details</a>.&nbsp;</p>",
+    "sponsor": null,
+    "start_time": "2018-09-12T17:30:00Z",
+    "end_time": "2019-01-26T19:50:00Z",
+    "location": null,
+    "event_type": 9,
+    "attendance": null,
+    "image": "",
+    "thumb": "",
+    "speakers": [
+      5
+    ],
+    "attachments": []
+  }
+},
+{
+  "model": "blog.blogpost",
+  "pk": 1,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "Are you our new User Experience Designer?",
+    "slug": "are-you-our-new-user-experience-designer",
+    "_meta_title": null,
+    "description": "The CDH is hiring! We are looking for a curious, committed, and collegial colleague to join our Development and Design Team as our User Experience Designer. The UX Designer collaborates with faculty, students and library partners using the design process (site flow, wireframes, user research, art design) to ensure that each project reaches its full potential in scholarly and technical innovation.",
+    "gen_description": true,
+    "created": "2018-08-28T18:44:12.518Z",
+    "updated": "2018-08-28T18:45:04.234Z",
+    "status": 2,
+    "publish_date": "2018-08-28T18:44:12Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": true,
+    "content": "<p>The CDH is hiring! We are looking for a curious, committed, and collegial colleague to join our Development and Design Team as our User Experience Designer. The UX Designer collaborates with faculty, students and library partners using the design process (site flow, wireframes, user research, art design) to ensure that each project reaches its full potential in scholarly and technical innovation.</p>\n<p style=\"margin-top: 0pt; margin-bottom: 0pt;\">Reporting to the Lead Developer, the UX Designer has primary responsibility for the logical flow and interactive design of CDH projects, and sole responsibility for the design, branding, color palette, and overall visual theme of CDH projects and materials. Design is integral to every CDH project.&nbsp;</p>",
+    "featured_image": "",
+    "is_featured": false,
+    "users": [
+      3
+    ],
+    "related_posts": [],
+    "attachments": []
+  }
+},
+{
+  "model": "blog.blogpost",
+  "pk": 2,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "Princeton Prosody Archive: Rebuilding the Collection and User Interface",
+    "slug": "princeton-prosody-archive-rebuilding-collection-and-user-interface",
+    "_meta_title": null,
+    "description": "What is Prosody?\nProsody is a historically contingent term. Both the branch of linguistics concerning pronunciation (cadence, pitch, tone) and the aesthetic category of poetic form including versification (meter, rhythm, rhyme, verse forms), prosody sits at the border of science and aesthetics and at the invention of linguistics and literary study as disciplines.",
+    "gen_description": true,
+    "created": "2018-08-28T18:45:36.898Z",
+    "updated": "2018-08-28T18:45:36.898Z",
+    "status": 2,
+    "publish_date": "2018-08-28T18:45:36.898Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": true,
+    "content": "<h3>What is Prosody?</h3>\n<p>Prosody is a historically contingent term. Both the branch of linguistics concerning pronunciation (cadence, pitch, tone) and the aesthetic category of poetic form including versification (meter, rhythm, rhyme, verse forms), prosody sits at the border of science and aesthetics and at the invention of linguistics and literary study as disciplines.</p>",
+    "featured_image": "",
+    "is_featured": false,
+    "users": [
+      1,
+      2
+    ],
+    "related_posts": [],
+    "attachments": []
+  }
+},
+{
+  "model": "blog.blogpost",
+  "pk": 3,
+  "fields": {
+    "keywords_string": "",
+    "site": 1,
+    "title": "Bridging Digital Humanities Internal And Open Source Software Projects Through Reusable Building Blocks",
+    "slug": "bridging-dh-oss",
+    "_meta_title": null,
+    "description": "Why Write Reusable Code?\n\nDo one thing and do it well for maximum reusability\nTake advantage of synergy across projects with similar functionality\nTest and maintain code more easily\nMinimize or make explicit assumptions embedded in code that could impact research conclusions\n",
+    "gen_description": true,
+    "created": "2018-08-28T18:46:46.867Z",
+    "updated": "2018-08-28T18:46:54.731Z",
+    "status": 2,
+    "publish_date": "2018-08-28T18:46:46Z",
+    "expiry_date": null,
+    "short_url": null,
+    "in_sitemap": true,
+    "content": "<h3>Why Write Reusable Code?</h3>\n<ul>\n<li>Do one thing and do it well for maximum reusability</li>\n<li>Take advantage of synergy across projects with similar functionality</li>\n<li>Test and maintain code more easily</li>\n<li>Minimize or make explicit assumptions embedded in code that could impact research conclusions</li>\n</ul>\n<h3 lang=\"es\">&iquest;Para qu&eacute; se escribe el c&oacute;digo reutilizable?</h3>\n<ul lang=\"es\">\n<li>Para hacer una cosa y hacerlo bien para facilitar la reutilizaci&oacute;n</li>\n<li>Para aprovechar de algunas oportunidades sin&eacute;rgicas entre los proyectos con funcionalidad similar</li>\n<li>Para probar y mantener el c&oacute;digo m&aacute;s f&aacute;cilmente</li>\n<li>Para minimizar o hacer expl&iacute;citas las suposiciones embebidas en el c&oacute;digo que pueden afectar las conclusiones de las investigaciones</li>\n</ul>\n<blockquote>Focus new development on research-specific innovation.</blockquote>\n<figure class=\"image\"><img alt=\"Development Activity over one year for Derrida's Margins project codebase and Dependencies\" src=\"/media/uploads/blog/dh2018/derrida_repo_activity.svg\">\n<figcaption>Modules developed and released alongside primary project benefit other projects</figcaption>\n<figcaption lang=\"es\">Los m&oacute;dulos que se desarrollaron y se lanzaron con el proyecto principal&nbsp;benefician a otros proyectos</figcaption>\n</figure>\n<figure class=\"image\"><img alt=\"Development Activity over one year for Shakespeare and Company Project codebase and Dependencies\" src=\"/media/uploads/blog/dh2018/mep_repo_activity.svg\">\n<figcaption>Projects and Dependencies Development Activity Over One Year</figcaption>\n<figcaption lang=\"es\">El desarrollo de los proyectos y dependencias a lo largo de un a&ntilde;o</figcaption>\n</figure>",
+    "featured_image": "",
+    "is_featured": false,
+    "users": [
+      1,
+      7
+    ],
+    "related_posts": [],
+    "attachments": []
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 1,
+  "fields": {
+    "action_time": "2018-08-28T18:03:59.805Z",
+    "user": 1,
+    "content_type": 34,
+    "object_id": "1",
+    "object_repr": "About",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 2,
+  "fields": {
+    "action_time": "2018-08-28T18:04:45.638Z",
+    "user": 1,
+    "content_type": 15,
+    "object_id": "2",
+    "object_repr": "About / Sponsors",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 3,
+  "fields": {
+    "action_time": "2018-08-28T18:06:53.065Z",
+    "user": 1,
+    "content_type": 15,
+    "object_id": "3",
+    "object_repr": "Events",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 4,
+  "fields": {
+    "action_time": "2018-08-28T18:07:09.395Z",
+    "user": 1,
+    "content_type": 15,
+    "object_id": "4",
+    "object_repr": "Updates",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 5,
+  "fields": {
+    "action_time": "2018-08-28T18:07:46.293Z",
+    "user": 1,
+    "content_type": 34,
+    "object_id": "5",
+    "object_repr": "Engage",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 6,
+  "fields": {
+    "action_time": "2018-08-28T18:08:00.604Z",
+    "user": 1,
+    "content_type": 15,
+    "object_id": "6",
+    "object_repr": "Updates / Grants",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 7,
+  "fields": {
+    "action_time": "2018-08-28T18:08:38.083Z",
+    "user": 1,
+    "content_type": 15,
+    "object_id": "7",
+    "object_repr": "Updates / Grants / Seed Grants",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 8,
+  "fields": {
+    "action_time": "2018-08-28T18:09:22.110Z",
+    "user": 1,
+    "content_type": 15,
+    "object_id": "6",
+    "object_repr": "Updates / Grants",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"slug\", \"keywords\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 9,
+  "fields": {
+    "action_time": "2018-08-28T18:09:34.739Z",
+    "user": 1,
+    "content_type": 15,
+    "object_id": "7",
+    "object_repr": "Updates / Grants / Seed Grants",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"keywords\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 10,
+  "fields": {
+    "action_time": "2018-08-28T18:10:11.824Z",
+    "user": 1,
+    "content_type": 16,
+    "object_id": "8",
+    "object_repr": "People",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 11,
+  "fields": {
+    "action_time": "2018-08-28T18:10:35.491Z",
+    "user": 1,
+    "content_type": 15,
+    "object_id": "9",
+    "object_repr": "People / Staff",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 12,
+  "fields": {
+    "action_time": "2018-08-28T18:11:16.396Z",
+    "user": 1,
+    "content_type": 15,
+    "object_id": "10",
+    "object_repr": "People / Staff / Postdoctoral Fellows",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 13,
+  "fields": {
+    "action_time": "2018-08-28T18:11:42.447Z",
+    "user": 1,
+    "content_type": 15,
+    "object_id": "11",
+    "object_repr": "People / Students",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 14,
+  "fields": {
+    "action_time": "2018-08-28T18:15:33.386Z",
+    "user": 1,
+    "content_type": 37,
+    "object_id": "1",
+    "object_repr": "Data Visualization II - Mar 26, 2018",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 15,
+  "fields": {
+    "action_time": "2018-08-28T18:16:55.201Z",
+    "user": 1,
+    "content_type": 36,
+    "object_id": "9",
+    "object_repr": "Course",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 16,
+  "fields": {
+    "action_time": "2018-08-28T18:17:00.307Z",
+    "user": 1,
+    "content_type": 37,
+    "object_id": "2",
+    "object_repr": "Fall 2018 Course - Introduction to Digital Humanities - Sep 12, 2018",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 17,
+  "fields": {
+    "action_time": "2018-08-28T18:17:40.753Z",
+    "user": 1,
+    "content_type": 37,
+    "object_id": "2",
+    "object_repr": "Fall 2018 Course - Introduction to Digital Humanities - Sep 12, 2018",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"keywords\", \"content\", \"speakers\", \"tags\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 18,
+  "fields": {
+    "action_time": "2018-08-28T18:18:42.671Z",
+    "user": 1,
+    "content_type": 24,
+    "object_id": "3",
+    "object_repr": "Sponsored Project",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 19,
+  "fields": {
+    "action_time": "2018-08-28T18:19:13.393Z",
+    "user": 1,
+    "content_type": 22,
+    "object_id": "1",
+    "object_repr": "Princeton Prosody Archive",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}, {\"added\": {\"name\": \"grant\", \"object\": \"Princeton Prosody Archive: Sponsored Project (2017-2018)\"}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 20,
+  "fields": {
+    "action_time": "2018-08-28T18:19:35.602Z",
+    "user": 1,
+    "content_type": 26,
+    "object_id": "1",
+    "object_repr": "Project Director",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 21,
+  "fields": {
+    "action_time": "2018-08-28T18:19:48.319Z",
+    "user": 1,
+    "content_type": 26,
+    "object_id": "2",
+    "object_repr": "Technical Lead",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 22,
+  "fields": {
+    "action_time": "2018-08-28T18:20:03.618Z",
+    "user": 1,
+    "content_type": 26,
+    "object_id": "3",
+    "object_repr": "Web Developer",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 23,
+  "fields": {
+    "action_time": "2018-08-28T18:20:21.606Z",
+    "user": 1,
+    "content_type": 22,
+    "object_id": "1",
+    "object_repr": "Princeton Prosody Archive",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"long_description\", \"highlight\", \"cdh_built\", \"keywords\"]}}, {\"added\": {\"name\": \"membership\", \"object\": \"Meredith A. Martin - Project Director on Princeton Prosody Archive: Sponsored Project (2017-2018)\"}}, {\"added\": {\"name\": \"membership\", \"object\": \"Rebecca Sutton Koeser - Technical Lead on Princeton Prosody Archive: Sponsored Project (2017-2018)\"}}, {\"added\": {\"name\": \"membership\", \"object\": \"Nick Budak - Web Developer on Princeton Prosody Archive: Sponsored Project (2017-2018)\"}}, {\"added\": {\"name\": \"project resource\", \"object\": \"ProjectResource object\"}}, {\"added\": {\"name\": \"project resource\", \"object\": \"ProjectResource object\"}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 24,
+  "fields": {
+    "action_time": "2018-08-28T18:23:59.002Z",
+    "user": 1,
+    "content_type": 22,
+    "object_id": "2",
+    "object_repr": "Derrida\u2019s Margins",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}, {\"added\": {\"name\": \"grant\", \"object\": \"Derrida\\u2019s Margins: Sponsored Project (2016-2017)\"}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 25,
+  "fields": {
+    "action_time": "2018-08-28T18:24:46.737Z",
+    "user": 1,
+    "content_type": 26,
+    "object_id": "4",
+    "object_repr": "User Experience Designer",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 26,
+  "fields": {
+    "action_time": "2018-08-28T18:25:11.872Z",
+    "user": 1,
+    "content_type": 22,
+    "object_id": "2",
+    "object_repr": "Derrida\u2019s Margins",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"long_description\", \"keywords\"]}}, {\"added\": {\"name\": \"membership\", \"object\": \"Katie Chenoweth - Project Director on Derrida\\u2019s Margins: Sponsored Project (2016-2017)\"}}, {\"added\": {\"name\": \"membership\", \"object\": \"Rebecca Sutton Koeser - Technical Lead on Derrida\\u2019s Margins: Sponsored Project (2016-2017)\"}}, {\"added\": {\"name\": \"membership\", \"object\": \"Xinyi Li - User Experience Designer on Derrida\\u2019s Margins: Sponsored Project (2016-2017)\"}}, {\"added\": {\"name\": \"project resource\", \"object\": \"ProjectResource object\"}}, {\"added\": {\"name\": \"project resource\", \"object\": \"ProjectResource object\"}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 27,
+  "fields": {
+    "action_time": "2018-08-28T18:27:19.455Z",
+    "user": 1,
+    "content_type": 22,
+    "object_id": "3",
+    "object_repr": "Linked Global Networks of Cultural Production",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}, {\"added\": {\"name\": \"grant\", \"object\": \"Linked Global Networks of Cultural Production: Postdoctoral Research Project (2017-2018)\"}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 28,
+  "fields": {
+    "action_time": "2018-08-28T18:28:02.964Z",
+    "user": 1,
+    "content_type": 22,
+    "object_id": "3",
+    "object_repr": "Linked Global Networks of Cultural Production",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"long_description\", \"keywords\"]}}, {\"added\": {\"name\": \"membership\", \"object\": \"Nora C. Benedict - Project Director on Linked Global Networks of Cultural Production: Postdoctoral Research Project (2017-2018)\"}}, {\"added\": {\"name\": \"membership\", \"object\": \"Nora C. Benedict - Technical Lead on Linked Global Networks of Cultural Production: Postdoctoral Research Project (2017-2018)\"}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 29,
+  "fields": {
+    "action_time": "2018-08-28T18:28:42.491Z",
+    "user": 1,
+    "content_type": 15,
+    "object_id": "12",
+    "object_repr": "Home",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 30,
+  "fields": {
+    "action_time": "2018-08-28T18:29:08.040Z",
+    "user": 1,
+    "content_type": 15,
+    "object_id": "12",
+    "object_repr": "Home",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"slug\", \"keywords\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 31,
+  "fields": {
+    "action_time": "2018-08-28T18:29:22.574Z",
+    "user": 1,
+    "content_type": 34,
+    "object_id": "1",
+    "object_repr": "Home / About",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"content\", \"slug\", \"keywords\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 32,
+  "fields": {
+    "action_time": "2018-08-28T18:29:47.864Z",
+    "user": 1,
+    "content_type": 16,
+    "object_id": "13",
+    "object_repr": "Projects",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 33,
+  "fields": {
+    "action_time": "2018-08-28T18:30:36.126Z",
+    "user": 1,
+    "content_type": 15,
+    "object_id": "14",
+    "object_repr": "Engage / Consult",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 34,
+  "fields": {
+    "action_time": "2018-08-28T18:31:35.009Z",
+    "user": 1,
+    "content_type": 29,
+    "object_id": "6",
+    "object_repr": "Postdoctoral Fellow",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 35,
+  "fields": {
+    "action_time": "2018-08-28T18:31:44.865Z",
+    "user": 1,
+    "content_type": 30,
+    "object_id": "5",
+    "object_repr": "Nora C. Benedict",
+    "action_flag": 2,
+    "change_message": "[{\"added\": {\"name\": \"position\", \"object\": \"Nora C. Benedict Postdoctoral Fellow (2017)\"}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 36,
+  "fields": {
+    "action_time": "2018-08-28T18:32:42.187Z",
+    "user": 1,
+    "content_type": 27,
+    "object_id": "5",
+    "object_repr": "Nora Benedict",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"is_staff\", \"education\", \"bio\", \"status\", \"_meta_title\", \"slug\", \"keywords\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 37,
+  "fields": {
+    "action_time": "2018-08-28T18:33:56.089Z",
+    "user": 1,
+    "content_type": 14,
+    "object_id": "10",
+    "object_repr": "People / Postdoctoral Fellows",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 38,
+  "fields": {
+    "action_time": "2018-08-28T18:35:18.792Z",
+    "user": 1,
+    "content_type": 27,
+    "object_id": "2",
+    "object_repr": "Meredith Martin",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"is_staff\", \"bio\", \"status\", \"_meta_title\", \"slug\", \"description\", \"keywords\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 39,
+  "fields": {
+    "action_time": "2018-08-28T18:36:51.087Z",
+    "user": 1,
+    "content_type": 29,
+    "object_id": "7",
+    "object_repr": "Faculty Director",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 40,
+  "fields": {
+    "action_time": "2018-08-28T18:36:55.727Z",
+    "user": 1,
+    "content_type": 28,
+    "object_id": "2",
+    "object_repr": "mm4 Faculty Director (2017)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 41,
+  "fields": {
+    "action_time": "2018-08-28T18:40:14.194Z",
+    "user": 1,
+    "content_type": 31,
+    "object_id": "1",
+    "object_repr": "Imperfectly Civilized, Meredith Martin (URL)",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 42,
+  "fields": {
+    "action_time": "2018-08-28T18:40:18.461Z",
+    "user": 1,
+    "content_type": 27,
+    "object_id": "2",
+    "object_repr": "Meredith Martin",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"bio\", \"attachments\", \"keywords\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 43,
+  "fields": {
+    "action_time": "2018-08-28T18:41:05.524Z",
+    "user": 1,
+    "content_type": 30,
+    "object_id": "2",
+    "object_repr": "Meredith A. Martin",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"email\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 44,
+  "fields": {
+    "action_time": "2018-08-28T18:41:16.263Z",
+    "user": 1,
+    "content_type": 30,
+    "object_id": "6",
+    "object_repr": "Katie Chenoweth",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"email\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 45,
+  "fields": {
+    "action_time": "2018-08-28T18:41:25.831Z",
+    "user": 1,
+    "content_type": 30,
+    "object_id": "5",
+    "object_repr": "Nora C. Benedict",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"email\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 46,
+  "fields": {
+    "action_time": "2018-08-28T18:41:36.153Z",
+    "user": 1,
+    "content_type": 30,
+    "object_id": "3",
+    "object_repr": "Nick Budak",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"email\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 47,
+  "fields": {
+    "action_time": "2018-08-28T18:41:49.180Z",
+    "user": 1,
+    "content_type": 30,
+    "object_id": "2",
+    "object_repr": "Meredith A. Martin",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"email\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 48,
+  "fields": {
+    "action_time": "2018-08-28T18:42:46.517Z",
+    "user": 1,
+    "content_type": 29,
+    "object_id": "7",
+    "object_repr": "Faculty Director",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"sort_order\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 49,
+  "fields": {
+    "action_time": "2018-08-28T18:42:46.545Z",
+    "user": 1,
+    "content_type": 29,
+    "object_id": "6",
+    "object_repr": "Postdoctoral Fellow",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"sort_order\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 50,
+  "fields": {
+    "action_time": "2018-08-28T18:42:46.571Z",
+    "user": 1,
+    "content_type": 29,
+    "object_id": "3",
+    "object_repr": "Digital Humanities Developer",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"sort_order\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 51,
+  "fields": {
+    "action_time": "2018-08-28T18:42:46.599Z",
+    "user": 1,
+    "content_type": 29,
+    "object_id": "1",
+    "object_repr": "Lead Developer",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"sort_order\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 52,
+  "fields": {
+    "action_time": "2018-08-28T18:42:58.134Z",
+    "user": 1,
+    "content_type": 29,
+    "object_id": "5",
+    "object_repr": "Assistant Professor of French and Italian.",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 53,
+  "fields": {
+    "action_time": "2018-08-28T18:42:58.148Z",
+    "user": 1,
+    "content_type": 29,
+    "object_id": "4",
+    "object_repr": "Postdoctoral Research Associate",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 54,
+  "fields": {
+    "action_time": "2018-08-28T18:42:58.161Z",
+    "user": 1,
+    "content_type": 29,
+    "object_id": "2",
+    "object_repr": "Associate Professor of English. Director",
+    "action_flag": 3,
+    "change_message": ""
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 55,
+  "fields": {
+    "action_time": "2018-08-28T18:44:12.578Z",
+    "user": 1,
+    "content_type": 38,
+    "object_id": "1",
+    "object_repr": "Are you our new User Experience Designer?",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 56,
+  "fields": {
+    "action_time": "2018-08-28T18:45:04.283Z",
+    "user": 1,
+    "content_type": 38,
+    "object_id": "1",
+    "object_repr": "Are you our new User Experience Designer?",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"content\", \"keywords\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 57,
+  "fields": {
+    "action_time": "2018-08-28T18:45:36.964Z",
+    "user": 1,
+    "content_type": 38,
+    "object_id": "2",
+    "object_repr": "Princeton Prosody Archive: Rebuilding the Collection and User Interface",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 58,
+  "fields": {
+    "action_time": "2018-08-28T18:46:46.931Z",
+    "user": 1,
+    "content_type": 38,
+    "object_id": "3",
+    "object_repr": "Bridging Digital Humanities Internal And Open Source Software Projects Through Reusable Building Blocks",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 59,
+  "fields": {
+    "action_time": "2018-08-28T18:46:54.795Z",
+    "user": 1,
+    "content_type": 38,
+    "object_id": "3",
+    "object_repr": "Bridging Digital Humanities Internal And Open Source Software Projects Through Reusable Building Blocks",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"content\", \"users\", \"description\", \"keywords\"]}}]"
+  }
+},
+{
+  "model": "projects.membership",
+  "pk": 1,
+  "fields": {
+    "project": 1,
+    "user": 2,
+    "grant": 1,
+    "role": 1
+  }
+},
+{
+  "model": "projects.membership",
+  "pk": 2,
+  "fields": {
+    "project": 1,
+    "user": 1,
+    "grant": 1,
+    "role": 2
+  }
+},
+{
+  "model": "projects.membership",
+  "pk": 3,
+  "fields": {
+    "project": 1,
+    "user": 3,
+    "grant": 1,
+    "role": 3
+  }
+},
+{
+  "model": "projects.membership",
+  "pk": 4,
+  "fields": {
+    "project": 2,
+    "user": 6,
+    "grant": 2,
+    "role": 1
+  }
+},
+{
+  "model": "projects.membership",
+  "pk": 5,
+  "fields": {
+    "project": 2,
+    "user": 1,
+    "grant": 2,
+    "role": 2
+  }
+},
+{
+  "model": "projects.membership",
+  "pk": 6,
+  "fields": {
+    "project": 2,
+    "user": 4,
+    "grant": 2,
+    "role": 4
+  }
+},
+{
+  "model": "projects.membership",
+  "pk": 7,
+  "fields": {
+    "project": 3,
+    "user": 5,
+    "grant": 3,
+    "role": 1
+  }
+},
+{
+  "model": "projects.membership",
+  "pk": 8,
+  "fields": {
+    "project": 3,
+    "user": 5,
+    "grant": 3,
+    "role": 2
+  }
+}
+]

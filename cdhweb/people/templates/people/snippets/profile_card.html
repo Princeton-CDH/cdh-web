@@ -7,18 +7,30 @@
         <div class="content">
         {% with position=profile.user.positions.first %}
         <p class="title">
-            {% if position %}
+            {% if show_cdh_position and position %} {# show position within the cdh #}
                 {% if not position.is_current %}{{ position.years }}<br/>{% endif %}
                 {{ profile.user.positions.first.title|default:'' }}
-            {% else %} {# if no CDH position: display grant role #}
+            {% endif %}
+            {# NOTE: right now, if someone has both grant and cdh staff role, both will show #}
+            {% if show_grant %} {# display grant role #}
             {% with grant=profile.user.latest_grant %}
-                {% if not grant.is_current %}{{ grant.years }}<br/>{% endif %}
-                {{ grant.grant_type }} Grant Recipient
+                {% if grant %}
+                    {% if profile.first_start and profile.last_end %}
+                        {{ profile.first_start.year }}–{{ profile.last_end.year }}<br/>
+                    {% elif not grant.is_current %}{{ grant.years }}<br/>{% endif %}
+                    {{ grant.grant_type }} Grant Recipient
+                {% endif %}
             {% endwith %}
+            {% endif %}
+            {% if show_job_title %} {# show job title (e.g. for faculty) #}
+                {{ profile.job_title }}
+            {% endif %}
+            {% if show_affiliation %} {# show title and departmental / institutional affiliation #}
+                {{ profile.department }} {{ profile.institution }}
             {% endif %}
         </p>
         {% endwith %}
-        <p class="name">{{ profile.title }}</p>
+        <p class="name">{{ profile.title }}</p> {# profile page title = person's name #}
         </div>
       </{{ tag }}>
       {% endwith %}

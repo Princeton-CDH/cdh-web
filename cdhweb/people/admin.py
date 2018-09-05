@@ -52,10 +52,12 @@ class ProfileAdmin(DisplayableAdmin):
     # customized fieldset based on DisplayableAdmin field set
     fieldsets = (
         (None, {
-            "fields": ["title", "pu_status", "is_staff", "education", "bio",
-                       "phone_number", "office_location",
+            "fields": ["user", "title", "pu_status", "is_staff", "education",
+                       "bio", "phone_number", "office_location",
+                       "job_title", "department", "institution",
                        "image", "thumb",
-                       "status", ("publish_date", "expiry_date")],
+                       "status", ("publish_date", "expiry_date"),
+                       'attachments'],
         }),
         ("Page Metadata", {
             "fields": ["_meta_title", "slug",

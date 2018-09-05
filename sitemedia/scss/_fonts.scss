@@ -15,8 +15,8 @@
  * Lineto.com, 2015
  */
 
-@include font-face("BrownStdBold", "/static/fonts/lineto-brown-bold", bold, $file-formats: eot woff ttf svg);
-@include font-face("BrownStdRegular", "/static/fonts/lineto-brown-regular", $file-formats: eot woff ttf svg);
+@include font-face("BrownStdBold", "/static/fonts/lineto-brown-bold", bold, $file-formats: woff);
+@include font-face("BrownStdRegular", "/static/fonts/lineto-brown-regular", $file-formats: woff);
 
 /*
         This font software is the property of Commercial Type.
@@ -30,4 +30,4 @@
         License: 1609-SCGHHO
 */
 
-@include font-face("Lyon Text Web", "/static/fonts/LyonText-Regular-Web", $file-formats: eot woff woff2);
+@include font-face("Lyon Text Web", "/static/fonts/LyonText-Regular-Web", $file-formats: woff2);
