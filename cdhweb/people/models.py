@@ -192,10 +192,7 @@ class ProfileQuerySet(PublishedQuerySetMixin):
 
     def speakers(self):
         '''Return external speakers at CDH events.'''
-        return self.filter(
-            models.Q(user__event__isnull=False) &
-            models.Q(pu_status='external')
-        )
+        return self.filter(user__event__isnull=False, pu_status='external')
 
     def _current_position_query(self):
         # query to find a user with a current cdh position
@@ -218,8 +215,7 @@ class ProfileQuerySet(PublishedQuerySetMixin):
         )
 
     def current(self):
-        '''Return profiles for users with a current position,
-        a current grant, or an upcoming event,
+        '''Return profiles for users with a current position or current grant
         based on start and end dates.'''
         return self.filter(models.Q(self._current_position_query()) |
                            models.Q(self._current_grant_query()))
@@ -238,7 +234,8 @@ class ProfileQuerySet(PublishedQuerySetMixin):
         return self.filter(models.Q(self._current_position_query()) &
                            ~models.Q(user__positions__title__title__in=self.exec_committee_titles))
 
-    def upcoming_events(self):
+    def has_upcoming_events(self):
+        '''Filter profiles to only those with an event that has yet to start.'''
         return self.filter(user__event__end_time__gte=timezone.now()).distinct()
 
     def order_by_position(self):
@@ -391,4 +388,3 @@ def init_profile_from_ldap(user, ldapinfo):
         # job title, organizational unit
         job_title = str(ldapinfo.title).split(',')[0]
         Title.objects.get_or_create(title=job_title)
-

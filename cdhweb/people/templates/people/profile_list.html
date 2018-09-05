@@ -23,15 +23,22 @@
 
 
 {# display editable page content; wrapped for formatting reasons #}
+{% if page.richtextpage.content %}
 <section class="textcontent">
     <div class="richtext">
     {{ page.richtextpage.content|richtext_filters }}
     </div>
 </section>
+{% endif %}
 
 {# current people #}
 {% for profile in current %}
     {% include 'people/snippets/profile_card.html' %}
+{% empty %}
+    <p class="message">Next semester's speaking events are being scheduled.
+        Check back later or <a href="{% url 'event:upcoming' %}">view other
+            upcoming events.</a>
+    </p>
 {% endfor %}
 
 {# executive committe page only has an additinoal current section #}

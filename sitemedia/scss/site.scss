@@ -1463,7 +1463,12 @@ section.blogposts, section.people, section.events, section.projects {
 			@include full-grid-width;
 			margin-bottom: 5px;
 		}
-	}
+    }
+    
+    .message { /* displayed if there are no items in a section */
+        margin-bottom: 3rem;
+        grid-column: 1 / 12;
+    }
 
 	.archive-nav {
 		@include grid-column(3);

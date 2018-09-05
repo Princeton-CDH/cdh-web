@@ -215,4 +215,4 @@ class SpeakerListView(ProfileListView):
 
     def get_current_profiles(self):
         # return only speakers with upcoming events
-        return self.object_list.upcoming_events()
+        return self.object_list.has_upcoming_events()
