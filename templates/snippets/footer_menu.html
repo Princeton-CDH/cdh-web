@@ -1,7 +1,6 @@
 {% load pages_tags i18n %}
 {# display full top-level and secondary navigation in the footer #}
 {# adapted from mezzanine pages/menus/primary.html template #}
-<ul>
 {% for page in page_branch %}
     {% if page.in_menu %}
     {# footer has 6 columns; ul breaks to next column #}
@@ -26,4 +25,3 @@
 {% if user.is_staff %} {# convenience admin link for logged in users #}
     <li class='menu-header'><a class="admin-link" href="{% url 'admin:index' %}"><span>Admin</span></a></li>
 {% endif %}
-</ul>

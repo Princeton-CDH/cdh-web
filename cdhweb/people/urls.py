@@ -10,8 +10,8 @@ urlpatterns = [
     url(r'^postdocs/$', views.PostdocListView.as_view(), name='postdocs'),
     url(r'^students/$', views.StudentListView.as_view(), name='students'),
     url(r'^faculty/$', views.FacultyListView.as_view(), name='faculty'),
-    url(r'^exec/$', views.ExecListView.as_view(), name='exec-committee'),
     url(r'^speakers/$', views.SpeakerListView.as_view(), name='speakers'),
+    url(r'^executive-committee/$', views.ExecListView.as_view(), name='exec-committee'),
 
     url(r'^(?P<slug>[\w-]+)/$', views.ProfileDetailView.as_view(), name='profile'),
 ]

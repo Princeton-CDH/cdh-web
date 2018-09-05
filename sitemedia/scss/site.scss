@@ -507,11 +507,6 @@ $event-card-img-height: 240px;
 		@include large-card;
 
 		height: $event-card-height;
-		/* background options for when an image is added in the template */
-		// background-size: cover;
-	 	background-size: contain !important;
-		/* background-position: 50% 50%;  maybe? */
-		background-repeat: no-repeat;
 
 		> a {
 			display: grid;
@@ -525,7 +520,15 @@ $event-card-img-height: 240px;
 			> *  {
 				padding: 15px;
 			}
-		}
+        }
+
+        .image {
+            grid-area: image;
+            height: 100%;
+            padding: 0;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
 
 		.content {
 			grid-area: content;
@@ -705,7 +708,8 @@ $event-card-img-height: 240px;
 			padding-top: 10px;
 			background-color: $light-grey;
 			font-family: $font-stack-headline-bold;
-			width: 100%;
+            width: 100%;
+            line-height: 1.4;
 
 			.title {
 				font-size: 18px;
@@ -719,7 +723,7 @@ $event-card-img-height: 240px;
 				margin: 0;
 				font-size: 18px;
 				color: black;
-			}
+            }
 		}
 
 		@media (max-width: $small-max-width) {
@@ -1069,9 +1073,9 @@ $event-card-img-height: 240px;
 		}
 
 	  	.short_description {
-	  		font-style: italic;
 		    margin-left: 0;
 		    margin-right: 0;
+		    @include quote;
 
 			@media (min-width: $large-min-width) {
 				/* according to spec, should be 7 cols, but can't
@@ -1105,7 +1109,8 @@ $event-card-img-height: 240px;
 			font-style: italic;
 			font-size: 18px;
 			margin-bottom: 0;
-			font-family: $font-stack-body-text;
+            font-family: $font-stack-body-text;
+            font-weight: normal;
 		}
 
         a {
@@ -1409,7 +1414,12 @@ $event-card-img-height: 240px;
 	    	font-family: $font-stack-headline;
 	    	font-size: 18px;
 
-	    }
+        }
+        
+        .affiliation {
+            font-family: $font-stack-body-text;
+            font-style: italic;
+        }
 
     	.ical {
     		margin-top: 37px;
@@ -1512,7 +1522,7 @@ body.blogpost {
 		> h1 {
             @include content-page;
         }
-	}
+    }
 }
 
 article.blogpost {
@@ -1556,7 +1566,7 @@ article.blogpost {
 		}
 
 		a {
-			color: $dark-grey;
+			color: $black;
 			text-decoration: none;
 		}
 	}

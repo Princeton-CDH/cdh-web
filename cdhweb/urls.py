@@ -4,10 +4,16 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
+from django.contrib.sitemaps.views import sitemap
 from django.views.i18n import set_language
 from django.views.generic.base import RedirectView, TemplateView
 
+from cdhweb.blog.sitemaps import BlogPostSitemap
+from cdhweb.events.sitemaps import EventSitemap
+from cdhweb.people.sitemaps import ProfileSitemap
+from cdhweb.projects.sitemaps import ProjectSitemap
 from cdhweb.resources import views as resource_views
+from cdhweb.resources.sitemaps import PageSitemap
 
 admin.autodiscover()
 
@@ -25,6 +31,14 @@ if settings.USE_MODELTRANSLATION:
     urlpatterns += [
         url('^i18n/$', set_language, name='set_language'),
     ]
+
+sitemaps = {
+    'blogs': BlogPostSitemap,
+    'events': EventSitemap,
+    'pages': PageSitemap,
+    'people': ProfileSitemap,
+    'projects': ProjectSitemap,
+}
 
 # use test favicon when test warning is enabled as another visual indicator
 FAVICON = '/static/favicon.ico'
@@ -55,8 +69,14 @@ urlpatterns += [
     url(r'^blog(?P<blog_url>.*)$',
         RedirectView.as_view(url='/updates%(blog_url)s', permanent=True)),
 
+    # override mezzanine sitemap and use locally customized sitemaps
+    # NOTE: could use a sitemap index and grouped sitemaps here, but
+    # may complicate testing with pa11y-ci
+    url(r"^sitemap\.xml$", sitemap, {'sitemaps': sitemaps}, name='sitemap'),
+
     # let mezzanine handle everything else
     url("^", include("mezzanine.urls")),
+
 ]
 
 # Adds ``STATIC_URL`` to the context of error pages, so that error

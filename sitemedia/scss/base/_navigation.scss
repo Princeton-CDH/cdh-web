@@ -293,60 +293,68 @@ footer {
         border-top: 0;
         height: auto;
         padding-top: 70px;
+        margin-bottom: 30px;
 
         font-family: $font-stack-headline;
         font-size: 12px;
         color: $dark-grey;
 
-        display: grid;
-        grid-template-columns: 5fr 1fr;
-        grid-template-rows: 2fr 1fr;
-        grid-row-gap: 17px;
-        grid-template-areas:
-            "contact-info social"
-            "copyright sw-version";
-
-        @media (max-width: $small-max-width) {
-            grid-template-rows: 1fr 2fr 1fr;
-            grid-template-areas:
-                "social social"
-                "contact-info contact-info"
-                "copyright sw-version";
+        .cdh-info {
+            display: flex;
+            justify-content: space-between
         }
 
-        .contact-info {
-            grid-area: contact-info;
-            min-width: 265px;
-        }
+        .pu-info {
+            display: flex;
+            flex-direction: column;
+            margin-top: 20px;
 
-        .copyright {
-            grid-area: copyright;
+            @media (min-width: $medium-min-width) {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
         }
 
         .social {
-            grid-area: social;
-            justify-self: start;
-            padding-bottom: 15px;
             min-width: 75px;
-            position: relative;
         }
 
-        @media (max-width: $small-max-width) {
-            margin-top: 15px;
-            .social {
-                order: 1;
+        .pulogo {
+            
+            @media (max-width: $medium-max-width) {
+                width: 100%;
             }
-            .contact-info {
-                order: 2;
+
+            img {
+                width: 316px;
+
+                @media (max-width: $small-max-width) {
+                    width: 265px;
+                }
+            }
+
+            @media (max-width: $medium-max-width) {
+                margin-bottom: 1rem;
             }
         }
 
-        /* software version */
+        .a11y {
+            margin-left: 1rem;
+
+            @media (max-width: $small-max-width) {
+                margin-left: 0;
+            }
+        }
+
+        .copyright {
+            @media (min-width: $large-min-width) {
+                margin-left: 1rem;
+            }
+        }
+
         .sw-version {
-           grid-area: sw-version;
-           font-size: small;
+            margin-left: auto;
         }
-
     }
 
      a {

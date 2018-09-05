@@ -93,45 +93,54 @@
         <section class="contact" typeof="schema:Organization">
         {# RDFa markup for organization and address #}
 
-            <div class='contact-info'>
-                <span property="schema:name">Center for Digital Humanities</span><br />
-                <span property="schema:address" typeof="schema:PostalAddress">
-                <span property="schema:streetAddress">Firestone Library Floor B<br />
-                Princeton University</span><br />
-                <span property="schema:addressLocality">Princeton</span>, <span property="schema:addressRegion">NJ</span> <span property="schema:postalCode">08544</span><br />
-                </span>
 
-                <meta property="schema:alternateName" content="Center for Digital Humanities @ Princeton University" />
-                <meta property="schema:alternateName" content="CDH @ Princeton University" />
-                <meta property="schema:url" content="{% fullurl 'home' %}"/>
-
-                <meta property="schema:logo" content='{% fullstatic "img/CDH_logo.svg" %}' />
-                <meta property="schema:logo" content='{% fullstatic "img/CDH_logo.svg" %}' />
+            <div class="cdh-info">
+                {# cdh contact #}
+                <div class='contact-info'>
+                    <span property="schema:name">Center for Digital Humanities</span><br />
+                    <span property="schema:address" typeof="schema:PostalAddress">
+                    <span property="schema:streetAddress">Firestone Library Floor B<br />
+                    Princeton University</span><br />
+                    <span property="schema:addressLocality">Princeton</span>, <span property="schema:addressRegion">NJ</span> <span property="schema:postalCode">08544</span><br />
+                    </span>
+    
+                    <meta property="schema:alternateName" content="Center for Digital Humanities @ Princeton University" />
+                    <meta property="schema:alternateName" content="CDH @ Princeton University" />
+                    <meta property="schema:url" content="{% fullurl 'home' %}"/>
+    
+                    <meta property="schema:logo" content='{% fullstatic "img/CDH_logo.svg" %}' />
+                    <meta property="schema:logo" content='{% fullstatic "img/CDH_logo.svg" %}' />
+                </div>
+                {# social links #}
+                <div class="social">
+                    <ul>
+                    <li><a href='https://www.facebook.com/princetoncdh/' property="schema:sameAs" title="Facebook"><span class='fab fa-facebook-square fa-2x'
+                        aria-label='CDH Facebook' title="Facebook"></span></a>
+                        <a href='https://twitter.com/PrincetonDH' property="schema:sameAs" title="Twitter"><span class='fab fa-twitter fa-2x' title="Twitter"
+                         aria-label='CDH Twitter'></span></a>
+                        <a href='https://github.com/Princeton-CDH' property="schema:sameAs" title="GitHub"><span class='fab fa-github fa-2x' title="Twitter"
+                         aria-label='Princeton-CDH GitHub Organization'></span></a>
+    
+                         <a href="https://www.instagram.com/claus.the.chicken/" title="Instagram">
+                            <span class="fab fa-instagram fa-2x" title="Instagram" aria-label="CDH Instagram"></span></a>
+                    </li>
+                    </ul>
+                </div>
             </div>
 
-            <div class="copyright">
-                ©2017 Trustees of <span property="schema:parentOrganization" typeof="schema:Organization">
-                <a href="https://www.princeton.edu" property="schema:url"><span property="schema:name">Princeton University</span></a></span>
+            <div class="pu-info">
+                <div class="pulogo">
+                    <img src="{% fullstatic 'img/PUsig1-bw-bs.svg' %}" alt="princeton university logo"/>
+                </div>
+                <div class="copyright">
+                    ©2017 Trustees of <span property="schema:parentOrganization" typeof="schema:Organization">
+                    <a href="https://www.princeton.edu" property="schema:url"><span property="schema:name">Princeton University</span></a></span>
+                </div>
+                <a class="a11y" href="https://accessibility.princeton.edu/">Accessibility</a>
+                <a class="a11y" href="https://accessibility.princeton.edu/accessibility-assistance">Accessibility Assistance</a>
+                <div class="sw-version">v. {{ SW_VERSION }}</div>
             </div>
 
-            {# social links #}
-            <div class="social">
-                <ul>
-                <li><a href='https://www.facebook.com/princetoncdh/' property="schema:sameAs" title="Facebook"><span class='fab fa-facebook-square fa-2x'
-                    aria-label='CDH Facebook' title="Facebook"></span></a>
-                    <a href='https://twitter.com/PrincetonDH' property="schema:sameAs" title="Twitter"><span class='fab fa-twitter fa-2x' title="Twitter"
-                     aria-label='CDH Twitter'></span></a>
-                    <a href='https://github.com/Princeton-CDH' property="schema:sameAs" title="GitHub"><span class='fab fa-github fa-2x' title="Twitter"
-                     aria-label='Princeton-CDH GitHub Organization'></span></a>
-
-                     <a href="https://www.instagram.com/claus.the.chicken/" title="Instagram">
-                        <span class="fab fa-instagram fa-2x" title="Instagram" aria-label="CDH Instagram"></span></a>
-                </li>
-                </ul>
-
-            </div>
-
-            <div class="sw-version">v. {{ SW_VERSION }}</div>
         </section>
 
     </footer>

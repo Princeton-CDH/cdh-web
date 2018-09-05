@@ -47,6 +47,8 @@ $(document).ready(function(){
         // toggle footer to act as main mobile nav
         $('footer').toggleClass('mobile-nav');
         $('body').toggleClass('fixed');
+        // swap hamburger icon with close icon
+        $(e.target).toggleClass('fa-bars').toggleClass('fa-times')
     });
     $('a.toggle').on('click', function(e){
         $(this).parent().toggleClass('open');

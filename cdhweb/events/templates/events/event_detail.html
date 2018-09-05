@@ -31,6 +31,11 @@
         <h3><a property="schema:name"
             {% if person.published %}href="{{ person.get_absolute_url }}"{% endif %}>
             {{ person }}</a></h3>
+        {% if person.profile.institution %}
+        <p class="affiliation">
+            {{ person.profile.institution }}
+        </p>
+        {% endif %}
     </li>
     {# todo: affiliation?  #}
     {% endfor %}

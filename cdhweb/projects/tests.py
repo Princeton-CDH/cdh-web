@@ -1,15 +1,18 @@
 from datetime import datetime, timedelta, date
+from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
 from django.contrib.sites.models import Site
 from django.test import TestCase
 from django.urls import resolve, reverse
+from django.utils import timezone
 from django.utils.html import escape
 from mezzanine.core.models import CONTENT_STATUS_PUBLISHED, CONTENT_STATUS_DRAFT
 
 from cdhweb.people.models import Profile
 from cdhweb.projects.models import Grant, GrantType, Project, Role, \
     Membership, ProjectResource
+from cdhweb.projects.sitemaps import ProjectSitemap
 from cdhweb.resources.models import ResourceType
 
 
@@ -280,21 +283,21 @@ class TestProjectQuerySet(TestCase):
         assert proj in Project.objects.published(staffer)
 
         # publish date in future - only visible to staff user
-        proj.publish_date = datetime.today() + timedelta(days=2)
+        proj.publish_date = timezone.now() + timedelta(days=2)
         proj.save()
         assert proj not in Project.objects.published()
         assert proj not in Project.objects.published(nonstaffer)
         assert proj in Project.objects.published(staffer)
 
         # publish date in past - visible to all
-        proj.publish_date = datetime.today() - timedelta(days=2)
+        proj.publish_date = timezone.now() - timedelta(days=2)
         proj.save()
         assert proj in Project.objects.published()
         assert proj in Project.objects.published(nonstaffer)
         assert proj in Project.objects.published(staffer)
 
         # expiration date in past - only visible to staff user
-        proj.expiry_date = datetime.today() - timedelta(days=2)
+        proj.expiry_date = timezone.now() - timedelta(days=2)
         proj.save()
         assert proj not in Project.objects.published()
         assert proj not in Project.objects.published(nonstaffer)
@@ -486,3 +489,22 @@ class TestViews(TestCase):
             self.assertContains(response, contributor.profile.title)
         self.assertContains(response, project_url)
         # TODO: test large image included
+
+
+class TestProjectSitemap(TestCase):
+
+    def test_priority(self):
+        proj = Project(title='A project')
+        # default
+        assert ProjectSitemap().priority(proj) == 0.5
+        # cdh built = higher priority
+        proj.cdh_built = True
+        assert ProjectSitemap().priority(proj) == 0.6
+        # simulate website url
+        with patch.object(Project, 'website_url', return_val='http://example.com'):
+            # cdh built + website = even higher priority
+            assert ProjectSitemap().priority(proj) == 0.7
+
+            # website but not cdh built = not quite as high
+            proj.cdh_built = False
+            assert ProjectSitemap().priority(proj) == 0.6

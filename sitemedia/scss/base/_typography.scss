@@ -94,12 +94,21 @@ body {
 
 }
 
-h1, h2, h3, h4 {
-  font-family: $font-stack-headline-bold;
+h1 {
+    font-family: $font-stack-headline-bold;
+}
+
+h2 {
+    font-size: 24px;
+}
+
+h2, h3, h4 {
+  font-family: $font-stack-headline;
+  font-weight: normal;
 }
 
 h3 {
-  font-size: 28px;
+  font-size: 24px;
   line-height: 1.29;
 }
 
@@ -108,13 +117,17 @@ h4 {
   font-stretch: normal;
 }
 
-/* NOTE: labeled as .quote in zeplin, used for blog excerpt/call out in design */
-q {
-  font-family: Georgia;
+/* quote style in zeplin; used for blog excerpt/callout in design */
+@mixin quote {
+  font-family: $font-stack-body-text;
   font-size: 21px;
   font-style: italic;
   line-height: 1.52;
   color: $dark-grey;
+}
+
+q {
+  @include quote;
 }
 
 /* Caption in zeplin */

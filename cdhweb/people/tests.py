@@ -10,6 +10,7 @@ import pytest
 
 from cdhweb.people.models import Title, Person, Position, \
     init_profile_from_ldap, Profile
+from cdhweb.people.sitemaps import ProfileSitemap
 from cdhweb.projects.models import Project, Grant, GrantType, Role, Membership
 from cdhweb.resources.models import ResourceType, UserResource
 from cdhweb.events.models import Event, EventType
@@ -587,3 +588,18 @@ class TestViews(TestCase):
         staffer.profile.is_staff = True
         staffer.profile.save()
         assert self.client.get(staffer.get_absolute_url()).status_code == 404
+
+
+class TestProfileSitemap(TestCase):
+    fixtures = ['test_people_data.json']
+
+    def test_items(self):
+        sitemap_items = ProfileSitemap().items()
+
+        published_staff = Profile.objects.filter(is_staff=True).published()
+        for profile in published_staff:
+            assert profile in sitemap_items
+
+        published_non_staff = Profile.objects.filter(is_staff=False).published()
+        for profile in published_non_staff:
+            assert profile not in sitemap_items
