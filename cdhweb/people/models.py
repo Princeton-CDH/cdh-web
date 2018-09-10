@@ -246,9 +246,9 @@ class ProfileQuerySet(PublishedQuerySetMixin):
     def order_by_event(self):
         '''Order by earliest published event associated with profile.'''
         return self.annotate(
-            earliest_event=models.Case(
+            earliest_event=models.Min(models.Case(
                 models.When(user__event__status=CONTENT_STATUS_PUBLISHED,
-                            then='user__event__start_time'))
+                            then='user__event__start_time')))
             ).order_by('earliest_event')
 
     def order_by_position(self):
