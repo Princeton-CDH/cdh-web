@@ -3,7 +3,7 @@
     {% if profile.thumb %}style="background-image:url('{{ MEDIA_URL }}{{ profile.thumb }}')"{% endif %}>
     {% if show_events and profile.user.event_set.published.upcoming %} {# link to event, if speaker has upcoming one #}
         {% with profile.user.event_set.published.upcoming.first as event %}
-        <a class="external event" title="event listing" href="{{ event.get_absolute_url }}"></a>
+        <a class="external event" title="{{ event.title }}" href="{{ event.get_absolute_url }}"></a>
         {% endwith %}
     {% endif %}
     {% with profile.user.profile_url as profile_url %} {# local or external profile, if available #}
