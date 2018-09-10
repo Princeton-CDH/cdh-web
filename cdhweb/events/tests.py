@@ -73,7 +73,7 @@ class TestEvent(TestCase):
         end = jan15 + timedelta(hours=1, minutes=30)
         event = Event(start_time=jan15, end_time=end)
         # start day month date time (no pm), end time (pm)
-        assert event.when() == '%s – %s' % (jan15.strftime('%B %d %-I:%M'),
+        assert event.when() == '%s – %s' % (jan15.strftime('%b %d %-I:%M'),
                                             end.strftime('%-I:%M %p').lower())
 
         # same day, starting in am and ending in pm
@@ -81,14 +81,14 @@ class TestEvent(TestCase):
         # should include am on start time
         # NOTE: %-I should be equivalent to %I with lstrip('0')
         assert event.when() == '%s %s – %s' % \
-            (event.start_time.strftime('%B %d %-I:%M'),
+            (event.start_time.strftime('%b %d %-I:%M'),
              event.start_time.strftime('%p').lower(),
              end.strftime('%I:%M %p').lstrip('0').lower())
 
         # different days, same month
         event.start_time = jan15 + timedelta(days=1)
         assert event.when() == '%s – %s %s' % \
-            (event.start_time.strftime('%B %d %-I:%M'),
+            (event.start_time.strftime('%b %d %-I:%M'),
              end.strftime('%d %-I:%M'), end.strftime('%p').lower())
 
         # different timezone should get localized to current timezone
@@ -100,13 +100,13 @@ class TestEvent(TestCase):
         end = jan15 + timedelta(days=35)
         event = Event(start_time=jan15, end_time=end)
         # month name should display
-        assert end.strftime('%B') in event.when()
+        assert end.strftime('%b') in event.when()
 
         # different months, same day
         feb15 = datetime(2015, 2, 15, hour=16, tzinfo=timezone.get_default_timezone())
         event = Event(start_time=jan15, end_time=feb15)
-        assert event.start_time.strftime('%B %d') in event.when()
-        assert event.end_time.strftime('%B %d') in event.when()
+        assert event.start_time.strftime('%b %d') in event.when()
+        assert event.end_time.strftime('%b %d') in event.when()
 
     def test_duration(self):
         jan15 = datetime(2015, 1, 15, hour=16, tzinfo=timezone.get_default_timezone())

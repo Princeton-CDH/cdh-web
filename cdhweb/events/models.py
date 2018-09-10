@@ -154,7 +154,7 @@ class Event(Displayable, RichText, AdminThumbMixin, ExcerptMixin):
         # convert dates to local timezone for display
         local_start = self.start_time.astimezone(local_tz)
         local_end = self.end_time.astimezone(local_tz)
-        start = ' '.join([local_start.strftime('%B %d'),
+        start = ' '.join([local_start.strftime('%b %d'),
                           local_start.strftime('%-I:%M')])
         start_ampm = local_start.strftime('%p')
         # include start am/pm if *different* from end
@@ -164,7 +164,7 @@ class Event(Displayable, RichText, AdminThumbMixin, ExcerptMixin):
         # include end month and day if *different* from start
         end_pieces = []
         if local_start.month != local_end.month:
-            end_pieces.append(local_end.strftime('%B %d'))
+            end_pieces.append(local_end.strftime('%b %d'))
         elif local_start.day != local_end.day:
             end_pieces.append(local_end.strftime('%d'))
         end_pieces.append(local_end.strftime('%-I:%M %p').lower())
