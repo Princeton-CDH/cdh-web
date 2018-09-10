@@ -243,6 +243,14 @@ class ProfileQuerySet(PublishedQuerySetMixin):
         return self.filter(user__event__end_time__gte=timezone.now(),
                            user__event__status=CONTENT_STATUS_PUBLISHED).distinct()
 
+    def order_by_event(self):
+        '''Order by earliest published event associated with profile.'''
+        return self.annotate(
+            earliest_event=models.Case(
+                models.When(user__event__status=CONTENT_STATUS_PUBLISHED,
+                            then='user__event__start_time'))
+            ).order_by('earliest_event')
+
     def order_by_position(self):
         '''order by job title sort order and then by start date'''
         # annotate to avoid duplicates in the queryset due to multiple positions

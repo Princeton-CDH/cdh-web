@@ -496,6 +496,24 @@
       }
     },
     {
+        "model": "auth.user",
+        "pk": 12,
+        "fields": {
+          "password": "",
+          "last_login": null,
+          "is_superuser": false,
+          "username": "rms",
+          "first_name": "Richard",
+          "last_name": "Stallman",
+          "email": "",
+          "is_staff": false,
+          "is_active": true,
+          "date_joined": "2018-09-04T15:00:13.753Z",
+          "groups": [],
+          "user_permissions": []
+        }
+    },
+    {
       "model": "people.profile",
       "pk": 1,
       "fields": {
@@ -824,6 +842,39 @@
         "thumb": "",
         "attachments": []
       }
+    },
+    {
+        "model": "people.profile",
+        "pk": 11,
+        "fields": {
+          "keywords_string": "",
+          "site": 1,
+          "title": "Richard M. Stallman",
+          "slug": "rms",
+          "_meta_title": null,
+          "description": "Richard M. Stallman",
+          "gen_description": true,
+          "created": "2018-09-04T15:00:14.099Z",
+          "updated": "2018-09-04T15:01:02.713Z",
+          "status": 2,
+          "publish_date": "2018-09-04T15:00:14.097Z",
+          "expiry_date": null,
+          "short_url": null,
+          "in_sitemap": true,
+          "user": 12,
+          "is_staff": false,
+          "education": "",
+          "bio": "",
+          "phone_number": "",
+          "office_location": "",
+          "job_title": "President",
+          "department": "",
+          "institution": "Free Software Foundation",
+          "pu_status": "external",
+          "image": "",
+          "thumb": "",
+          "attachments": []
+        }
     },
     {
       "model": "people.position",

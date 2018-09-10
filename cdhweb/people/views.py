@@ -76,13 +76,19 @@ class ProfileListView(ProfileMixinView, ListView, LastModifiedListMixin):
         checks both positions and grants.'''
         return self.object_list.current()
 
+    def get_past_profiles(self):
+        '''Get past profiles. Override to customize filters and ordering. By
+        default, assumes any profiles that aren't current are past.'''
+        current = self.get_current_profiles()
+        return self.object_list.exclude(id__in=current.values('id'))
+
     def get_context_data(self):
         context = super().get_context_data()
         # update context to display current and past people separately
         current = self.get_current_profiles()
         # filter past based current ids, rather than trying to do the complicated
         # query to find not current people
-        past = self.object_list.exclude(id__in=current.values('id'))
+        past = self.get_past_profiles()
         context.update({
             'current': current,
             'past': past,
@@ -217,5 +223,9 @@ class SpeakerListView(ProfileListView):
         return super().get_queryset().speakers()
 
     def get_current_profiles(self):
-        # return only speakers with upcoming events
-        return self.object_list.has_upcoming_events()
+        # return only speakers with upcoming events, sorted by recent event
+        return self.object_list.has_upcoming_events().order_by_event()
+
+    def get_past_profiles(self):
+        # resort the past profiles and show latest first
+        return super().get_past_profiles().order_by_event().reverse()

@@ -485,47 +485,87 @@ class TestViews(TestCase):
 
     def test_speakers_list(self):
         # create a test event for an external person
-        speaker = Person.objects.get(username='billshakes')
+        bill = Person.objects.get(username='billshakes')
         workshop = EventType.objects.get(name='Workshop')
         # use django timezone util for timezone-aware datetime
         start_time = timezone.now() + timedelta(days=1) # starts tomorrow
         end_time = start_time + timedelta(hours=2) # lasts 2 hours
-        event = Event.objects.create(start_time=start_time, end_time=end_time,
-                                     event_type=workshop, slug='workshop',
-                                     status=CONTENT_STATUS_DRAFT)
-        event.speakers.add(speaker)
+        bill_workshop = Event.objects.create(start_time=start_time,
+                                             end_time=end_time,
+                                             event_type=workshop,
+                                             slug='bill-workshop',
+                                             status=CONTENT_STATUS_DRAFT)
+        bill_workshop.speakers.add(bill)
+        # create another event to test ordering
+        rms = Person.objects.get(username='rms')
+        lecture = EventType.objects.get(name='Guest Lecture')
+        start_time = timezone.now() + timedelta(weeks=1) # starts in a week
+        end_time = start_time + timedelta(hours=1) # lasts 1 hour
+        rms_lecture = Event.objects.create(start_time=start_time,
+                                           end_time=end_time,
+                                           event_type=lecture,
+                                           slug='rms-lecture',
+                                           status=CONTENT_STATUS_DRAFT)
+        rms_lecture.speakers.add(rms)
 
         response = self.client.get(reverse('people:speakers'))
         # no speakers, since no published events exist
         assert len(response.context['current']) == 0
 
-        # publish the event
-        event.status = CONTENT_STATUS_PUBLISHED
-        event.save()
+        # publish an event
+        bill_workshop.status = CONTENT_STATUS_PUBLISHED
+        bill_workshop.save()
 
         response = self.client.get(reverse('people:speakers'))
+        # one speaker, since one published event
+        assert len(response.context['current']) == 1
         # speaker's profile is listed as upcoming
-        assert speaker.profile in response.context['current']
+        assert bill.profile in response.context['current']
         # upcoming event month, day, and time is shown
-        self.assertContains(response, event.when())
+        self.assertContains(response, bill_workshop.when())
         # event type is shown
-        self.assertContains(response, event.event_type)
+        self.assertContains(response, bill_workshop.event_type)
         # speaker institutional affiliation is shown
-        self.assertContains(response, speaker.profile.institution)
+        self.assertContains(response, bill.profile.institution)
         # link to event is rendered
-        self.assertContains(response, speaker.event_set.first().get_absolute_url())
+        self.assertContains(response, bill.event_set.first().get_absolute_url())
 
-        # move event to the past
-        new_start = timezone.now() - timedelta(days=2) # 2 days ago
-        event.start_time = new_start
-        event.end_time = new_start + timedelta(hours=2) # 2 hours long
-        event.save()
+        # publish another event
+        rms_lecture.status = CONTENT_STATUS_PUBLISHED
+        rms_lecture.save()
 
         response = self.client.get(reverse('people:speakers'))
-        # speaker's profile is listed as past
-        assert speaker.profile in response.context['past']
+        # both speakers should now be listed
+        assert len(response.context['current']) == 2
+
+        # speakers should be sorted with earliest event first
+        assert response.context['current'][0] == bill.profile
+        assert response.context['current'][1] == rms.profile
+
+        # move an event to the past
+        new_start = timezone.now() - timedelta(weeks=52) # ~1 year ago
+        bill_workshop.start_time = new_start
+        bill_workshop.end_time = new_start + timedelta(hours=2) # 2 hours long
+        bill_workshop.save()
+
+        # should be one profile in each category
+        response = self.client.get(reverse('people:speakers'))
+        assert bill.profile in response.context['past']
+        assert rms.profile in response.context['current']
+
         # year of past event is shown
-        self.assertContains(response, new_start.strftime('%Y'))
+        self.assertContains(response, bill_workshop.start_time.strftime('%Y'))
+
+        # move both events to past to test ordering
+        new_start = timezone.now() - timedelta(weeks=104) # ~2 years ago
+        rms_lecture.start_time = new_start
+        rms_lecture.end_time = new_start + timedelta(hours=2) # 2 hours long
+        rms_lecture.save()
+
+        # speakers should be sorted with latest event year first
+        response = self.client.get(reverse('people:speakers'))
+        assert response.context['past'][0] == bill.profile
+        assert response.context['past'][1] == rms.profile
 
 
     def test_executive_committee_list(self):
