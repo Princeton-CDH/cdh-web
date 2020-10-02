@@ -83,7 +83,7 @@ Unit Testing
 
 Unit tests are written with `py.test <http://doc.pytest.org/>`_ but use
 Django fixture loading and convenience testing methods when that makes
-things easier.  To run them, first install test requirements (these are
+things easiest.  To run them, first install test requirements (these are
 included in dev)::
 
   pip install -r requirements/test.txt
