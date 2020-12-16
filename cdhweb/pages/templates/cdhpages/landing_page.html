@@ -1,0 +1,34 @@
+{% extends 'pages/page.html' %}
+{% load mezzanine_tags %}
+
+{% block bodyattrs %}class="with-cards small-no-cards"{% endblock %}
+
+{% block content %} {# wrap content in an article tag #}
+<article class="landing-page">
+{{ block.super }}
+</article>
+{% endblock %}
+
+{% block content-header %}
+<header {% if page.landingpage.image %}style="background-image:url('{{ MEDIA_URL }}{{ page.landingpage.image }}')"
+    {% else %}class="no-background"{% endif %}>
+    <div>
+    <a href="{% url 'home' %}" class="home">/</a><h1>{{ page.title }}</h1>
+    {% if page.landingpage.tagline %}
+    <p>{{ page.landingpage.tagline }}</p>
+    {% endif %}
+    </div>
+</header>
+{% endblock %}
+
+{% block main %}
+
+{# adapted from richtextpage template #}
+{% editable page.landingpage.content %}
+{{ page.landingpage.content|richtext_filters|safe }}
+{% endeditable %}
+
+
+
+
+{% endblock %}
