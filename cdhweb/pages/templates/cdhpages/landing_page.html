@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block content-header %}
-<header {% if page.landingpage.image %}style="background-image:url('{{ MEDIA_URL }}{{ page.landingpage.image }}')"
+<header {% if page.landingpage.header_image %}style="background-image:url('{{ MEDIA_URL }}{{ page.landingpage.header_image }}')"
     {% else %}class="no-background"{% endif %}>
     <div>
     <a href="{% url 'home' %}" class="home">/</a><h1>{{ page.title }}</h1>
@@ -23,12 +23,8 @@
 
 {% block main %}
 
-{# adapted from richtextpage template #}
-{% editable page.landingpage.content %}
-{{ page.landingpage.content|richtext_filters|safe }}
+{% editable page.landingpage.body %}
+    {{ page.landingpage.body | safe }}
 {% endeditable %}
-
-
-
 
 {% endblock %}
