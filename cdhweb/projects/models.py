@@ -10,7 +10,7 @@ from mezzanine.core.models import Displayable
 from mezzanine.utils.models import AdminThumbMixin, upload_to
 from taggit.managers import TaggableManager
 
-#from cdhweb.people.models import Person
+from cdhweb.people.models import Person
 from cdhweb.resources.models import (Attachment, DateRange, ExcerptMixin,
                                      PublishedQuerySetMixin, ResourceType)
 
@@ -77,7 +77,7 @@ class Project(Displayable, AdminThumbMixin, ExcerptMixin):
     working_group = models.BooleanField(
         'Working Group', default=False, help_text='Project is a long-term collaborative group associated with the CDH.')
 
-    members = models.ManyToManyField(User, through='Membership')
+    members = models.ManyToManyField(Person, through='Membership')
     resources = models.ManyToManyField(ResourceType, through='ProjectResource')
 
     tags = TaggableManager(blank=True)
@@ -196,9 +196,9 @@ class Role(models.Model):
 
 
 class Membership(DateRange):
-    '''Project membership - joins project, grant, user, and role.'''
+    '''Project membership - joins project, user, and role.'''
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    person = models.ForeignKey(User, on_delete=models.CASCADE)
+    person = models.ForeignKey(Person, null=True, on_delete=models.CASCADE)
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
 
     class Meta:
