@@ -18,6 +18,7 @@ from wagtail.core.models import Page, Site, Collection, get_root_collection_id
 from wagtail.images.models import Image
 
 from cdhweb.pages.models import ContentPage, HomePage, LandingPage
+from cdhweb.people.models import Person
 
 
 class Command(BaseCommand):
@@ -93,6 +94,9 @@ class Command(BaseCommand):
 
         # convert media images to wagtail images
         self.image_exodus()
+
+        # populate person images
+        self.person_image_exodus()
 
         # create the new homepage
         old_homepage = mezz_page_models.Page.objects.get(slug="/")
@@ -263,6 +267,9 @@ class Command(BaseCommand):
         # (clear out past migration attempts)
         Image.objects.all().delete()
         Collection.objects.exclude(pk=get_root_collection_id()).delete()
+        # fix collection tree so root collection is up to date
+        # FIXME: this is still not working; seems to error on alternate runs
+        Collection.fix_tree()
 
         # also delete any wagtail image files, since they are not deleted
         # by removing the objects
@@ -354,4 +361,12 @@ class Command(BaseCommand):
         # get the migrated wagtail image for a foreign-key image
         # using image file basename, which is migrated as image title
         return Image.objects.get(title=os.path.basename(image.name))
+
+    def person_image_exodus(self):
+        # for people with profile, set larger image as wagtail image for person
+        for person in Person.objects.filter(user__profile__isnull=False):
+            profile = person.user.profile
+            if profile.image:
+                person.image = self.get_wagtail_image(profile.image)
+                person.save()
 
