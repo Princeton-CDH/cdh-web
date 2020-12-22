@@ -3,6 +3,7 @@ from datetime import date
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
+from django.db.models.fields.related import RelatedField
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
@@ -11,6 +12,8 @@ from mezzanine.core.models import (CONTENT_STATUS_DRAFT,
                                    CONTENT_STATUS_PUBLISHED, Displayable)
 from mezzanine.utils.models import AdminThumbMixin, upload_to
 from taggit.managers import TaggableManager
+from wagtail.snippets.models import register_snippet
+from wagtail.search import index
 
 from cdhweb.resources.models import (Attachment, DateRange,
                                      PublishedQuerySetMixin)
@@ -38,8 +41,8 @@ class Title(models.Model):
         return self.positions.distinct().count()
     num_people.short_description = '# People'
 
-
-class Person(models.Model):
+@register_snippet
+class Person(index.Indexed, models.Model):
     # in cdhweb 2.x this was a proxy model for User;
     # in 3.x it is a distinct model with 1-1 optional relationship to User
     first_name = models.CharField('first name', max_length=150)
@@ -80,6 +83,20 @@ class Person(models.Model):
 
     #: update timestamp
     updated_at = models.DateTimeField(auto_now=True, null=True)
+
+    # searchable in admin
+    search_fields = [
+        index.SearchField('first_name', partial_match=True),
+        index.SearchField('last_name', partial_match=True),
+        index.RelatedFields('user', [
+            index.SearchField('username', partial_match=True)
+        ]),
+        index.FilterField('cdh_staff'),
+        index.FilterField('pu_status'),
+    ]
+
+    class Meta:
+        verbose_name_plural = "people"
 
     def __str__(self):
         '''Custom person display to make it easier to choose people
