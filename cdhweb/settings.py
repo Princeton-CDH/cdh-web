@@ -24,7 +24,8 @@ ADMIN_MENU_ORDER = (
                 (_("Media Library"), "media-library"),
                 "resources.Attachment")),
     ("Events", ('events.Event', 'events.Location', 'events.EventType')),
-    ('Profiles', ('people.Person', 'people.Position', 'people.Title')),
+    ('Profiles', ('people.Position', 'people.Title')),
+    # ('Profiles', ('people.Person', 'people.Position', 'people.Title')),   #
     ('Projects', ('projects.Project', 'projects.Grant', 'projects.Membership',
                  'projects.Role', 'projects.GrantType')),
     ('Resources', ('resources.ResourceType', 'taggit.Tag')),

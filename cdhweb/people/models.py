@@ -39,14 +39,47 @@ class Title(models.Model):
     num_people.short_description = '# People'
 
 
-class Person(User):
-    # NOTE: using a proxy model for User so we can customize the
-    # admin interface in one place without having to extend the django
-    # default user model.
+class Person(models.Model):
+    # in cdhweb 2.x this was a proxy model for User;
+    # in 3.x it is a distinct model with 1-1 optional relationship to User
+    first_name = models.CharField('first name', max_length=30, blank=True)
+    last_name = models.CharField('last name', max_length=150, blank=True)
+    user = models.OneToOneField(
+        User,   # settings.AUTH_USER_MODEL ?
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        help_text='Corresponding user account for this person (optional)'
+    )
+    cdh_staff = models.BooleanField(
+        default=False,
+        help_text='CDH staff or Postdoctoral Fellow.')
+    job_title = models.CharField(
+        max_length=255, blank=True,
+        help_text='Professional title, e.g. Professor or Assistant Professor')
+    department = models.CharField(
+        max_length=255, blank=True,
+        help_text='Academic Department at Princeton or other institution (optional)')
+    institution = models.CharField(
+        max_length=255, blank=True,
+        help_text='Institutional affiliation (for people not associated with Princeton)')
 
-    class Meta:
-        proxy = True
-        verbose_name_plural = 'People'
+    PU_STATUS_CHOICES = (
+        ('fac', 'Faculty'),
+        ('stf', 'Staff'),
+        ('graduate', 'Graduate Student'),
+        ('undergraduate', 'Undergraduate Student'),
+        ('external', 'Not associated with Princeton')
+    )
+    pu_status = models.CharField('Princeton Status', choices=PU_STATUS_CHOICES,
+                                 max_length=15, blank=True, default='')
+
+    image = models.ForeignKey('wagtailimages.image', null=True,
+                              blank=True, on_delete=models.SET_NULL,
+                              related_name='+')  # no reverse relationship
+
+    #: update timestamp
+    updated_at = models.DateTimeField(auto_now=True, null=True)
 
     @property
     def current_title(self):
@@ -304,7 +337,8 @@ class ProfileQuerySet(PublishedQuerySetMixin):
 
 
 class Profile(Displayable, AdminThumbMixin):
-    user = models.OneToOneField(Person, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    # -> cdh_staff on person
     is_staff = models.BooleanField(
         default=False,
         help_text='CDH staff or Postdoctoral Fellow. If checked, person ' +
@@ -317,6 +351,7 @@ class Profile(Displayable, AdminThumbMixin):
     phone_number = models.CharField(max_length=50, blank=True)
     office_location = models.CharField(max_length=255, blank=True)
 
+    # moved to person
     job_title = models.CharField(
         max_length=255, blank=True,
         help_text='Professional title, e.g. Professor or Assistant Professor')
@@ -349,6 +384,7 @@ class Profile(Displayable, AdminThumbMixin):
 
     attachments = models.ManyToManyField(Attachment, blank=True)
 
+    # TODO: check for
     tags = TaggableManager(blank=True)
 
     # custom manager for additional queryset filters

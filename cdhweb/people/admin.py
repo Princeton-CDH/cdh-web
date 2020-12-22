@@ -1,7 +1,7 @@
 from django.contrib import admin
 from mezzanine.core.admin import DisplayableAdminForm, DisplayableAdmin
 
-from .models import Title, Profile, Position, Person
+from .models import Title, Profile, Position
 from cdhweb.resources.models import UserResource
 
 
