@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
@@ -9,7 +10,7 @@ from mezzanine.utils.models import AdminThumbMixin, upload_to
 
 from taggit.managers import TaggableManager
 
-from cdhweb.people.models import Person
+# from cdhweb.people.models import Person
 from cdhweb.resources.models import Attachment, PublishedQuerySetMixin
 
 
@@ -20,7 +21,7 @@ class MultiOwnable(models.Model):
     multiple owners.
     """
 
-    users = models.ManyToManyField(Person, verbose_name=_("Authors"),
+    users = models.ManyToManyField(User, verbose_name=_("Authors"),
         related_name="%(class)ss")
 
     class Meta:

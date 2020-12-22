@@ -3,6 +3,7 @@
 from datetime import datetime
 
 import icalendar
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
@@ -13,7 +14,7 @@ from mezzanine.core.models import Displayable, RichText
 from mezzanine.utils.models import AdminThumbMixin, upload_to
 from taggit.managers import TaggableManager
 
-from cdhweb.people.models import Person
+# from cdhweb.people.models import Person
 from cdhweb.resources.models import (Attachment, ExcerptMixin,
                                      PublishedQuerySetMixin)
 from cdhweb.resources.utils import absolutize_url
@@ -95,7 +96,7 @@ class Event(Displayable, RichText, AdminThumbMixin, ExcerptMixin):
     location = models.ForeignKey(Location, null=True, blank=True,
                                  on_delete=models.SET_NULL)
     event_type = models.ForeignKey(EventType, on_delete=models.CASCADE)
-    speakers = models.ManyToManyField(Person,
+    speakers = models.ManyToManyField(User,
                                       help_text='Guest lecturer(s) or Workshop leader(s)',
                                       blank=True)
 
