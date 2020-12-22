@@ -413,6 +413,7 @@ PUCAS_LDAP = {
     # local method to populate profile fields based on available
     # ldap information
     'EXTRA_USER_INIT': 'cdhweb.people.models.init_profile_from_ldap'
+    # TODO: update for new person model
 }
 
 

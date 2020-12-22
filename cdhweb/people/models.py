@@ -42,8 +42,8 @@ class Title(models.Model):
 class Person(models.Model):
     # in cdhweb 2.x this was a proxy model for User;
     # in 3.x it is a distinct model with 1-1 optional relationship to User
-    first_name = models.CharField('first name', max_length=30, blank=True)
-    last_name = models.CharField('last name', max_length=150, blank=True)
+    first_name = models.CharField('first name', max_length=150)
+    last_name = models.CharField('last name', max_length=150)
     user = models.OneToOneField(
         User,   # settings.AUTH_USER_MODEL ?
         on_delete=models.SET_NULL,
@@ -81,91 +81,15 @@ class Person(models.Model):
     #: update timestamp
     updated_at = models.DateTimeField(auto_now=True, null=True)
 
-    @property
-    def current_title(self):
-        current_positions = self.positions.filter(end_date__isnull=True)
-        if current_positions.exists():
-            return current_positions.first().title
-
-    def cdh_staff(self):
-        '''is CDH staff'''
-        try:
-            return self.profile.is_staff
-        except ObjectDoesNotExist:
-            return False
-    cdh_staff.boolean = True
-    cdh_staff.short_description = 'CDH Staff'
-
-    def published(self):
-        '''person has a published profile page'''
-        try:
-            return self.profile.published()
-        except ObjectDoesNotExist:
-            return False
-    published.boolean = True
-
-    def get_absolute_url(self):
-        ''''Display url for user profile'''
-        try:
-            return self.profile.get_absolute_url()
-        except ObjectDoesNotExist:
-            pass
-
-    @property
-    def website_url(self):
-        '''personal website url, if set'''
-        website = self.userresource_set \
-            .filter(resource_type__name='Website').first()
-        if website:
-            return website.url
-
-    @property
-    def profile_url(self):
-        '''local profile url, user has a profile, or website url if there is one'''
-        try:
-            if self.profile.is_staff and self.published():
-                return self.get_absolute_url()
-        except ObjectDoesNotExist:
-            pass
-
-        return self.website_url
-
-    @property
-    def latest_grant(self):
-        '''most recent grants where this person has director role'''
-        # find projects where they are director, then get newest grant
-        # that overlaps with their directorship dates
-        mship = self.membership_set \
-            .filter(role__title__in=ProfileQuerySet.director_roles) \
-            .order_by('-start_date').first()
-        # if there is one, find the most recent grant overlapping with their
-        # directorship dates
-        if mship:
-            # find most recent grant that overlaps with membership dates
-            # - grant start before membership end OR
-            #   grant end after membership start
-
-            # a membership might have no end date set, in which
-            # case it can't be used in a filter
-            grant_overlap = models.Q(end_date__gte=mship.start_date)
-            if mship.end_date:
-                grant_overlap |= models.Q(start_date__lte=mship.end_date)
-
-            return mship.project.grant_set \
-                .filter(grant_overlap) \
-                .order_by('-start_date').first()
-
     def __str__(self):
         '''Custom person display to make it easier to choose people
         in admin menus.  Uses profile title if available, otherwise combines
         first and last names.  Returns username as last resort if no
         names are set.'''
-        try:
-            return self.profile.title
-        except ObjectDoesNotExist:
-            if self.first_name or self.last_name:
-                return ' '.join([self.first_name, self.last_name]).strip()
-            return self.username
+        if self.first_name or self.last_name:
+            return ' '.join([self.first_name, self.last_name]).strip()
+        # FIXME: user is optional
+        return self.user.username
 
 
 class ProfileQuerySet(PublishedQuerySetMixin):
