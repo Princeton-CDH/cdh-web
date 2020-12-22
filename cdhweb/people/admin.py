@@ -1,7 +1,9 @@
 from django.contrib import admin
 from mezzanine.core.admin import DisplayableAdminForm, DisplayableAdmin
+from wagtail.contrib.modeladmin.options import ModelAdmin as WagtailModelAdmin, modeladmin_register
+from wagtail.contrib.modeladmin.mixins import ThumbnailMixin
 
-from .models import Title, Profile, Position
+from cdhweb.people.models import Title, Person, Profile, Position
 from cdhweb.resources.models import UserResource
 
 
@@ -23,15 +25,25 @@ class UserResourceInline(admin.TabularInline):
     model = UserResource
 
 
+class PersonAdmin(ThumbnailMixin, WagtailModelAdmin):
+    model = Person
+    list_display = ('admin_thumb', 'first_name', 'last_name',  # 'current_title',
+                    'cdh_staff')
+    search_fields = ('first_name', 'last_name', 'user__username')
+    list_filter = ('pu_status', 'cdh_staff')
+    thumb_image_field_name = 'image'
+
+modeladmin_register(PersonAdmin)
+
 # class PersonAdmin(admin.ModelAdmin):
 #     list_display = ('username', 'first_name', 'last_name', 'current_title',
 #         'cdh_staff', 'published')
 #     # NOTE: if we switched to profile instead of person here, is_staff
 #     # and published could be made list editable
 #     fields = ('username', 'first_name', 'last_name', 'email')
-#     search_fields = ('first_name', 'last_name', 'username')
+
 #     inlines = [PositionInline, UserResourceInline]
-#     list_filter = ('profile__status', 'profile__is_staff')
+
 
 #     def tag_list(self, obj):
 #         return u", ".join(o.name for o in obj.profile.tags.all())
@@ -40,6 +52,7 @@ class UserResourceInline(admin.TabularInline):
 #     # use inline fields for titles and resources
 #     # also: suppress management/auth fields like password, username, permissions,
 #     # last login and date joined
+
 
 class ProfileAdmin(DisplayableAdmin):
     list_display = ('title', 'status', 'is_staff', 'pu_status', "admin_link",

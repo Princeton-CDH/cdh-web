@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('first_name', models.CharField(max_length=150, verbose_name='first name')),
                 ('last_name', models.CharField(max_length=150, verbose_name='last name')),
-                ('cdh_staff', models.BooleanField(default=False, help_text='CDH staff or Postdoctoral Fellow.')),
+                ('cdh_staff', models.BooleanField('CDH Staff', default=False, help_text='CDH staff or Postdoctoral Fellow.')),
                 ('job_title', models.CharField(blank=True, help_text='Professional title, e.g. Professor or Assistant Professor', max_length=255)),
                 ('department', models.CharField(blank=True, help_text='Academic Department at Princeton or other institution (optional)', max_length=255)),
                 ('institution', models.CharField(blank=True, help_text='Institutional affiliation (for people not associated with Princeton)', max_length=255)),

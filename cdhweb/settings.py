@@ -341,6 +341,7 @@ INSTALLED_APPS = [
     'wagtail.images',
     'wagtail.search',
     'wagtail.admin',
+    'wagtail.contrib.modeladmin',
     'wagtail.core',
     'modelcluster',
     'taggit',

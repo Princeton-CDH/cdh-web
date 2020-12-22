@@ -12,8 +12,6 @@ from mezzanine.core.models import (CONTENT_STATUS_DRAFT,
                                    CONTENT_STATUS_PUBLISHED, Displayable)
 from mezzanine.utils.models import AdminThumbMixin, upload_to
 from taggit.managers import TaggableManager
-from wagtail.snippets.models import register_snippet
-from wagtail.search import index
 
 from cdhweb.resources.models import (Attachment, DateRange,
                                      PublishedQuerySetMixin)
@@ -41,8 +39,8 @@ class Title(models.Model):
         return self.positions.distinct().count()
     num_people.short_description = '# People'
 
-@register_snippet
-class Person(index.Indexed, models.Model):
+
+class Person(models.Model):
     # in cdhweb 2.x this was a proxy model for User;
     # in 3.x it is a distinct model with 1-1 optional relationship to User
     first_name = models.CharField('first name', max_length=150)
@@ -55,6 +53,7 @@ class Person(index.Indexed, models.Model):
         help_text='Corresponding user account for this person (optional)'
     )
     cdh_staff = models.BooleanField(
+        'CDH Staff',
         default=False,
         help_text='CDH staff or Postdoctoral Fellow.')
     job_title = models.CharField(
@@ -83,17 +82,6 @@ class Person(index.Indexed, models.Model):
 
     #: update timestamp
     updated_at = models.DateTimeField(auto_now=True, null=True)
-
-    # searchable in admin
-    search_fields = [
-        index.SearchField('first_name', partial_match=True),
-        index.SearchField('last_name', partial_match=True),
-        index.RelatedFields('user', [
-            index.SearchField('username', partial_match=True)
-        ]),
-        index.FilterField('cdh_staff'),
-        index.FilterField('pu_status'),
-    ]
 
     class Meta:
         verbose_name_plural = "people"
