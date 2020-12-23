@@ -139,6 +139,12 @@ class LandingPage(Page):
     subpage_types = ['ContentPage']
 
 
+class PeopleLandingPage(LandingPage):
+    """LandingPage subtype for People that holds ProfilePages."""
+    parent_page_types = []  # can't be created in page editor
+    subpage_types = ["people.ProfilePage"]
+
+
 class HomePage(Page):
     '''A home page that aggregates and displays featured content.'''
 
