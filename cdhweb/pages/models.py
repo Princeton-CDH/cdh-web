@@ -1,9 +1,10 @@
 from random import shuffle
 
 import bleach
-from cdhweb.blog.models import BlogPost
-from cdhweb.events.models import Event
-from cdhweb.projects.models import Project
+# from cdhweb.blog.models import BlogPost
+# from cdhweb.events.models import Event
+# from cdhweb.projects.models import Project
+from django.apps import apps
 from django.conf import settings
 from django.db import models
 from django.template.defaultfilters import striptags, truncatechars_html
@@ -156,6 +157,13 @@ class HomePage(Page):
     def get_context(self, request):
         '''Add featured updates, projects, and events to the page context.'''
         context = super().get_context(request)
+
+        # FIXME an ImportError is thrown when classes in this module are
+        # imported elsewhere if any of these three models are imported at the
+        # top. Why?
+        BlogPost = apps.get_model("blog", "blogpost")
+        Project = apps.get_model("projects", "project")
+        Event = apps.get_model("events", "event")
 
         # add up to 6 featured updates, otherwise use 3 most recent updates
         updates = BlogPost.objects.featured().published().recent()[:6]
