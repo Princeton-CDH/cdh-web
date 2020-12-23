@@ -274,7 +274,8 @@ class Command(BaseCommand):
         # also delete any wagtail image files, since they are not deleted
         # by removing the objects
         shutil.rmtree('%s/images' % settings.MEDIA_ROOT, ignore_errors=True)
-        shutil.rmtree('%s/original_images' % settings.MEDIA_ROOT, ignore_errors=True)
+        shutil.rmtree('%s/original_images' %
+                      settings.MEDIA_ROOT, ignore_errors=True)
 
         # get media filenames to migrate, with duplicates filtered out
         media_filenames = self.get_media_files()
@@ -360,7 +361,11 @@ class Command(BaseCommand):
     def get_wagtail_image(self, image):
         # get the migrated wagtail image for a foreign-key image
         # using image file basename, which is migrated as image title
-        return Image.objects.get(title=os.path.basename(image.name))
+        try:
+            return Image.objects.get(title=os.path.basename(image.name))
+        except Image.DoesNotExist as err:
+            print("Error locating image %s: %s" % (image, err))
+            return None
 
     def person_image_exodus(self):
         # for people with profile, set larger image as wagtail image for person
@@ -369,4 +374,3 @@ class Command(BaseCommand):
             if profile.image:
                 person.image = self.get_wagtail_image(profile.image)
                 person.save()
-
