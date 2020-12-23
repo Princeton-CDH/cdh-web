@@ -1,9 +1,10 @@
 from datetime import date
 
+from cdhweb.resources.models import (Attachment, DateRange,
+                                     PublishedQuerySetMixin)
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
-from django.db.models.fields.related import RelatedField
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
@@ -12,9 +13,11 @@ from mezzanine.core.models import (CONTENT_STATUS_DRAFT,
                                    CONTENT_STATUS_PUBLISHED, Displayable)
 from mezzanine.utils.models import AdminThumbMixin, upload_to
 from taggit.managers import TaggableManager
-
-from cdhweb.resources.models import (Attachment, DateRange,
-                                     PublishedQuerySetMixin)
+from wagtail.admin.edit_handlers import (FieldPanel, FieldRowPanel,
+                                         InlinePanel, MultiFieldPanel)
+from wagtail.images.edit_handlers import ImageChooserPanel
+from modelcluster.fields import ParentalKey
+from modelcluster.models import ClusterableModel
 
 
 class Title(models.Model):
@@ -37,7 +40,7 @@ class Title(models.Model):
     num_people.short_description = '# People'
 
 
-class Person(models.Model):
+class Person(ClusterableModel):
     # in cdhweb 2.x this was a proxy model for User;
     # in 3.x it is a distinct model with 1-1 optional relationship to User
     first_name = models.CharField('first name', max_length=150)
@@ -78,7 +81,21 @@ class Person(models.Model):
                               related_name='+')  # no reverse relationship
 
     #: update timestamp
-    updated_at = models.DateTimeField(auto_now=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True, editable=False)
+
+    # wagtail admin setup
+    panels = [
+        ImageChooserPanel("image"),
+        FieldRowPanel((FieldPanel("first_name"), FieldPanel("last_name")), "Name"),
+        FieldPanel("user"),
+        FieldRowPanel((FieldPanel("pu_status"), FieldPanel("cdh_staff")), "Status"),
+        MultiFieldPanel((
+            FieldPanel("job_title"),
+            FieldPanel("department"),
+            FieldPanel("institution"),
+        ), heading="Employment"),
+        InlinePanel("positions"),
+    ]
 
     class Meta:
         verbose_name_plural = "people"
@@ -92,6 +109,13 @@ class Person(models.Model):
             return ' '.join([self.first_name, self.last_name]).strip()
         # FIXME: user is optional
         return self.user.username
+
+    @property
+    def current_title(self):
+        """Return the first of any non-expired titles held by this Person."""
+        current_positions = self.positions.filter(end_date__isnull=True)
+        if current_positions.exists():
+            return current_positions.first().title
 
 
 class ProfileQuerySet(PublishedQuerySetMixin):
@@ -336,14 +360,14 @@ class Profile(Displayable, AdminThumbMixin):
 class Position(DateRange):
     '''Through model for many-to-many relation between people
     and titles.  Adds start and end dates to the join table.'''
-    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+    person = ParentalKey(Person, on_delete=models.CASCADE, related_name="positions")
     title = models.ForeignKey(Title, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ['-start_date']
 
     def __str__(self):
-        return '%s %s (%s)' % (self.user, self.title, self.start_date.year)
+        return '%s %s (%s)' % (self.person, self.title, self.start_date.year)
 
 
 def init_profile_from_ldap(user, ldapinfo):
