@@ -1,23 +1,30 @@
 from datetime import date
 
+from cdhweb.pages.models import BodyContentBlock
 from cdhweb.resources.models import (Attachment, DateRange,
                                      PublishedQuerySetMixin)
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
+from django.db.models.signals import pre_delete, pre_save
+from django.dispatch import receiver
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
-from mezzanine.core.fields import FileField, RichTextField
+from mezzanine.core.fields import FileField
+from mezzanine.core.fields import RichTextField as MezzanineRichTextField
 from mezzanine.core.models import (CONTENT_STATUS_DRAFT,
                                    CONTENT_STATUS_PUBLISHED, Displayable)
 from mezzanine.utils.models import AdminThumbMixin, upload_to
-from taggit.managers import TaggableManager
-from wagtail.admin.edit_handlers import (FieldPanel, FieldRowPanel,
-                                         InlinePanel, MultiFieldPanel)
-from wagtail.images.edit_handlers import ImageChooserPanel
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
+from taggit.managers import TaggableManager
+from wagtail.admin.edit_handlers import (FieldPanel, FieldRowPanel,
+                                         InlinePanel, MultiFieldPanel,
+                                         StreamFieldPanel)
+from wagtail.core.fields import RichTextField, StreamField
+from wagtail.core.models import Page
+from wagtail.images.edit_handlers import ImageChooserPanel
 
 
 class Title(models.Model):
@@ -46,9 +53,8 @@ class Person(ClusterableModel):
     first_name = models.CharField('first name', max_length=150)
     last_name = models.CharField('last name', max_length=150)
     user = models.OneToOneField(
-        User,   # settings.AUTH_USER_MODEL ?
+        User,
         on_delete=models.SET_NULL,
-        blank=True,
         null=True,
         help_text='Corresponding user account for this person (optional)'
     )
@@ -61,10 +67,14 @@ class Person(ClusterableModel):
         help_text='Professional title, e.g. Professor or Assistant Professor')
     department = models.CharField(
         max_length=255, blank=True,
-        help_text='Academic Department at Princeton or other institution (optional)')
+        help_text='Academic Department at Princeton or other institution')
     institution = models.CharField(
         max_length=255, blank=True,
         help_text='Institutional affiliation (for people not associated with Princeton)')
+    phone_number = models.CharField(
+        max_length=50, blank=True, help_text="Office phone number")
+    office_location = models.CharField(
+        max_length=255, blank=True, help_text="Office number and building")
 
     PU_STATUS_CHOICES = (
         ('fac', 'Faculty'),
@@ -86,29 +96,33 @@ class Person(ClusterableModel):
     # wagtail admin setup
     panels = [
         ImageChooserPanel("image"),
-        FieldRowPanel((FieldPanel("first_name"), FieldPanel("last_name")), "Name"),
+        FieldRowPanel((FieldPanel("first_name"),
+                       FieldPanel("last_name")), "Name"),
         FieldPanel("user"),
-        FieldRowPanel((FieldPanel("pu_status"), FieldPanel("cdh_staff")), "Status"),
+        FieldRowPanel((FieldPanel("pu_status"),
+                       FieldPanel("cdh_staff")), "Status"),
         MultiFieldPanel((
             FieldPanel("job_title"),
             FieldPanel("department"),
             FieldPanel("institution"),
+            FieldPanel("phone_number"),
+            FieldPanel("office_location"),
         ), heading="Employment"),
-        InlinePanel("positions"),
+        InlinePanel("positions", heading="Positions"),
     ]
 
     class Meta:
         verbose_name_plural = "people"
 
     def __str__(self):
-        '''Custom person display to make it easier to choose people
-        in admin menus.  Uses profile title if available, otherwise combines
-        first and last names.  Returns username as last resort if no
-        names are set.'''
+        """Person display for listing in admin menus. Uses first and last name
+        if set, otherwise falls back to username. If no user, uses pk as a last
+        resort."""
         if self.first_name or self.last_name:
-            return ' '.join([self.first_name, self.last_name]).strip()
-        # FIXME: user is optional
-        return self.user.username
+            return " ".join([self.first_name, self.last_name]).strip()
+        if self.user:
+            return self.user.username
+        return "Person %d" % self.pk
 
     @property
     def current_title(self):
@@ -116,6 +130,27 @@ class Person(ClusterableModel):
         current_positions = self.positions.filter(end_date__isnull=True)
         if current_positions.exists():
             return current_positions.first().title
+
+    @receiver(pre_delete, sender="people.Person")
+    def cleanup_profile(sender, **kwargs):
+        """Handler to delete the corresponding profile on Person deletion."""
+        # NOTE wagtail doesn't support cascading deletes to pages because it
+        # corrupts the page tree, and it's unclear what handler is best to use.
+        # We use PROTECT on the target and handle it here instead. See:
+        # https://github.com/wagtail/wagtail/issues/1602
+        try:
+            ProfilePage.objects.get(person=kwargs["instance"]).delete()
+        except ProfilePage.DoesNotExist:
+            pass
+
+    @receiver(pre_save, sender="people.Person")
+    def set_profile_title(sender, **kwargs):
+        """Handler to update ProfilePage titles when the Person is updated."""
+        # Call save() on the ProfilePage so it updates its title
+        try:
+            ProfilePage.objects.get(person=kwargs["instance"]).save()
+        except ProfilePage.DoesNotExist:
+            pass
 
 
 class ProfileQuerySet(PublishedQuerySetMixin):
@@ -294,8 +329,8 @@ class Profile(Displayable, AdminThumbMixin):
         help_text='CDH staff or Postdoctoral Fellow. If checked, person ' +
         'will be listed on the CDH staff page and will have a profile page ' +
         'on the site.')
-    education = RichTextField()
-    bio = RichTextField()
+    education = MezzanineRichTextField()
+    bio = MezzanineRichTextField()
     # NOTE: could use regex here, but how standard are staff phone
     # numbers? or django-phonenumber-field, but that's probably overkill
     phone_number = models.CharField(max_length=50, blank=True)
@@ -357,10 +392,40 @@ class Profile(Displayable, AdminThumbMixin):
         return self.user.current_title
 
 
+class ProfilePage(Page):
+    """Profile page for a Person, managed via wagtail."""
+    person = models.OneToOneField(
+        Person, help_text="Corresponding person for this profile",
+        on_delete=models.PROTECT)  # See NOTE + delete handler on Person
+    image = models.ForeignKey('wagtailimages.image', null=True,
+                              blank=True, on_delete=models.SET_NULL,
+                              related_name='+')  # no reverse relationship
+    education = RichTextField(blank=True)
+    bio = StreamField(BodyContentBlock, blank=True)
+
+    # admin edit configuration
+    content_panels = [
+        FieldRowPanel(
+            (FieldPanel("person"), ImageChooserPanel("image")), "Person"),
+        FieldPanel("education"),
+        StreamFieldPanel("bio")
+    ]
+
+    parent_page_types = ["cdhpages.PeopleLandingPage"]
+    subpage_types = []
+
+    def save(self, *args, **kwargs):
+        """Set the page title automatically."""
+        # Use Person's name as page title
+        self.title = str(self.person)
+        return super().save(*args, **kwargs)
+
+
 class Position(DateRange):
     '''Through model for many-to-many relation between people
     and titles.  Adds start and end dates to the join table.'''
-    person = ParentalKey(Person, on_delete=models.CASCADE, related_name="positions")
+    person = ParentalKey(Person, on_delete=models.CASCADE,
+                         related_name="positions")
     title = models.ForeignKey(Title, on_delete=models.CASCADE)
 
     class Meta:
