@@ -16,11 +16,7 @@ class ResourceType(models.Model):
     with people and projects (e.g., project url, GitHub, Twitter, etc)'''
     name = models.CharField(max_length=255)
     sort_order = models.PositiveIntegerField(default=0, blank=False,
-        null=False)
-    # NOTE: defining the relationship here since we can't add to it to
-    # django's auth.User directly
-    users = models.ManyToManyField(User, through='UserResource',
-        related_name='resources')
+                                             null=False)
 
     class Meta:
         ordering = ['sort_order']
@@ -39,12 +35,11 @@ class ExcerptMixin(object):
             return self.description
 
 
-
-class UserResource(models.Model):
-    '''Through-model for associating users with resource types and
+class PersonResource(models.Model):
+    '''Through-model for associating people with resource types and
     corresponding URLs for the specified resource type.'''
     resource_type = models.ForeignKey(ResourceType, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    person = models.ForeignKey("people.Person", on_delete=models.CASCADE)
     url = models.URLField()
 
 
@@ -52,7 +47,7 @@ class Attachment(models.Model):
     title = models.CharField(max_length=255)
     author = models.CharField(max_length=255, blank=True)
     file = FileField('Document', blank=True,
-        upload_to=upload_to("resources.documents", "documents"))
+                     upload_to=upload_to("resources.documents", "documents"))
     url = models.URLField(blank=True)
     # TODO: needs validation to ensure one and only one of
     # file and url is set
@@ -68,7 +63,8 @@ class Attachment(models.Model):
     )
     attachment_type = models.CharField(max_length=255, choices=type_choices)
 
-    pages = models.ManyToManyField(Page, related_name='attachments', blank=True)
+    pages = models.ManyToManyField(
+        Page, related_name='attachments', blank=True)
 
     def __str__(self):
         parts = [self.title]
@@ -82,8 +78,9 @@ class Attachment(models.Model):
 class LandingPage(Page, RichText):
     tagline = models.CharField(max_length=255)
     image = FileField(verbose_name="Image",
-        upload_to=upload_to("resources.landing_pages.image", "resources"),
-        format="Image", max_length=255, null=True, blank=True)
+                      upload_to=upload_to(
+                          "resources.landing_pages.image", "resources"),
+                      format="Image", max_length=255, null=True, blank=True)
 
 
 class PublishedQuerySetMixin(models.QuerySet):
@@ -100,8 +97,10 @@ class PublishedQuerySetMixin(models.QuerySet):
         if for_user is not None and for_user.is_staff:
             return self.all()
         return self.filter(
-            models.Q(publish_date__lte=now()) | models.Q(publish_date__isnull=True),
-            models.Q(expiry_date__gte=now()) | models.Q(expiry_date__isnull=True),
+            models.Q(publish_date__lte=now()) | models.Q(
+                publish_date__isnull=True),
+            models.Q(expiry_date__gte=now()) | models.Q(
+                expiry_date__isnull=True),
             models.Q(status=CONTENT_STATUS_PUBLISHED))
 
 
