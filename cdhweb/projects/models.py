@@ -198,7 +198,7 @@ class Role(models.Model):
 class Membership(DateRange):
     '''Project membership - joins project, user, and role.'''
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    person = models.ForeignKey(Person, null=True, on_delete=models.CASCADE)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
 
     class Meta:

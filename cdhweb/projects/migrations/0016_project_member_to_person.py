@@ -19,4 +19,10 @@ class Migration(migrations.Migration):
             name='members',
             field=models.ManyToManyField(through='projects.Membership', to='people.Person'),
         ),
+        # revert field to non-nullable after it is populated
+        migrations.AlterField(
+            model_name='membership',
+            name='person',
+            field=models.ForeignKey(on_delete=models.deletion.CASCADE, to='people.Person'),
+        ),
     ]
