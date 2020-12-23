@@ -1,5 +1,4 @@
-from django.db.models.base import Model
-from cdhweb.people.models import Person, Position, Profile, Title
+from cdhweb.people.models import Person, ProfilePage, Title
 from wagtail.contrib.modeladmin.mixins import ThumbnailMixin
 from wagtail.contrib.modeladmin.options import (ModelAdmin, ModelAdminGroup,
                                                 modeladmin_register)
@@ -21,14 +20,22 @@ class TitleAdmin(ModelAdmin):
     list_display = ("title", "sort_order", "num_people")
     search_fields = ("title",)
 
+
+class ProfilePageAdmin(ThumbnailMixin, ModelAdmin):
+    model = ProfilePage
+    menu_icon = "user"
+    list_display = ("admin_thumb", "title")
+    search_fields = ("title",)
+    thumb_image_field_name = "image"
+
+
 class PeopleGroup(ModelAdminGroup):
     menu_label = "People"
     menu_icon = "group"
     menu_order = 200
-    items = (PersonAdmin, TitleAdmin)
+    items = (PersonAdmin, TitleAdmin, ProfilePageAdmin)
+
 
 # TODO inlines for editing PersonRelatedLinks (#181) on People
 # TODO ProfilePage admin
-
-
 modeladmin_register(PeopleGroup)
