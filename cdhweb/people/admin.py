@@ -33,6 +33,7 @@ class PersonAdmin(ThumbnailMixin, WagtailModelAdmin):
     list_filter = ('pu_status', 'cdh_staff')
     thumb_image_field_name = 'image'
 
+
 modeladmin_register(PersonAdmin)
 
 # class PersonAdmin(admin.ModelAdmin):
@@ -75,15 +76,16 @@ class ProfileAdmin(DisplayableAdmin):
         ("Page Metadata", {
             "fields": ["_meta_title", "slug",
                        ("description", "gen_description"),
-                        "keywords", "in_sitemap"],
+                       "keywords", "in_sitemap"],
             "classes": ("collapse-open",)
         }),
     )
 
+
 class PositionAdmin(admin.ModelAdmin):
-    list_display = ('user', 'title', 'start_date', 'end_date')
+    list_display = ('person', 'title', 'start_date', 'end_date')
     date_hierarchy = 'start_date'
-    search_fields = ('user__username', 'user__first_name', 'user__last_name',
+    search_fields = ('person__user__username', 'person__first_name', 'person__last_name',
                      'title__title', 'start_date', 'end_date')
 
 

@@ -22,10 +22,7 @@ class Title(models.Model):
     title = models.CharField(max_length=255, unique=True)
     sort_order = models.PositiveIntegerField(default=0, blank=False,
                                              null=False)
-    # NOTE: defining relationship here because we can't add it to User
-    # directly
-    positions = models.ManyToManyField(User, through='Position',
-                                       related_name='titles')
+    positions = models.ManyToManyField("people.Person", through='Position')
 
     class Meta:
         ordering = ['sort_order']
@@ -339,8 +336,7 @@ class Profile(Displayable, AdminThumbMixin):
 class Position(DateRange):
     '''Through model for many-to-many relation between people
     and titles.  Adds start and end dates to the join table.'''
-    user = models.ForeignKey(User, on_delete=models.CASCADE,
-                             related_name='positions')
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
     title = models.ForeignKey(Title, on_delete=models.CASCADE)
 
     class Meta:
