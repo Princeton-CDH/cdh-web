@@ -99,15 +99,24 @@ class Command(BaseCommand):
         self.person_image_exodus()
 
         # create the new homepage
-        old_homepage = mezz_page_models.Page.objects.get(slug="/")
-        homepage = self.create_homepage(old_homepage)
+        try:
+            old_homepage = mezz_page_models.Page.objects.get(slug="/")
+            homepage = self.create_homepage(old_homepage)
+            # mark home page as migrated
+            self.migrated.append(old_homepage.pk)
+        # in some situations (e.g. fixture loading) there's no homepage
+        except mezz_page_models.Page.DoesNotExist:
+            old_homepage = None
+            homepage = HomePage(
+                title="The Center for Digital Humanities at Princeton",
+                seo_title="The Center for Digital Humanities at Princeton",
+                slug="",
+            )
         root = Page.objects.get(depth=1)
         root.add_child(instance=homepage)
         root.save()
-        # mark home page as migrated
-        self.migrated.append(old_homepage.pk)
 
-        # point the default site at the new homepage and delete old homepage(s).
+        # point the default site at the new homepage and delete any others.
         # if they are deleted prior to switching site.root_page, the site will
         # also be deleted in a cascade, which we don't want
         site = Site.objects.get()
@@ -167,8 +176,9 @@ class Command(BaseCommand):
             people = None
 
         # migrate children of homepage
-        for page in old_homepage.children.all():
-            self.migrate_pages(page, homepage)
+        if old_homepage:
+            for page in old_homepage.children.all():
+                self.migrate_pages(page, homepage)
 
         # special cases
         # - migrate event pages but specify new events page as parent
