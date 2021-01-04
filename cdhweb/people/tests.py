@@ -1,19 +1,19 @@
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 from unittest.mock import Mock
 
-from django.urls import reverse
-from django.test import TestCase
-from django.utils.text import slugify
-from django.utils import timezone
-from mezzanine.core.models import CONTENT_STATUS_DRAFT, CONTENT_STATUS_PUBLISHED
 import pytest
-
-from cdhweb.people.models import Title, Person, Position, \
-    init_profile_from_ldap, Profile
-from cdhweb.people.sitemaps import ProfileSitemap
-from cdhweb.projects.models import Project, Grant, GrantType, Role, Membership
-from cdhweb.resources.models import ResourceType, UserResource
 from cdhweb.events.models import Event, EventType
+from cdhweb.people.models import (Person, Position, Profile, Title,
+                                  init_person_from_ldap)
+from cdhweb.people.sitemaps import ProfileSitemap
+from cdhweb.projects.models import Grant, Membership, Project, Role
+from cdhweb.resources.models import ResourceType, PersonResource
+from django.contrib.auth import get_user_model
+from django.test import TestCase
+from django.urls import reverse
+from django.utils import timezone
+from mezzanine.core.models import (CONTENT_STATUS_DRAFT,
+                                   CONTENT_STATUS_PUBLISHED)
 
 
 @pytest.mark.django_db
@@ -78,7 +78,7 @@ class TestPerson(TestCase):
         # add a website url
         website = ResourceType.objects.get_or_create(name='Website')[0]
         ext_profile_url = 'http://person.me'
-        UserResource.objects.create(user=pers, resource_type=website,
+        PersonResource.objects.create(user=pers, resource_type=website,
                                     url=ext_profile_url)
         assert pers.website_url == ext_profile_url
 
@@ -339,10 +339,11 @@ class TestPosition(TestCase):
 
 
 @pytest.mark.django_db
-def test_init_profile_from_ldap():
+def test_init_person_from_ldap():
     # create user to test with
-    staffer = Person.objects.create(username='staff',
-                                    email='STAFF@EXAMPLE.com')
+    User = get_user_model()
+    staff_user = User.objects.create_user(username='staff',
+                                          email='STAFF@EXAMPLE.com')
 
     # use Mock to simulate ldap data provided by pucas
     ldapinfo = Mock(displayName='Joe E. Schmoe',
@@ -350,45 +351,42 @@ def test_init_profile_from_ldap():
                     telephoneNumber=[], street=[],
                     title='Freeloader, World at large', pustatus='stf',
                     ou='English')
-    # job title, organizational unit
+    init_person_from_ldap(staff_user, ldapinfo)
+    staff_person = Person.objects.get(user=staff_user)
 
-    init_profile_from_ldap(staffer, ldapinfo)
-    updated_staffer = Person.objects.get(username='staff')
     # email should be converted to lower case
-    assert updated_staffer.email == staffer.email.lower()
-    # profile should have been created
-    assert updated_staffer.profile
-    profile = updated_staffer.profile
-    # profile fields should be autopopulated where content exists
-    assert profile.title == ldapinfo.displayName
-    assert profile.slug == slugify(ldapinfo.displayName)
-    assert profile.phone_number == ''
-    assert profile.office_location == ''
-    assert profile.pu_status == 'stf'
-    assert profile.status == CONTENT_STATUS_DRAFT
-    # title should be created
-    assert Title.objects.filter(title='Freeloader').exists()
+    assert staff_user.email == "staff@example.com"
 
-    # when updating, profile status and existing fields should not change
-    new_title = 'Somebody Else'
-    profile.title = new_title
-    profile.status = CONTENT_STATUS_PUBLISHED
-    profile.save()
-    init_profile_from_ldap(staffer, ldapinfo)
-    assert profile.title == new_title
-    assert profile.status == CONTENT_STATUS_PUBLISHED
+    # person should have been created
+    assert staff_user.person == staff_person
 
-    # ldap info with telephone, street, department
-    ldapinfo.telephoneNumber = '4800'
-    ldapinfo.street = '801B'
-    init_profile_from_ldap(staffer, ldapinfo)
-    profile = Person.objects.get(username='staff').profile
-    assert profile.phone_number == ldapinfo.telephoneNumber
-    assert profile.office_location == ldapinfo.street
-    assert profile.job_title == ldapinfo.title
-    assert profile.department == ldapinfo.ou
-    # title should not be duplicated
-    assert Title.objects.filter(title='Freeloader').count() == 1
+    # names should be added correctly
+    assert staff_person.first_name == "Joe"
+    assert staff_person.last_name == "Schmoe"
+
+    # person fields should be autopopulated where content exists
+    assert staff_person.job_title == "Freeloader"
+    assert staff_person.phone_number == ""
+    assert staff_person.office_location == ""
+    assert staff_person.pu_status == "stf"
+    assert staff_person.department == "English"
+
+    # add info for telephone number and office location
+    ldapinfo.telephoneNumber = "4800"
+    ldapinfo.street = "801B"
+    init_person_from_ldap(staff_user, ldapinfo)
+    staff_person = Person.objects.get(user=staff_user)
+    assert staff_person.phone_number == "4800"
+    assert staff_person.office_location == "801B"
+
+    # when updating, existing fields should not change
+    staff_person.job_title = "New Job"
+    staff_person.department = "History"
+    staff_person.save()
+    init_person_from_ldap(staff_user, ldapinfo)
+    staff_person = Person.objects.get(user=staff_user)
+    assert staff_person.job_title == "New Job"
+    assert staff_person.department == "History"
 
 
 class TestViews(TestCase):
@@ -472,7 +470,7 @@ class TestViews(TestCase):
         # grad pi does have an external website url
         website = ResourceType.objects.get_or_create(name='Website')[0]
         ext_profile_url = 'http://person.me'
-        UserResource.objects.create(user=grad_pi, resource_type=website,
+        PersonResource.objects.create(user=grad_pi, resource_type=website,
                                     url=ext_profile_url)
         assert grad_pi.profile_url == ext_profile_url
         response = self.client.get(reverse('people:students'))
@@ -651,10 +649,12 @@ class TestViews(TestCase):
         coauth_post = staffer2.blogposts.first()
         self.assertContains(response, solo_post.title)  # show both blog posts
         self.assertContains(response, solo_post.title)
-        self.assertContains(response, staffer2.profile.title)  # indicate that one post has another author
+        # indicate that one post has another author
+        self.assertContains(response, staffer2.profile.title)
 
         response = self.client.get(staffer2.get_absolute_url())
-        self.assertNotContains(response, solo_post.title)  # only posts from this author
+        # only posts from this author
+        self.assertNotContains(response, solo_post.title)
         self.assertContains(response, coauth_post.title)
         self.assertContains(response, staffer.profile.title)
 

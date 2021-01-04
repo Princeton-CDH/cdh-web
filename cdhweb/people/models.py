@@ -435,56 +435,39 @@ class Position(DateRange):
         return '%s %s (%s)' % (self.person, self.title, self.start_date.year)
 
 
-def init_profile_from_ldap(user, ldapinfo):
-    '''Extra user/profile init logic for auto-populating people
-    profile fields with data available in LDAP.'''
+def init_person_from_ldap(user, ldapinfo):
+    '''Extra User init logic for creating and auto-populating a corresponding
+    Person with data from LDAP.'''
 
+    # update User to use ldap email
     user.email = user.email.lower()
     user.save()
 
-    try:
-        profile = user.profile
-    except ObjectDoesNotExist:
-        profile = Profile.objects.create(user=user)
-        # set profiles to draft by default when creating a new profile *only
-        # so we don't get a new page for every account we initialize
-        profile.status = CONTENT_STATUS_DRAFT
+    # populate Person fields with data we can pull from ldap, if they are empty
+    person, _created = Person.objects.get_or_create(user=user)
 
-    # populate profile with data we can pull from ldap
-    # but do not set any fields with content, which may contain edits
+    # set first/last name basic on basic whitespace split; can adjust later
+    first_name, *_others, last_name = str(ldapinfo.displayName).split()
+    person.first_name = person.first_name or first_name
+    person.last_name = person.last_name or last_name
 
-    # - set user's display name as page title
-    if not profile.title:
-        profile.title = str(ldapinfo.displayName)
-    # - generate a slug based on display name
-    if not profile.slug:
-        profile.slug = slugify(ldapinfo.displayName)
-    if ldapinfo.telephoneNumber and not profile.phone_number:
-        profile.phone_number = str(ldapinfo.telephoneNumber)
-    # 'street' in ldap is office location
-    if ldapinfo.street and not profile.office_location:
-        profile.office_location = str(ldapinfo.street)
-    # organizational unit = department
-    if ldapinfo.ou and not profile.department:
-        profile.department = str(ldapinfo.ou)
-    # Store job title as string.
-    # NOTE: we may want to split title and only use the first portion.
-    # if ldapinfo.title and not profile.job_title:
-    profile.job_title = str(ldapinfo.title).split('.')[0]
+    # set phone number
+    if ldapinfo.telephoneNumber and not person.phone_number:
+        person.phone_number = str(ldapinfo.telephoneNumber)
+
+    # set office location ("street" in ldap)
+    if ldapinfo.street and not person.office_location:
+        person.office_location = str(ldapinfo.street)
+
+    # set department (organizational unit or "ou" in ldap)
+    if ldapinfo.ou and not person.department:
+        person.department = str(ldapinfo.ou)
+
+    # set job title (split and use only first portion from ldap)
+    # NOTE titles for cdh staff are managed via Title/Position instead
+    if ldapinfo.title and not person.job_title:
+        person.job_title = str(ldapinfo.title).split(",")[0]
 
     # always update PU status to current
-    profile.pu_status = str(ldapinfo.pustatus)
-
-    profile.save()
-
-    # NOTE: job title is available in LDAP; attaching to a person
-    # currently requires at least a start date (which is not available
-    # in LDAP), but we can at least ensure the title is defined
-    # so it can easily be associated with the person
-
-    # only do if the person has a title set
-    if ldapinfo.title:
-        # job title in ldap is currently stored as
-        # job title, organizational unit
-        job_title = str(ldapinfo.title).split(',')[0]
-        Title.objects.get_or_create(title=job_title)
+    person.pu_status = str(ldapinfo.pustatus)
+    person.save()
