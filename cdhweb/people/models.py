@@ -1,6 +1,6 @@
 from datetime import date
 
-from cdhweb.pages.models import BodyContentBlock, PARAGRAPH_FEATURES
+from cdhweb.pages.models import BodyContentBlock, LandingPage, PARAGRAPH_FEATURES
 from cdhweb.resources.models import (Attachment, DateRange,
                                      PublishedQuerySetMixin)
 from django.contrib.auth.models import User
@@ -403,8 +403,14 @@ class ProfilePage(Page):
         StreamFieldPanel("bio")
     ]
 
-    parent_page_types = ["cdhpages.PeopleLandingPage"]
+    parent_page_types = ["people.PeopleLandingPage"]
     subpage_types = []
+
+
+class PeopleLandingPage(LandingPage):
+    """LandingPage subtype for People that holds ProfilePages."""
+    parent_page_types = []  # can't be created in page editor
+    subpage_types = [ProfilePage]
 
 
 class Position(DateRange):

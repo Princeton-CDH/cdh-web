@@ -1,9 +1,6 @@
 from random import shuffle
 
 import bleach
-# from cdhweb.blog.models import BlogPost
-# from cdhweb.events.models import Event
-# from cdhweb.projects.models import Project
 from django.apps import apps
 from django.conf import settings
 from django.db import models
@@ -137,12 +134,6 @@ class LandingPage(Page):
 
     parent_page_types = ['HomePage']
     subpage_types = ['ContentPage']
-
-
-class PeopleLandingPage(LandingPage):
-    """LandingPage subtype for People that holds ProfilePages."""
-    parent_page_types = []  # can't be created in page editor
-    subpage_types = ["people.ProfilePage"]
 
 
 class HomePage(Page):

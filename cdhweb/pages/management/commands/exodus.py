@@ -17,8 +17,8 @@ from wagtail.core.blocks import RichTextBlock
 from wagtail.core.models import Page, Site, Collection, get_root_collection_id
 from wagtail.images.models import Image
 
-from cdhweb.pages.models import ContentPage, HomePage, LandingPage, PeopleLandingPage
-from cdhweb.people.models import Person, Profile, ProfilePage
+from cdhweb.pages.models import ContentPage, HomePage, LandingPage
+from cdhweb.people.models import Person, Profile, ProfilePage, PeopleLandingPage
 
 
 class Command(BaseCommand):
