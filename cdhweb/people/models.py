@@ -112,6 +112,7 @@ class Person(ClusterableModel):
     ]
 
     class Meta:
+        ordering = ("last_name",)
         verbose_name_plural = "people"
 
     def __str__(self):
