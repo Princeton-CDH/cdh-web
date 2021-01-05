@@ -1,4 +1,3 @@
-from django.test import SimpleTestCase
 from wagtail.core.models import Page
 from wagtail.tests.utils import WagtailPageTests
 from wagtail.tests.utils.form_data import (nested_form_data, rich_text,
