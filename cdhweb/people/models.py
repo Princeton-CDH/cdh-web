@@ -143,15 +143,6 @@ class Person(ClusterableModel):
         except ProfilePage.DoesNotExist:
             pass
 
-    @receiver(pre_save, sender="people.Person")
-    def set_profile_title(sender, **kwargs):
-        """Handler to update ProfilePage titles when the Person is updated."""
-        # Call save() on the ProfilePage so it updates its title
-        try:
-            ProfilePage.objects.get(person=kwargs["instance"]).save()
-        except ProfilePage.DoesNotExist:
-            pass
-
 
 class ProfileQuerySet(PublishedQuerySetMixin):
 
@@ -404,7 +395,7 @@ class ProfilePage(Page):
     bio = StreamField(BodyContentBlock, blank=True)
 
     # admin edit configuration
-    content_panels = [
+    content_panels = Page.content_panels + [
         FieldRowPanel(
             (FieldPanel("person"), ImageChooserPanel("image")), "Person"),
         FieldPanel("education"),
@@ -413,12 +404,6 @@ class ProfilePage(Page):
 
     parent_page_types = ["cdhpages.PeopleLandingPage"]
     subpage_types = []
-
-    def save(self, *args, **kwargs):
-        """Set the page title automatically."""
-        # Use Person's name as page title
-        self.title = str(self.person)
-        return super().save(*args, **kwargs)
 
 
 class Position(DateRange):

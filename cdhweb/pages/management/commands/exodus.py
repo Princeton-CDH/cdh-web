@@ -297,6 +297,7 @@ class Command(BaseCommand):
             person = Person.objects.get(user=profile.user)
             profile_page = ProfilePage(
                 person=person,
+                title=profile.title,
                 image=self.get_wagtail_image(profile.image) if profile.image else None,
                 education=profile.education,
                 bio=json.dumps([
