@@ -1,0 +1,4 @@
+/* fix for button alignment when spreadsheet download button is present */
+header .right .actionbutton {
+    float: right;
+}
