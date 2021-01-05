@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block page-subtitle %}{{ page.title }} | People | {% endblock %}
+
+{% block main %}
+<div class="profile">
+<header>
+    <h1>{{ page.title }}</h1>
+    {# display all positions, current first; dates for non-current #}
+    {% for position in page.person.positions.all %}
+        <p class="title">{% if not position.is_current %}
+            {{ position.start_date.year }}{% if position.end_date.year != position.start_date.year%}-{{ position.end_date.year }}{% endif %}
+            {% endif %}
+        {{ position.title }}
+        </p>
+    {% endfor %}
+</header>
+
+<div class="links">
+    {# NOTE equiv to contributors in project #}
+    <ul>
+    {% for resource in page.person.personresource_set.all %}
+        <li><a href="{{ resource.url }}">{{ resource.resource_type.name }}</a></li>
+    {% endfor %}
+    </ul>
+</div>
+
+{% if page.image %}
+    {% image page.image fill-790x632 as profile_img %}
+    <img src="{{ profile_img.url }}" alt="{{ page.title }}"/>
+{% endif %}
+
+<div class="education">
+    {{ page.education|richtext }}
+    <a href="mailto:{{ page.person.user.email }}">{{ page.person.user.email }}</a>
+    {% if page.person.phone_number %}
+        <p>{{ page.person.phone_number }}</p>
+    {% endif %}
+    {% if page.person.office_location %}
+        <p>{{ page.person.office_location }}</p>
+    {% endif %}
+</div>
+
+<div class="bio">
+    {% for block in page.bio %}
+        {% include_block block %}
+    {% endfor %}
+</div>
+
+{% if recent_posts %}
+<div class="recent-posts">
+    <h2>Recent Posts</h2>
+    {% include 'blog/blogpost_list.html' with blogposts=recent_posts %}
+</div>
+{% endif %}
+
+</div>
+{% endblock %}
