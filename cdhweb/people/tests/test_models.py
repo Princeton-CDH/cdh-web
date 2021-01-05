@@ -56,10 +56,11 @@ class TestPerson(TestCase):
         assert self.person.current_title is None
 
         # should return latest position if one exists
+        developer = Title.objects.create(title="developer")
         new_title = Position.objects.create(
-            person=self.person, title=director, end_date=None,
+            person=self.person, title=developer, end_date=None,
             start_date=date.today())
-        assert self.person.current_title == "director"
+        assert self.person.current_title == developer
 
     def test_str(self):
         """person should be identified by first/last name, username, or pk"""
