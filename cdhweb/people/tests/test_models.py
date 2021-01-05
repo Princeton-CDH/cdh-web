@@ -1,13 +1,9 @@
 from datetime import date, timedelta
 from unittest.mock import Mock
 
-from cdhweb.people.models import (Person, Position, ProfilePage, Title,
-                                  init_person_from_ldap)
+from cdhweb.people.models import Person, Position, Title, init_person_from_ldap
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-from wagtail.tests.utils import WagtailPageTests
-from wagtail.tests.utils.form_data import (nested_form_data, rich_text,
-                                           streamfield)
 
 
 class TestTitle(TestCase):
@@ -88,10 +84,6 @@ class TestPerson(TestCase):
         assert str(self.person) == "tom jones"
 
 
-class TestProfilePage(WagtailPageTests):
-    pass
-
-
 class TestInitProfileFromLDAP(TestCase):
 
     def setUp(self):
@@ -103,10 +95,10 @@ class TestInitProfileFromLDAP(TestCase):
 
         # use Mock to simulate ldap data provided by pucas
         self.ldapinfo = Mock(displayName='Joe E. Schmoe',
-                        # no telephone or office set
-                        telephoneNumber=[], street=[],
-                        title='Freeloader, World at large', pustatus='stf',
-                        ou='English')
+                             # no telephone or office set
+                             telephoneNumber=[], street=[],
+                             title='Freeloader, World at large', pustatus='stf',
+                             ou='English')
         init_person_from_ldap(self.staff_user, self.ldapinfo)
         self.staff_person = Person.objects.get(user=self.staff_user)
 
