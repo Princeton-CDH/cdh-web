@@ -4,7 +4,7 @@ from cdhweb.pages.models import BodyContentBlock, LandingPage, PARAGRAPH_FEATURE
 from cdhweb.resources.models import (Attachment, DateRange,
                                      PublishedQuerySetMixin)
 from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import models
 from django.db.models.signals import pre_delete, pre_save
 from django.dispatch import receiver
@@ -134,11 +134,8 @@ class Person(ClusterableModel):
 
     @receiver(pre_delete, sender="people.Person")
     def cleanup_profile(sender, **kwargs):
-        """Handler to delete the corresponding profile on Person deletion."""
-        # NOTE wagtail doesn't support cascading deletes to pages because it
-        # corrupts the page tree, and it's unclear what handler is best to use.
-        # We use PROTECT on the target and handle it here instead. See:
-        # https://github.com/wagtail/wagtail/issues/1602
+        """Handler to delete the corresponding ProfilePage on Person deletion."""
+        # see NOTE on ProfilePage save() method
         try:
             ProfilePage.objects.get(person=kwargs["instance"]).delete()
         except ProfilePage.DoesNotExist:
@@ -388,7 +385,7 @@ class ProfilePage(Page):
     """Profile page for a Person, managed via wagtail."""
     person = models.OneToOneField(
         Person, help_text="Corresponding person for this profile",
-        on_delete=models.PROTECT)  # See NOTE + delete handler on Person
+        null=True, on_delete=models.SET_NULL)
     image = models.ForeignKey('wagtailimages.image', null=True,
                               blank=True, on_delete=models.SET_NULL,
                               related_name='+')  # no reverse relationship
@@ -406,10 +403,27 @@ class ProfilePage(Page):
     parent_page_types = ["people.PeopleLandingPage"]
     subpage_types = []
 
+    def clean(self):
+        """Validate that a Person was specified for this profile."""
+        # NOTE we can't cascade deletes to wagtail pages without corrupting the
+        # page tree. Instead, we use SET_NULL, and then add a delete handler
+        # to Person to delete the corresponding profile manually. We still need
+        # to make sure that it's impossible to create a ProfilePage without a
+        # corresponding Person. More info:
+        # https://github.com/wagtail/wagtail/issues/1602
+        if not self.person:
+            raise ValidationError("Profile page must be for existing person.")
+
 
 class PeopleLandingPage(LandingPage):
     """LandingPage subtype for People that holds ProfilePages."""
-    parent_page_types = []  # can't be created in page editor
+    # NOTE this page can't be created in the page editor; it is only ever made
+    # via a script or the console, since there's only one.
+    parent_page_types = []
+    # NOTE the only allowed child page type is a ProfilePage; this is so that
+    # ProfilePages made in the admin automatically are created here. Other
+    # special pages, like profile list pages, have to be created and added
+    # manually underneath this page.
     subpage_types = [ProfilePage]
 
 
