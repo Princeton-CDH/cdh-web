@@ -1,6 +1,6 @@
 from datetime import date
 
-from cdhweb.pages.models import BodyContentBlock
+from cdhweb.pages.models import BodyContentBlock, PARAGRAPH_FEATURES
 from cdhweb.resources.models import (Attachment, DateRange,
                                      PublishedQuerySetMixin)
 from django.contrib.auth.models import User
@@ -391,7 +391,7 @@ class ProfilePage(Page):
     image = models.ForeignKey('wagtailimages.image', null=True,
                               blank=True, on_delete=models.SET_NULL,
                               related_name='+')  # no reverse relationship
-    education = RichTextField(blank=True)
+    education = RichTextField(features=PARAGRAPH_FEATURES, blank=True)
     bio = StreamField(BodyContentBlock, blank=True)
 
     # admin edit configuration
