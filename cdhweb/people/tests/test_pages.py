@@ -1,13 +1,17 @@
 import json
+import datetime
+from mezzanine.core.models import CONTENT_STATUS_DRAFT, CONTENT_STATUS_PUBLISHED
 
 import pytest
 from cdhweb.pages.models import HomePage
 from cdhweb.people.models import PeopleLandingPage, Person, ProfilePage
+from cdhweb.blog.models import BlogPost
 from django.core.exceptions import ValidationError
+from django.test import RequestFactory
+from django.contrib.auth import get_user_model
 from wagtail.core.models import Page
 from wagtail.tests.utils import WagtailPageTests
-from wagtail.tests.utils.form_data import (nested_form_data, rich_text,
-                                           streamfield)
+from wagtail.tests.utils.form_data import rich_text
 
 
 class TestPeopleLandingPage(WagtailPageTests):
@@ -82,3 +86,54 @@ class TestProfilePage(WagtailPageTests):
         self.lp.save()
         self.person.delete()
         assert ProfilePage.objects.count() == 0
+
+    def test_recent_blogposts(self):
+        """profile should have person's most recent blog posts in context"""
+        # FIXME create a user since BlogPost still currently assoc. with User
+        User = get_user_model()
+        tom = User.objects.create_user(username="tom")
+        self.person.user = tom
+
+        # create the profile page
+        profile = ProfilePage(
+            title="tom jones",
+            slug="tom-jones",
+            person=self.person,
+        )
+        self.lp.add_child(instance=profile)
+        self.lp.save()
+
+        # context obj with blog posts is empty
+        factory = RequestFactory()
+        request = factory.get(profile.get_url())
+        context = profile.get_context(request)
+        assert len(context["recent_posts"]) == 0
+
+        # create some blog posts by this person
+        # "one"     2021-01-01  published
+        # "two"     2021-01-02  published
+        # "three"   2021-01-03  published
+        # "four"    2021-01-04  draft
+        # "five"    2021-01-05  published
+        posts = {}
+        for i, title in enumerate(["one", "two", "three", "four", "five"]):
+            post = BlogPost(title=title)
+            post.publish_date = datetime.date(2021, 1, i + 1)
+            if title == "four":
+                post.status = CONTENT_STATUS_DRAFT
+            else:
+                post.status = CONTENT_STATUS_PUBLISHED
+            post.save()
+            post.users.add(tom)
+            posts[title] = post
+
+        # only 3 most recent published posts should be in context
+        # "five", "three", "two"
+        factory = RequestFactory()
+        request = factory.get(profile.get_url())
+        context = profile.get_context(request)
+        assert posts["five"] in context["recent_posts"]
+        assert posts["three"] in context["recent_posts"]
+        assert posts["two"] in context["recent_posts"]
+        assert posts["four"] not in context["recent_posts"]
+        assert posts["one"] not in context["recent_posts"]

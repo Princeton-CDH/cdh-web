@@ -1,20 +1,20 @@
 from datetime import date
 
-from cdhweb.pages.models import BodyContentBlock, LandingPage, PARAGRAPH_FEATURES
+from cdhweb.blog.models import BlogPost
+from cdhweb.pages.models import (PARAGRAPH_FEATURES, BodyContentBlock,
+                                 LandingPage)
 from cdhweb.resources.models import (Attachment, DateRange,
                                      PublishedQuerySetMixin)
 from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models.signals import pre_delete, pre_save
+from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.text import slugify
 from mezzanine.core.fields import FileField
 from mezzanine.core.fields import RichTextField as MezzanineRichTextField
-from mezzanine.core.models import (CONTENT_STATUS_DRAFT,
-                                   CONTENT_STATUS_PUBLISHED, Displayable)
+from mezzanine.core.models import CONTENT_STATUS_PUBLISHED, Displayable
 from mezzanine.utils.models import AdminThumbMixin, upload_to
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
@@ -402,6 +402,22 @@ class ProfilePage(Page):
 
     parent_page_types = ["people.PeopleLandingPage"]
     subpage_types = []
+
+    def get_context(self, request):
+        """Add recent BlogPosts by this Person to their ProfilePage."""
+        context = super().get_context(request)
+
+        # get 3 most recent published posts with this person as author
+        recent_posts = BlogPost.objects.filter(
+            users__id=self.person.user.id).published()[:3]
+
+        # add to context and set open graph metadata
+        context.update({
+            "opengraph_type": "profile",
+            "recent_posts": recent_posts
+        })
+
+        return context
 
     def clean(self):
         """Validate that a Person was specified for this profile."""
