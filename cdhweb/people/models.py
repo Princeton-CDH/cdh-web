@@ -47,6 +47,164 @@ class Title(models.Model):
     num_people.short_description = '# People'
 
 
+class PersonQuerySet(models.QuerySet):
+
+    #: position titles that indicate a person is a postdoc
+    postdoc_titles = ['Postdoctoral Fellow',
+                      'Postdoctoral Fellow and Communications Lead']
+
+    #: position titles that indicate a person is a project director
+    director_roles = ['Project Director', 'Co-PI: Research Lead']
+
+    #: position titles that indicate a staff person is a student
+    student_titles = ['Graduate Fellow', 'Graduate Assistant',
+                      'Undergraduate Assistant',
+                      'Postgraduate Research Associate']
+
+    #: membership roles that indicate someone is an affiliate
+    project_roles = ['Project Director',
+                     'Project Manager', 'Co-PI: Research Lead']
+
+    #: student status codes from LDAP
+    student_pu_status = ['graduate', 'undergraduate']
+
+    #: executive committee member titles
+    exec_member_title = 'Executive Committee Member'
+    with_exec_title = 'Sits with Executive Committee'
+    exec_committee_titles = [exec_member_title, with_exec_title]
+
+    def cdh_staff(self):
+        '''Return only CDH staff members'''
+        return self.filter(cdh_staff=True)
+
+    def student_affiliates(self):
+        '''Return CDH student staff members, grantees, and PGRAs based on
+        Project Director or Project Manager role.'''
+        return self \
+            .filter(models.Q(pu_status__in=self.student_pu_status) |
+                    models.Q(positions__title__title__in=self.student_titles)) \
+            .filter(models.Q(cdh_staff=True) |
+                    models.Q(membership__role__title__in=self.project_roles)) \
+            .exclude(pu_status="stf")
+
+    def not_students(self):
+        '''Filter out students based on PU status'''
+        return self \
+            .exclude(pu_status__in=self.student_pu_status)
+
+    def affiliates(self):
+        '''Faculty and staff affiliates based on PU status and Project Director
+        project role. Excludes CDH staff.'''
+        return self.filter(pu_status__in=('fac', 'stf'),
+                           membership__role__title__in=self.director_roles) \
+            .exclude(cdh_staff=True)
+
+    def executive_committee(self):
+        '''Executive committee members; based on position title.'''
+        return self.filter(positions__title__title__in=self.exec_committee_titles)
+
+    def exec_member(self):
+        '''Executive committee members'''
+        return self.filter(positions__title__title=self.exec_member_title)
+
+    def sits_with_exec(self):
+        '''Non-faculty Executive committee members'''
+        return self.filter(positions__title__title=self.with_exec_title)
+
+    def project_manager_years(self):
+        '''Annotate with first start and last end grant year for grants
+        that a person was project manager.'''
+        # NOTE: filters within the aggregation query on project manager
+        # but not on the entire query so that e.g. on the students
+        # page student staff without grants are still included
+        return self.annotate(
+            pm_start=models.Min(models.Case(
+                models.When(membership__role__title='Project Manager',
+                            then='membership__start_date'))),
+            pm_end=models.Max(models.Case(
+                models.When(membership__role__title='Project Manager',
+                            then='membership__end_date'))))
+
+    def speakers(self):
+        '''Return external speakers at CDH events.'''
+        # FIXME event still associated to user
+        # Speakers are non-Princeton profiles (external) who are associated with
+        # at least one published event
+        return self.filter(user__event__isnull=False, pu_status='external',
+                           user__event__status=CONTENT_STATUS_PUBLISHED)
+
+    def _current_position_query(self):
+        # query to find a person with a current cdh position
+        # person *has* a position and it has no end date or date after today
+        return (
+            models.Q(positions__isnull=False) &
+            (models.Q(positions__end_date__isnull=True) |
+             models.Q(positions__end_date__gte=date.today())
+             )
+        )
+
+    def _current_project_member_query(self):
+        today = timezone.now()
+        return (
+            # in one of the allowed roles (project director/project manager)
+            models.Q(membership__role__title__in=self.project_roles) &
+            # current based on membership dates
+            (
+                models.Q(membership__start_date__lte=today) &
+                (models.Q(membership__end_date__gte=today) |
+                 models.Q(membership__end_date__isnull=True))
+            )
+        )
+
+    def current(self):
+        '''Return people with a current position or current grant based on
+        start and end dates.'''
+        # annotate with an is_current flag to make template logic simpler
+        return self.filter(models.Q(self._current_position_query()) |
+                           models.Q(self._current_project_member_query())) \
+                   .extra(select={'is_current': True})
+        # NOTE: couldn't get annotate to work
+        # .annotate(is_current=models.Value(True, output_field=models.BooleanField))
+
+    def current_grant(self):
+        '''Return profiles for users with a current grant.'''
+        return self.filter(self._current_project_member_query())
+
+    def current_position(self):
+        '''Return profiles for users with a current position.'''
+        return self.filter(self._current_position_query())
+
+    def current_position_nonexec(self):
+        '''Return profiles for users with a current position, excluding
+        executive committee positions.'''
+        return self.filter(models.Q(self._current_position_query()) &
+                           ~models.Q(positions__title__title__in=self.exec_committee_titles))
+
+    def has_upcoming_events(self):
+        '''Filter profiles to only those with an upcoming published event.'''
+        # FIXME event still associated to user
+        return self.filter(user__event__end_time__gte=timezone.now(),
+                           user__event__status=CONTENT_STATUS_PUBLISHED).distinct()
+
+    def order_by_event(self):
+        '''Order by earliest published event associated with profile.'''
+        # FIXME event still associated to user
+        return self.annotate(
+            earliest_event=models.Min(models.Case(
+                models.When(user__event__status=CONTENT_STATUS_PUBLISHED,
+                            then='user__event__start_time')))
+        ).order_by('earliest_event')
+
+    def order_by_position(self):
+        '''order by job title sort order and then by start date'''
+        # annotate to avoid duplicates in the queryset due to multiple positions
+        # sort on highest position title (= lowest number) and earliest start date (may
+        # not be from the same position)
+        return self.annotate(min_title=models.Min('positions__title__sort_order'),
+                             min_start=models.Min('positions__start_date')) \
+            .order_by('min_title', 'min_start', 'last_name')
+
+
 class Person(ClusterableModel):
     # in cdhweb 2.x this was a proxy model for User;
     # in 3.x it is a distinct model with 1-1 optional relationship to User
@@ -111,6 +269,9 @@ class Person(ClusterableModel):
         InlinePanel("positions", heading="Positions"),
     ]
 
+    # custom manager for querying
+    objects = PersonQuerySet.as_manager()
+
     class Meta:
         ordering = ("last_name",)
         verbose_name_plural = "people"
@@ -140,174 +301,6 @@ class Person(ClusterableModel):
             ProfilePage.objects.get(person=kwargs["instance"]).delete()
         except ProfilePage.DoesNotExist:
             pass
-
-
-class ProfileQuerySet(PublishedQuerySetMixin):
-
-    #: position titles that indicate a person is a postdoc
-    postdoc_titles = ['Postdoctoral Fellow',
-                      'Postdoctoral Fellow and Communications Lead']
-
-    #: position titles that indicate a person is a project director
-    director_roles = ['Project Director', 'Co-PI: Research Lead']
-
-    #: position titles that indicate a staff person is a student
-    student_titles = ['Graduate Fellow', 'Graduate Assistant',
-                      'Undergraduate Assistant',
-                      'Postgraduate Research Associate']
-    #: memebership roles that indicate someone is an affiliate
-    project_roles = ['Project Director',
-                     'Project Manager', 'Co-PI: Research Lead']
-
-    #: student status codes from LDAP
-    student_pu_status = ['graduate', 'undergraduate']
-
-    #: executive committee member titles
-    exec_member_title = 'Executive Committee Member'
-    with_exec_title = 'Sits with Executive Committee'
-    exec_committee_titles = [exec_member_title, with_exec_title]
-
-    def staff(self):
-        '''Return only CDH staff members'''
-        return self.filter(is_staff=True)
-
-    def student_affiliates(self):
-        '''Return CDH student staff members, grantees, and PGRAs based on
-        Project Director or Project Manager role.'''
-        return self \
-            .filter(models.Q(pu_status__in=self.student_pu_status) |
-                    models.Q(user__positions__title__title__in=self.student_titles)) \
-            .filter(models.Q(is_staff=True) |
-                    models.Q(user__membership__role__title__in=self.project_roles)) \
-            .exclude(pu_status="stf")
-
-    def not_students(self):
-        '''Filter out students based on PU status'''
-        return self \
-            .exclude(pu_status__in=self.student_pu_status)
-
-    def affiliates(self):
-        '''Faculty and staff affiliates based on PU status and Project Director
-        project role. Excludes CDH staff.'''
-        return self.filter(pu_status__in=('fac', 'stf'),
-                           user__membership__role__title__in=self.director_roles) \
-            .exclude(is_staff=True)
-
-    def executive_committee(self):
-        '''Executive committee members; based on position title.'''
-        return self.filter(user__positions__title__title__in=self.exec_committee_titles)
-
-    def exec_member(self):
-        '''Executive committee members'''
-        return self.filter(user__positions__title__title=self.exec_member_title)
-
-    def sits_with_exec(self):
-        '''Non-faculty Executive committee members'''
-        return self.filter(user__positions__title__title=self.with_exec_title)
-
-    def grant_years(self):
-        '''Annotate with first start and last end grant year for grants
-        that a person was project director.'''
-        # NOTE: filters within the aggregation query on project director
-        # but not on the entire query so that e.g. on the students
-        # page student staff without grants are still included
-        return self.annotate(
-            first_start=models.Min(models.Case(
-                models.When(user__membership__role__title__in=self.director_roles,
-                            then='user__membership__start_date'))),
-            last_end=models.Max(models.Case(
-                models.When(user__membership__role__title__in=self.director_roles,
-                            then='user__membership__end_date'))))
-
-    def project_manager_years(self):
-        '''Annotate with first start and last end grant year for grants
-        that a person was project manager.'''
-        # NOTE: filters within the aggregation query on project manager
-        # but not on the entire query so that e.g. on the students
-        # page student staff without grants are still included
-        return self.annotate(
-            pm_start=models.Min(models.Case(
-                models.When(user__membership__role__title='Project Manager',
-                            then='user__membership__start_date'))),
-            pm_end=models.Max(models.Case(
-                models.When(user__membership__role__title='Project Manager',
-                            then='user__membership__end_date'))))
-
-    def speakers(self):
-        '''Return external speakers at CDH events.'''
-        # Speakers are non-Princeton profiles (external) who are associated with
-        # at least one published event
-        return self.filter(user__event__isnull=False, pu_status='external',
-                           user__event__status=CONTENT_STATUS_PUBLISHED)
-
-    def _current_position_query(self):
-        # query to find a user with a current cdh position
-        # user *has* a position and it has no end date or date after today
-        return (
-            models.Q(user__positions__isnull=False) &
-            (models.Q(user__positions__end_date__isnull=True) |
-             models.Q(user__positions__end_date__gte=date.today())
-             )
-        )
-
-    def _current_project_member_query(self):
-        today = timezone.now()
-        return (
-            # in one of the allowed roles (project director/project manager)
-            models.Q(user__membership__role__title__in=self.project_roles) &
-            # current based on membership dates
-            (
-                models.Q(user__membership__start_date__lte=today) &
-                (models.Q(user__membership__end_date__gte=today) |
-                 models.Q(user__membership__end_date__isnull=True))
-            )
-        )
-
-    def current(self):
-        '''Return profiles for users with a current position or current grant
-        based on start and end dates.'''
-        # annotate with an is_current flag to make template logic simpler
-        return self.filter(models.Q(self._current_position_query()) |
-                           models.Q(self._current_project_member_query())) \
-                   .extra(select={'is_current': True})
-        # NOTE: couldn't get annotate to work
-        # .annotate(is_current=models.Value(True, output_field=models.BooleanField))
-
-    def current_grant(self):
-        '''Return profiles for users with a current grant.'''
-        return self.filter(self._current_project_member_query())
-
-    def current_position(self):
-        '''Return profiles for users with a current position.'''
-        return self.filter(self._current_position_query())
-
-    def current_position_nonexec(self):
-        '''Return profiles for users with a current position, excluding
-        executive committee positions.'''
-        return self.filter(models.Q(self._current_position_query()) &
-                           ~models.Q(user__positions__title__title__in=self.exec_committee_titles))
-
-    def has_upcoming_events(self):
-        '''Filter profiles to only those with an upcoming published event.'''
-        return self.filter(user__event__end_time__gte=timezone.now(),
-                           user__event__status=CONTENT_STATUS_PUBLISHED).distinct()
-
-    def order_by_event(self):
-        '''Order by earliest published event associated with profile.'''
-        return self.annotate(
-            earliest_event=models.Min(models.Case(
-                models.When(user__event__status=CONTENT_STATUS_PUBLISHED,
-                            then='user__event__start_time')))
-        ).order_by('earliest_event')
-
-    def order_by_position(self):
-        '''order by job title sort order and then by start date'''
-        # annotate to avoid duplicates in the queryset due to multiple positions
-        # sort on highest position title (= lowest number) and earliest start date (may
-        # not be from the same position)
-        return self.annotate(min_title=models.Min('user__positions__title__sort_order'),
-                             min_start=models.Min('user__positions__start_date')) \
-            .order_by('min_title', 'min_start', 'user__last_name')
 
 
 class Profile(Displayable, AdminThumbMixin):
@@ -361,8 +354,7 @@ class Profile(Displayable, AdminThumbMixin):
     # TODO: check for
     tags = TaggableManager(blank=True)
 
-    # custom manager for additional queryset filters
-    objects = ProfileQuerySet.as_manager()
+    # NOTE removed ProfileQuerySet manager here as it became PersonQuerySet
 
     class Meta:
         ordering = ["-user__last_name"]
