@@ -433,16 +433,20 @@ class PeopleLandingPage(LandingPage):
     # special pages, like profile list pages, have to be created and added
     # manually underneath this page.
     subpage_types = [ProfilePage]
+    # use the regular landing page template
+    template = LandingPage.template
 
 
 class PersonListPage(Page):
     """Supertype for pages that aggregate and display People."""
     #: main page text
     body = StreamField(BodyContentBlock, blank=True)
-    #: label for "current people" section
-    current_label = "People"
-    #: label for "past people" section
-    past_label = "Past People"
+    #: heading for "current people" section
+    current_heading = "People"
+    #: heading for "past people" section
+    past_heading = "Past People"
+    #: panels available in wagtail admin
+    content_panels = Page.content_panels + [StreamFieldPanel("body")]
 
     # NOTE these pages can't be created in the page editor; they are only made
     # via a script or the console. They *can* be edited via the admin UI.
@@ -469,10 +473,11 @@ class PersonListPage(Page):
         """Add people and archive navigation to the page context."""
         context = super().get_context(request)
         context.update({
-            "current": self.get_current_people(),
-            "past": self.get_past_people(),
+            "current_people": self.get_current_people(),
+            "past_people": self.get_past_people(),
             "archive_nav": self.archive_nav_urls()
         })
+        return context
 
 
 class Position(DateRange):

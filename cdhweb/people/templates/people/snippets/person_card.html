@@ -1,0 +1,31 @@
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{# default card display for a person #}
+<div class="card profile">
+    {# link if we have a profile, otherwise div #}
+    {% with profile|yesno:"a,div" as tag %}
+    <{{ tag }} {% if profile %}href="{% pageurl profile %}"{% endif %} aria-label="{{ profile.title }}">
+        {% if profile.image %}
+            {% image profile.image fill-310x240 as profile_img %}
+        {% endif %}
+        <div class="image" {% if profile_img %}style="background-image:url('{{ profile_img.url }}')"{% endif %}></div>
+        <div class="content">
+            <p class="name">{% if profile %}{{ profile.title }}{% else %}{{ person }}{% endif %}</p>
+            {# use in order of availability: cdh position, project role, event speaker + institution, job title + institution #}
+            <div class="title">
+            {% with position=person.positions.first membership=person.membership_set.first event=person.user.event_set.first %}
+                {% if position %}
+                    <p>{% if not position.is_current %}{{ position.years }} {% endif %}{{ position.title }}</p>
+                {% elif membership %}
+                    <p>{% if not membership.is_current %}{{ membership.years }} {% endif %}{{ membership.role }}</p>
+                {% elif event %}
+                    <p>{{ event.start_time.year }} Speaker{% if person.institution %}<br/>{{ person.institution }}{% endif %}</p>
+                {% elif person.job_title %}
+                    <p>{{ person.job_title }}{% if person.institution %}<br/>{{ person.institution }}{% endif %}</p>
+                {% endif %}
+            {% endwith %}
+            </div>
+        </div>
+    </{{ tag }}>
+    {% endwith %}
+</div>

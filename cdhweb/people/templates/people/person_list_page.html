@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags %}
+
+{% block page-subtitle %}{{ page.title }} | {% endblock %}
+{% block bodyattrs %}class="with-cards"{% endblock %}
+
+{% block main %}
+<section class="people">
+<h1>{{ page.current_heading }}</h1>
+
+{# drop-down nav adapted from events page #}
+<div class="archive-nav">
+  <a class="toggle">{{ page.title }}
+    <i class="fa fa-chevron-down" aria-hidden="true"></i></a>
+  <ul class="submenu">
+    {% for label, profile_url in archive_nav %}
+      <li {% if request.path == profile_url %}class="current"{% endif %}><a href="{{ profile_url }}">{{ label }}</a></li>
+    {% endfor %}
+  </ul>
+</div>
+
+{# editable page content #}
+{% if page.body %}
+<section class="textcontent">
+    <div class="richtext">
+    {% for block in page.body %}
+        {% include_block block %}
+    {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+{# current people #}
+{% block current_people %}
+{% for person in current_people %}
+    {% include 'people/snippets/person_card.html' with profile=person.profilepage %}
+{% endfor %}
+{% endblock %}
+
+{# past people #}
+{% if past_people %}
+<h2>{{ page.past_heading }}</h2>
+{% block past_people %}
+  {% for person in past_people %}
+    {% include 'people/snippets/person_card.html' with profile=person.profilepage %}
+  {% endfor %}
+{% endblock %}
+{% endif %}
+
+</section>
+{% endblock %}
