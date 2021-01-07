@@ -166,10 +166,10 @@ class TestPersonListPage(WagtailPageTests):
         # set up testing people and positions
         director = Title.objects.create(title="director", sort_order=0)
         dev = Title.objects.create(title="developer", sort_order=1)
-        self.tom = Person.objects.create(first_name="tom")
-        self.sam = Person.objects.create(first_name="sam")
-        self.jim = Person.objects.create(first_name="sam")
-        self.ben = Person.objects.create(first_name="ben")
+        self.tom = Person.objects.create(first_name="tom", last_name="a")
+        self.sam = Person.objects.create(first_name="sam", last_name="b")
+        self.jim = Person.objects.create(first_name="jim", last_name="c")
+        self.ben = Person.objects.create(first_name="ben", last_name="d")
         Position.objects.create(person=self.tom, title=director,
                                 start_date=datetime.date.today())
         Position.objects.create(person=self.sam, title=dev,
@@ -205,6 +205,20 @@ class TestPersonListPage(WagtailPageTests):
         assert (("Students", list_pages["Students"].get_url()) in nav_urls)
         assert (("Affiliates", list_pages["Affiliates"].get_url()) in nav_urls)
 
+    def test_get_people(self):
+        """should get all people ordered by position"""
+        # create a list page
+        list_page = PersonListPage(title="People", slug="mine")
+        self.lp.add_child(instance=list_page)
+        self.lp.save()
+
+        # default order is by last name
+        people = list_page.get_people()
+        assert people[0] == self.tom    # a, tom
+        assert people[1] == self.sam    # b, sam
+        assert people[2] == self.jim    # c, jim
+        assert people[3] == self.ben    # d, ben
+
     def test_get_current_people(self):
         """should get current people ordered by position"""
         # create a list page
@@ -212,7 +226,7 @@ class TestPersonListPage(WagtailPageTests):
         self.lp.add_child(instance=list_page)
         self.lp.save()
 
-        # current people with director first
+        # current people ordered by last name
         assert list_page.get_current_people()[0] == self.tom
         assert list_page.get_current_people()[1] == self.sam
 
@@ -227,7 +241,7 @@ class TestPersonListPage(WagtailPageTests):
         self.lp.add_child(instance=list_page)
         self.lp.save()
 
-        # past people with director first
+        # past people ordered by last name
         assert list_page.get_past_people()[0] == self.jim
         assert list_page.get_past_people()[1] == self.ben
 

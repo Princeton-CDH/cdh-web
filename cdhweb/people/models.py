@@ -457,28 +457,53 @@ class PersonListPage(Page):
 
     def archive_nav_urls(self):
         """Return a list of all PersonListPages and their URLs."""
-        return [(page.title, page.get_url()) \
+        return [(page.title, page.get_url())
                 for page in PersonListPage.objects.all()]
+
+    @staticmethod
+    def get_people():
+        """Get the set of all people to display."""
+        return Person.objects.all()
+
+    @staticmethod
+    def order_people(people):
+        """Sort a set of people with a custom ordering."""
+        # by default, do nothing to use the default ordering for People
+        return people
 
     def get_current_people(self):
         """Get the set of current people to display."""
-        return Person.objects.current().order_by_position()
+        return self.get_people().current()
 
     def get_past_people(self):
         """Get the set of past people to display."""
-        return Person.objects.exclude(pk__in=self.get_current_people()) \
-                             .order_by_position()
+        return self.get_people().exclude(pk__in=self.get_current_people())
 
     def get_context(self, request):
         """Add people and archive navigation to the page context."""
         context = super().get_context(request)
         context.update({
-            "current_people": self.get_current_people(),
-            "past_people": self.get_past_people(),
+            "current_people": self.order_people(self.get_current_people()),
+            "past_people": self.order_people(self.get_past_people()),
             "archive_nav": self.archive_nav_urls()
         })
         return context
 
+
+class StaffListPage(PersonListPage):
+    """Page that lists profiles of CDH staff."""
+    current_heading = "Staff"
+    past_heading = "Past Staff"
+
+    @staticmethod
+    def get_people():
+        """Get the set of all CDH staff."""
+        return super().get_people().staff().not_students()
+
+    @staticmethod
+    def order_people(people):
+        """Order CDH staff by position title rank."""
+        return people.current_position_nonexec().order_by_position()
 
 class Position(DateRange):
     '''Through model for many-to-many relation between people
