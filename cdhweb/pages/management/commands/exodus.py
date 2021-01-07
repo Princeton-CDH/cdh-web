@@ -7,18 +7,20 @@ import os.path
 import shutil
 from collections import defaultdict
 
+from cdhweb.pages.models import ContentPage, HomePage, LandingPage
+from cdhweb.people.models import (AffiliateListPage, ExecListPage,
+                                  PeopleLandingPage, Person, Profile,
+                                  ProfilePage, SpeakerListPage, StaffListPage,
+                                  StudentListPage)
 from django.conf import settings
 from django.core.files.images import ImageFile
 from django.core.management.base import BaseCommand
 from django.db.models import Q
-from mezzanine.core.models import CONTENT_STATUS_PUBLISHED
+from mezzanine.core.models import CONTENT_STATUS_DRAFT, CONTENT_STATUS_PUBLISHED
 from mezzanine.pages import models as mezz_page_models
 from wagtail.core.blocks import RichTextBlock
-from wagtail.core.models import Page, Site, Collection, get_root_collection_id
+from wagtail.core.models import Collection, Page, Site, get_root_collection_id
 from wagtail.images.models import Image
-
-from cdhweb.pages.models import ContentPage, HomePage, LandingPage
-from cdhweb.people.models import Person, Profile, ProfilePage, PeopleLandingPage
 
 
 class Command(BaseCommand):
@@ -159,7 +161,8 @@ class Command(BaseCommand):
             people = PeopleLandingPage(
                 title=old_people.title,
                 tagline=old_people.landingpage.tagline,
-                header_image=self.get_wagtail_image(old_people.landingpage.image),
+                header_image=self.get_wagtail_image(
+                    old_people.landingpage.image),
                 slug=self.convert_slug(old_people.slug),
                 seo_title=old_people._meta_title or old_people.title,
                 body=json.dumps([{
@@ -196,13 +199,12 @@ class Command(BaseCommand):
             for page in project_pages:
                 self.migrate_pages(page, projects)
 
-        # migrate people pages but use new landingpage subtype as parent
-        # TODO create new PersonListPage subtypes
+        # mark all person list pages as migrated; manually migrate them later
         if people:
             people_pages = mezz_page_models.Page.objects \
                 .filter(slug__startswith="people/").order_by('-slug')
             for page in people_pages:
-                self.migrate_pages(page, people)
+                self.migrated.append(page.pk)
 
         # migrate all remaining pages, starting with pages with no parent
         # (i.e., top level pages)
@@ -214,6 +216,9 @@ class Command(BaseCommand):
 
         # profile pages
         self.profile_pages()
+
+        # person list pages
+        self.person_list_pages()
 
         # report on unmigrated pages
         unmigrated = mezz_page_models.Page.objects.exclude(
@@ -285,28 +290,72 @@ class Command(BaseCommand):
         'root': Collection.objects.get(pk=get_root_collection_id())
     }
 
+    def person_list_pages(self):
+        """Create one of each PersonListPage subtype."""
+        # ensure people landing page exists first
+        people_landing = PeopleLandingPage.objects.first()
+        if not people_landing:
+            return
+
+        # map page slugs to their corresponding list page type
+        type_for_page = {
+            "staff": StaffListPage,
+            "students": StudentListPage,
+            "faculty": AffiliateListPage,   # affiliate slug is 'faculty'
+            "speakers": SpeakerListPage,
+            "executive-committee": ExecListPage
+        }
+
+        # create each type of list page if corresponding page exists in mezz.
+        for slug, page_type in type_for_page.items():
+            try:
+                old_page = mezz_page_models.Page.objects.get(
+                    slug=f"people/{slug}")
+                new_page = page_type(title=old_page.title)
+
+                # ignore placeholder whitespace content in body
+                if old_page.richtextpage.content != "<p>&nbsp; &nbsp;</p>" \
+                    and old_page.richtextpage.content != "<p>&nbsp;&nbsp;</p>":
+                    new_page.body = json.dumps([{"type": "migrated",
+                          "value": old_page.richtextpage.content}])
+                people_landing.add_child(instance=new_page)
+                people_landing.save()
+
+                # set draft status
+                if old_page.status != CONTENT_STATUS_PUBLISHED:
+                    new_page.unpublish()
+
+            except mezz_page_models.Page.DoesNotExist:
+                continue
+
     def profile_pages(self):
-        """Exodize all existing Profiles to new ProfilePage model."""
+        """Exodize all non-empty Profiles to new ProfilePage model."""
         # all the fields on Profile that moved to Person will have been handled
         # by django migrations; we just need to create new Page models
         people_landing = PeopleLandingPage.objects.first()
         if not people_landing:
             return
-        for profile in Profile.objects.filter(user__person__isnull=False):
-            # NOTE not sure why Profile.user.person fails; works in console?
+
+        # NOTE only migrate profiles that actually have content in the bio; the
+        # majority do not because they were created for technical reasons
+        for profile in Profile.objects.filter(user__person__isnull=False) \
+                                       .exclude(bio=""):
             person = Person.objects.get(user=profile.user)
             profile_page = ProfilePage(
                 person=person,
                 title=profile.title,
-                image=self.get_wagtail_image(profile.image) if profile.image else None,
+                image=self.get_wagtail_image(
+                    profile.image) if profile.image else None,
                 education=profile.education,
                 bio=json.dumps([
                     {"type": "migrated", "value": profile.bio},
                 ])
             )
+
             # added as child of people landing page so slugs are correct
             people_landing.add_child(instance=profile_page)
             people_landing.save()
+
             # if the old profile wasn't published, unpublish the new one
             if profile.status != CONTENT_STATUS_PUBLISHED:
                 profile_page.unpublish()
