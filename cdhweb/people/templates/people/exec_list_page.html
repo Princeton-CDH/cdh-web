@@ -1,0 +1,52 @@
+{% extends "people/person_list_page.html" %}
+{% load wagtailcore_tags %}
+
+{% block main %}
+<section class="people">
+<h1>{{ page.current_heading }}</h1>
+
+{# drop-down nav adapted from events page #}
+<div class="archive-nav">
+  <a class="toggle">{{ page.title }}
+    <i class="fa fa-chevron-down" aria-hidden="true"></i></a>
+  <ul class="submenu">
+    {% for label, page_url in archive_nav %}
+      <li {% if request.path == page_url %}class="current"{% endif %}><a href="{{ page_url }}">{{ label }}</a></li>
+    {% endfor %}
+  </ul>
+</div>
+
+{# editable page content #}
+{% if page.body %}
+<section class="textcontent">
+    <div class="richtext">
+    {% for block in page.body %}
+        {% include_block block %}
+    {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+{# current people #}
+{% block current_people %}
+{{ block.super }}
+{% endblock %}
+
+{# special "sits with exec" section #}
+{% if sits_with %}
+  <h2>Sits with Executive Committee</h2>
+  {% for profile in sits_with %}
+    {% include 'people/snippets/person_card.html' with profile=person.profilepage %}
+  {% endfor %}
+{% endif %}
+
+{# past people #}
+{% if past_people %}
+<h2>{{ page.past_heading }}</h2>
+{% block past_people %}
+{{ block.super }}
+{% endblock %}
+{% endif %}
+
+</section>
+{% endblock %}
