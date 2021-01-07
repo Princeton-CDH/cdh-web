@@ -2,13 +2,15 @@
 
 {# default card display for a person #}
 <div class="card profile">
-    {# link if we have a profile, otherwise div #}
-    {% with profile|yesno:"a,div" as tag %}
-    <{{ tag }} {% if profile %}href="{% pageurl profile %}"{% endif %} aria-label="{{ profile.title }}">
-        {% if profile.image %}
-            {% image profile.image fill-310x240 as profile_img %}
+    {# link if we have a profile or website URL, otherwise div #}
+    {% with person.profile_url|yesno:"a,div" as tag %}
+    <{{ tag }} {% if person.profile_url %}href="{{ person.profile_url }}"{% endif %} aria-label="{% firstof profile.title person %}">
+        {% if person.card_image %}
+            {% image person.card_image fill-310x240 as profile_img %}
+            <div class="image" style="background-image:url('{{ profile_img.url }}')"></div>
+        {% else %}
+            <div class="image"></div>
         {% endif %}
-        <div class="image" {% if profile_img %}style="background-image:url('{{ profile_img.url }}')"{% endif %}></div>
         <div class="content">
             <p class="name">{% if profile %}{{ profile.title }}{% else %}{{ person }}{% endif %}</p>
             {# use in order of availability: cdh position, project role, event speaker + institution, job title + institution #}
