@@ -435,6 +435,46 @@ class PeopleLandingPage(LandingPage):
     subpage_types = [ProfilePage]
 
 
+class PersonListPage(Page):
+    """Supertype for pages that aggregate and display People."""
+    #: main page text
+    body = StreamField(BodyContentBlock, blank=True)
+    #: label for "current people" section
+    current_label = "People"
+    #: label for "past people" section
+    past_label = "Past People"
+
+    # NOTE these pages can't be created in the page editor; they are only made
+    # via a script or the console. They *can* be edited via the admin UI.
+    parent_page_types = []
+    # NOTE these pages don't have children; they may aggregate people but the
+    # corresponding ProfilePages for them will be underneath PeopleLandingPage
+    subpage_types = []
+
+    def archive_nav_urls(self):
+        """Return a list of all PersonListPages and their URLs."""
+        return [(page.title, page.get_url()) \
+                for page in PersonListPage.objects.all()]
+
+    def get_current_people(self):
+        """Get the set of current people to display."""
+        return Person.objects.current().order_by_position()
+
+    def get_past_people(self):
+        """Get the set of past people to display."""
+        return Person.objects.exclude(pk__in=self.get_current_people()) \
+                             .order_by_position()
+
+    def get_context(self, request):
+        """Add people and archive navigation to the page context."""
+        context = super().get_context(request)
+        context.update({
+            "current": self.get_current_people(),
+            "past": self.get_past_people(),
+            "archive_nav": self.archive_nav_urls()
+        })
+
+
 class Position(DateRange):
     '''Through model for many-to-many relation between people
     and titles.  Adds start and end dates to the join table.'''

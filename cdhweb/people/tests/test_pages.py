@@ -1,15 +1,19 @@
-import json
 import datetime
-from mezzanine.core.models import CONTENT_STATUS_DRAFT, CONTENT_STATUS_PUBLISHED
+import json
 
 import pytest
-from cdhweb.pages.models import HomePage
-from cdhweb.people.models import PeopleLandingPage, Person, ProfilePage
 from cdhweb.blog.models import BlogPost
+from cdhweb.pages.models import HomePage
+from cdhweb.people.models import (PeopleLandingPage, Person, PersonListPage,
+                                  Position, ProfilePage, Title)
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.test import RequestFactory
-from django.contrib.auth import get_user_model
-from wagtail.core.models import Page
+from django.db import connection
+from django.db.utils import ProgrammingError
+from mezzanine.core.models import (CONTENT_STATUS_DRAFT,
+                                   CONTENT_STATUS_PUBLISHED)
+from wagtail.core.models import Page, Site
 from wagtail.tests.utils import WagtailPageTests
 from wagtail.tests.utils.form_data import rich_text
 
@@ -37,10 +41,13 @@ class TestProfilePage(WagtailPageTests):
 
     def setUp(self):
         """create page tree and person for testing"""
+        site = Site.objects.first()
         root = Page.objects.get(title="Root")
         home = HomePage(title="home", slug="")
         root.add_child(instance=home)
         root.save()
+        site.root_page = home
+        site.save()
         self.lp = PeopleLandingPage(
             title="people", slug="people", tagline="people of the cdh")
         home.add_child(instance=self.lp)
@@ -137,3 +144,93 @@ class TestProfilePage(WagtailPageTests):
         assert posts["two"] in context["recent_posts"]
         assert posts["four"] not in context["recent_posts"]
         assert posts["one"] not in context["recent_posts"]
+
+
+class TestPersonListPage(WagtailPageTests):
+
+    def setUp(self):
+        """fix wagtail page tree and create people for testing"""
+        # set up page tree
+        site = Site.objects.first()
+        root = Page.objects.get(title="Root")
+        home = HomePage(title="home", slug="")
+        root.add_child(instance=home)
+        root.save()
+        site.root_page = home
+        site.save()
+        self.lp = PeopleLandingPage(
+            title="people", slug="people", tagline="people of the cdh")
+        home.add_child(instance=self.lp)
+        home.save()
+
+        # set up testing people and positions
+        director = Title.objects.create(title="director", sort_order=0)
+        dev = Title.objects.create(title="developer", sort_order=1)
+        self.tom = Person.objects.create(first_name="tom")
+        self.sam = Person.objects.create(first_name="sam")
+        self.jim = Person.objects.create(first_name="sam")
+        self.ben = Person.objects.create(first_name="ben")
+        Position.objects.create(person=self.tom, title=director,
+                                start_date=datetime.date.today())
+        Position.objects.create(person=self.sam, title=dev,
+                                start_date=datetime.date.today())
+        Position.objects.create(person=self.jim, title=director,
+                                start_date=datetime.date.today() - datetime.timedelta(weeks=20),
+                                end_date=datetime.date.today() - datetime.timedelta(weeks=10),)
+        Position.objects.create(person=self.ben, title=dev,
+                                start_date=datetime.date.today() - datetime.timedelta(weeks=20),
+                                end_date=datetime.date.today() - datetime.timedelta(weeks=10),)
+
+    def test_parent_pages(self):
+        """only allowed parent is people landing page"""
+        self.assertAllowedParentPageTypes(PersonListPage, [])
+
+    def test_child_pages(self):
+        """no allowed children"""
+        self.assertAllowedSubpageTypes(PersonListPage, [])
+
+    def test_archive_nav_urls(self):
+        """should aggregate a list of other person list pages and their urls"""
+        # create several list pages
+        list_pages = {}
+        for title in ["Staff", "Students", "Affiliates"]:
+            list_page = PersonListPage(title=title, slug=title)
+            self.lp.add_child(instance=list_page)
+            self.lp.save()
+            list_pages[title] = list_page
+
+        # pick any one of them; should have a list of its siblings + their urls
+        nav_urls = list_pages["Staff"].archive_nav_urls()
+        assert (("Staff", list_pages["Staff"].get_url()) in nav_urls)
+        assert (("Students", list_pages["Students"].get_url()) in nav_urls)
+        assert (("Affiliates", list_pages["Affiliates"].get_url()) in nav_urls)
+
+    def test_get_current_people(self):
+        """should get current people ordered by position"""
+        # create a list page
+        list_page = PersonListPage(title="People", slug="mine")
+        self.lp.add_child(instance=list_page)
+        self.lp.save()
+
+        # current people with director first
+        assert list_page.get_current_people()[0] == self.tom
+        assert list_page.get_current_people()[1] == self.sam
+
+        # past people are not included
+        assert self.jim not in list_page.get_current_people()
+        assert self.ben not in list_page.get_current_people()
+
+    def test_get_past_people(self):
+        """should get past people ordered by position"""
+        # create a list page
+        list_page = PersonListPage(title="People", slug="mine")
+        self.lp.add_child(instance=list_page)
+        self.lp.save()
+
+        # past people with director first
+        assert list_page.get_past_people()[0] == self.jim
+        assert list_page.get_past_people()[1] == self.ben
+
+        # current people are not included
+        assert self.tom not in list_page.get_past_people()
+        assert self.sam not in list_page.get_past_people()
