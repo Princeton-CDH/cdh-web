@@ -295,6 +295,27 @@ class Person(ClusterableModel):
         if current_positions.exists():
             return current_positions.first().title
 
+    @property
+    def profile_url(self):
+        """Return a link to the Person's ProfilePage or external website."""
+        # use internal profile page if it exists
+        if self.profilepage and self.profilepage.live:
+            return self.profilepage.get_url()
+        # otherwise check for a related link to a website for this person
+        website = self.personresource_set.filter(resourcetype__name="Website")
+        if website.exists():
+            return website.first().url
+
+    @property
+    def card_image(self):
+        """Get this Person's preferred image via ProfilePage or directly."""
+        # use profile page image if it exists
+        if self.profilepage and self.profilepage.live:
+            return self.profilepage.image
+        # otherwise check for an image directly assigned to this person
+        if self.image:
+            return self.image
+
     @receiver(pre_delete, sender="people.Person")
     def cleanup_profile(sender, **kwargs):
         """Handler to delete the corresponding ProfilePage on Person deletion."""
@@ -458,9 +479,9 @@ class PersonListPage(Page):
     subpage_types = []
 
     def archive_nav_urls(self):
-        """Return a list of all PersonListPages and their URLs."""
+        """Return a list of all published PersonListPages and their URLs."""
         return [(page.title, page.get_url())
-                for page in PersonListPage.objects.all()]
+                for page in PersonListPage.objects.live()]
 
     def get_people(self):
         """Get the set of all people to display."""
@@ -524,7 +545,7 @@ class StudentListPage(PersonListPage):
     def order_people(self, people):
         """Order students by most recent position or grant."""
         return people.annotate(most_recent=Greatest(
-            Max("memberships__end_date"),
+            Max("membership__end_date"),
             Max("positions__end_date")
         )).order_by("-most_recent")
 
@@ -536,7 +557,7 @@ class AffiliateListPage(PersonListPage):
 
     def get_people(self):
         """Get all faculty and staff affiliates."""
-        return super().get_people().affiliates().grant_years()
+        return super().get_people().affiliates()
 
     def get_current_people(self):
         """Get faculty and staff with current grants."""
@@ -558,10 +579,10 @@ class ExecListPage(PersonListPage):
 
     def get_context(self, request):
         """Add special section for people who sit with exec to context."""
-        context = super().get_context()
+        context = super().get_context(request)
         current = context["current_people"]
         context.update({
-            "current": current.exec_member(),
+            "current_people": current.exec_member(),
             "sits_with": current.sits_with_exec()
         })
         return context
@@ -573,7 +594,7 @@ class SpeakerListPage(PersonListPage):
 
     def get_people(self):
         """Get all people related to an event (speakers)."""
-        return super().get_queryset().speakers()
+        return super().get_people().speakers()
 
     def get_current_people(self):
         """Get people speaking at an upcoming event."""
