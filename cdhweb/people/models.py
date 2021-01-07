@@ -8,7 +8,9 @@ from cdhweb.resources.models import (Attachment, DateRange,
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import Max
 from django.db.models.signals import pre_delete
+from django.db.models.functions import Greatest
 from django.dispatch import receiver
 from django.urls import reverse
 from django.utils import timezone
@@ -159,12 +161,8 @@ class PersonQuerySet(models.QuerySet):
     def current(self):
         '''Return people with a current position or current grant based on
         start and end dates.'''
-        # annotate with an is_current flag to make template logic simpler
         return self.filter(models.Q(self._current_position_query()) |
-                           models.Q(self._current_project_member_query())) \
-                   .extra(select={'is_current': True})
-        # NOTE: couldn't get annotate to work
-        # .annotate(is_current=models.Value(True, output_field=models.BooleanField))
+                           models.Q(self._current_project_member_query()))
 
     def current_grant(self):
         '''Return profiles for users with a current grant.'''
@@ -173,6 +171,10 @@ class PersonQuerySet(models.QuerySet):
     def current_position(self):
         '''Return profiles for users with a current position.'''
         return self.filter(self._current_position_query())
+
+    def not_exec(self):
+        """Filter out people who are members of/sit with the Exec. Committee."""
+        return self.exclude(positions__title__title__in=self.exec_committee_titles)
 
     def current_position_nonexec(self):
         '''Return profiles for users with a current position, excluding
@@ -460,13 +462,11 @@ class PersonListPage(Page):
         return [(page.title, page.get_url())
                 for page in PersonListPage.objects.all()]
 
-    @staticmethod
-    def get_people():
+    def get_people(self):
         """Get the set of all people to display."""
         return Person.objects.all()
 
-    @staticmethod
-    def order_people(people):
+    def order_people(self, people):
         """Sort a set of people with a custom ordering."""
         # by default, do nothing to use the default ordering for People
         return people
@@ -495,15 +495,94 @@ class StaffListPage(PersonListPage):
     current_heading = "Staff"
     past_heading = "Past Staff"
 
-    @staticmethod
-    def get_people():
+    def get_people(self):
         """Get the set of all CDH staff."""
-        return super().get_people().staff().not_students()
+        return super().get_people().cdh_staff().not_students().not_exec()
 
-    @staticmethod
-    def order_people(people):
+    def get_current_people(self):
+        """Get current CDH staff, excluding the executive committee."""
+        return self.get_people().current_position()
+
+    def order_people(self, people):
         """Order CDH staff by position title rank."""
-        return people.current_position_nonexec().order_by_position()
+        return people.order_by_position()
+
+
+class StudentListPage(PersonListPage):
+    """Page that lists CDH graduate fellows and undergrad/graduate students."""
+    current_heading = "Students"
+    past_heading = "Alumni"
+
+    def get_people(self):
+        """Get all students."""
+        return super().get_people().student_affiliates().project_manager_years()
+
+    def get_current_people(self):
+        """Get current students."""
+        return self.get_people().current()
+
+    def order_people(self, people):
+        """Order students by most recent position or grant."""
+        return people.annotate(most_recent=Greatest(
+            Max("memberships__end_date"),
+            Max("positions__end_date")
+        )).order_by("-most_recent")
+
+
+class AffiliateListPage(PersonListPage):
+    """Page that lists CDH faculty and staff affiliates."""
+    current_heading = "Affiliates"
+    past_heading = "Past Affiliates"
+
+    def get_people(self):
+        """Get all faculty and staff affiliates."""
+        return super().get_people().affiliates().grant_years()
+
+    def get_current_people(self):
+        """Get faculty and staff with current grants."""
+        return self.get_people().current_grant()
+
+
+class ExecListPage(PersonListPage):
+    """Page that lists the CDH executive committee members."""
+    current_heading = "Executive Committee"
+    past_heading = "Past members of Executive Committee"
+
+    def get_people(self):
+        """Get all executive committee members."""
+        return super().get_people().executive_committee()
+
+    def get_current_people(self):
+        """Get members currently on the committee."""
+        return self.get_people().current_position()
+
+    def get_context(self, request):
+        """Add special section for people who sit with exec to context."""
+        context = super().get_context()
+        current = context["current_people"]
+        context.update({
+            "current": current.exec_member(),
+            "sits_with": current.sits_with_exec()
+        })
+        return context
+
+
+class SpeakerListPage(PersonListPage):
+    current_heading = "Upcoming Speakers"
+    past_heading = "Past Speakers"
+
+    def get_people(self):
+        """Get all people related to an event (speakers)."""
+        return super().get_queryset().speakers()
+
+    def get_current_people(self):
+        """Get people speaking at an upcoming event."""
+        return self.get_people().has_upcoming_events()
+
+    def order_people(self, people):
+        """Order speakers by most recent event."""
+        return people.order_by_event()
+
 
 class Position(DateRange):
     '''Through model for many-to-many relation between people

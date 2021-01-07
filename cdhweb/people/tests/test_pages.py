@@ -1,16 +1,14 @@
-import datetime
 import json
+from datetime import date, datetime, timedelta, timezone
 
 import pytest
 from cdhweb.blog.models import BlogPost
 from cdhweb.pages.models import HomePage
 from cdhweb.people.models import (PeopleLandingPage, Person, PersonListPage,
-                                  Position, ProfilePage, Title)
+                                  Position, ProfilePage, StaffListPage, Title)
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.test import RequestFactory
-from django.db import connection
-from django.db.utils import ProgrammingError
 from mezzanine.core.models import (CONTENT_STATUS_DRAFT,
                                    CONTENT_STATUS_PUBLISHED)
 from wagtail.core.models import Page, Site
@@ -125,7 +123,8 @@ class TestProfilePage(WagtailPageTests):
         posts = {}
         for i, title in enumerate(["one", "two", "three", "four", "five"]):
             post = BlogPost(title=title)
-            post.publish_date = datetime.date(2021, 1, i + 1)
+            post.publish_date = datetime(2021, 1, i + 1,
+                                         tzinfo=timezone.utc)
             if title == "four":
                 post.status = CONTENT_STATUS_DRAFT
             else:
@@ -171,15 +170,15 @@ class TestPersonListPage(WagtailPageTests):
         self.jim = Person.objects.create(first_name="jim", last_name="c")
         self.ben = Person.objects.create(first_name="ben", last_name="d")
         Position.objects.create(person=self.tom, title=director,
-                                start_date=datetime.date.today())
+                                start_date=date.today())
         Position.objects.create(person=self.sam, title=dev,
-                                start_date=datetime.date.today())
+                                start_date=date.today())
         Position.objects.create(person=self.jim, title=director,
-                                start_date=datetime.date.today() - datetime.timedelta(weeks=20),
-                                end_date=datetime.date.today() - datetime.timedelta(weeks=10),)
+                                start_date=date.today() - timedelta(weeks=20),
+                                end_date=date.today() - timedelta(weeks=10),)
         Position.objects.create(person=self.ben, title=dev,
-                                start_date=datetime.date.today() - datetime.timedelta(weeks=20),
-                                end_date=datetime.date.today() - datetime.timedelta(weeks=10),)
+                                start_date=date.today() - timedelta(weeks=20),
+                                end_date=date.today() - timedelta(weeks=10),)
 
     def test_parent_pages(self):
         """only allowed parent is people landing page"""
@@ -248,3 +247,95 @@ class TestPersonListPage(WagtailPageTests):
         # current people are not included
         assert self.tom not in list_page.get_past_people()
         assert self.sam not in list_page.get_past_people()
+
+
+class TestStaffListPage(WagtailPageTests):
+
+    def setUp(self):
+        """fix wagtail page tree and create people for testing"""
+        # set up page tree
+        site = Site.objects.first()
+        root = Page.objects.get(title="Root")
+        home = HomePage(title="home", slug="")
+        root.add_child(instance=home)
+        root.save()
+        site.root_page = home
+        site.save()
+        lp = PeopleLandingPage(
+            title="people", slug="people", tagline="people of the cdh")
+        home.add_child(instance=lp)
+        home.save()
+
+        # set up testing people and positions
+        # FIXME why is this necessary?
+        Title.objects.all().delete()
+        exec = Title.objects.create(title="Executive Committee Member", sort_order=2)
+        director = Title.objects.create(title="director", sort_order=0)
+        dev = Title.objects.create(title="developer", sort_order=1)
+        self.tom = Person.objects.create(
+            first_name="tom", last_name="x", cdh_staff=True)
+        self.sam = Person.objects.create(
+            first_name="sam", last_name="n", cdh_staff=True)
+        self.jim = Person.objects.create(
+            first_name="jim", last_name="l", cdh_staff=True)
+        self.ben = Person.objects.create(
+            first_name="ben", last_name="a", cdh_staff=True)
+        self.bev = Person.objects.create(first_name="bev", last_name="c")
+        self.ada = Person.objects.create(first_name="ada", last_name="p",
+            cdh_staff=True)
+        Position.objects.create(person=self.tom, title=director,
+                                start_date=date.today())
+        Position.objects.create(person=self.sam, title=dev,
+                                start_date=date.today())
+        Position.objects.create(person=self.ada, title=exec,
+                                start_date=date.today())
+        Position.objects.create(person=self.jim, title=director,
+                                start_date=date.today() - timedelta(weeks=20),
+                                end_date=date.today() - timedelta(weeks=10),)
+        Position.objects.create(person=self.ben, title=dev,
+                                start_date=date.today() - timedelta(weeks=20),
+                                end_date=date.today() - timedelta(weeks=10),)
+
+        # create a staff list page for testing
+        self.list_page = StaffListPage(title="CDH Staff", slug="staff")
+        lp.add_child(instance=self.list_page)
+        lp.save()
+        self.factory = RequestFactory()
+
+    def test_current_people(self):
+        """should get current cdh staff ordered by position"""
+        request = self.factory.get(self.list_page.get_url())
+        people = self.list_page.get_context(request)["current_people"]
+
+        # current staff with director first
+        assert people[0] == self.tom
+        assert people[1] == self.sam
+
+        # past staff not listed
+        assert self.jim not in people
+        assert self.ben not in people
+
+        # exec not listed
+        assert self.ada not in people
+
+        # non-staff not listed
+        assert self.bev not in people
+
+    def test_past_people(self):
+        """should get past cdh staff ordered by position"""
+        request = self.factory.get(self.list_page.get_url())
+        people = self.list_page.get_context(request)["past_people"]
+
+        # past staff with director first
+        assert people[0] == self.jim
+        assert people[1] == self.ben
+
+        # current staff not listed
+        assert self.tom not in people
+        assert self.sam not in people
+
+        # exec not listed
+        assert self.ada not in people
+
+        # non-staff not listed
+        assert self.bev not in people
