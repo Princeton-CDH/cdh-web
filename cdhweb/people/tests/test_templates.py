@@ -3,7 +3,7 @@ import json
 
 from cdhweb.pages.models import HomePage
 from cdhweb.people.models import (PeopleLandingPage, Person, PersonListPage, Position,
-                                  ProfilePage, Title)
+                                  ProfilePage, StaffListPage, Title)
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from wagtail.core.models import Page, Site
@@ -86,9 +86,9 @@ class TestPersonListPage(TestCase):
         root.save()
         site.root_page = home
         site.save()
-        lp = PeopleLandingPage(title="people", slug="people",
-                               tagline="people of the cdh")
-        home.add_child(instance=lp)
+        self.lp = PeopleLandingPage(title="people", slug="people",
+                                    tagline="people of the cdh")
+        home.add_child(instance=self.lp)
         home.save()
 
         # create one current and one past person for testing
@@ -102,9 +102,9 @@ class TestPersonListPage(TestCase):
                                 end_date=datetime.date.today() - datetime.timedelta(weeks=10),)
 
         # create a person list page for testing
-        self.list_page = PersonListPage(title="My People", slug="my")
-        lp.add_child(instance=self.list_page)
-        lp.save()
+        self.list_page = PersonListPage(title="my people", slug="my")
+        self.lp.add_child(instance=self.list_page)
+        self.lp.save()
 
     def test_body(self):
         """person list pages should display editable content"""
@@ -132,6 +132,22 @@ class TestPersonListPage(TestCase):
     def test_archive_nav(self):
         """person list pages should display a nav menu for other list pages"""
         # create sibling list pages to populate the archive nav
-        # check that the nav includes all list pages and their URLs
+        other_people = PersonListPage(title="other people", slug="other")
+        some_people = PersonListPage(title="some people", slug="some")
+        for page in [other_people, some_people]:
+            self.lp.add_child(instance=page)
+            self.lp.save()
+
+        # check that the nav includes other list pages and their URLs
         response = self.client.get(self.list_page.get_url())
-        pass
+        self.assertContains(response,
+                            '<li><a href="%s">other people</a></li>' % other_people.get_url(),
+                            html=True)
+        self.assertContains(response,
+                            '<li><a href="%s">some people</a></li>' % some_people.get_url(),
+                            html=True)
+
+        # current page should be marked current
+        self.assertContains(response,
+                            '<li class="current"><a href="%s">my people</a></li>' % self.list_page.get_url(),
+                            html=True)

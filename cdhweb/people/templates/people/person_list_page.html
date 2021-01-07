@@ -13,8 +13,8 @@
   <a class="toggle">{{ page.title }}
     <i class="fa fa-chevron-down" aria-hidden="true"></i></a>
   <ul class="submenu">
-    {% for label, profile_url in archive_nav %}
-      <li {% if request.path == profile_url %}class="current"{% endif %}><a href="{{ profile_url }}">{{ label }}</a></li>
+    {% for label, page_url in archive_nav %}
+      <li {% if request.path == page_url %}class="current"{% endif %}><a href="{{ page_url }}">{{ label }}</a></li>
     {% endfor %}
   </ul>
 </div>
