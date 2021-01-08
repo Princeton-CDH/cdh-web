@@ -530,7 +530,7 @@ class StaffListPage(PersonListPage):
 
 
 class StudentListPage(PersonListPage):
-    """Page that lists CDH graduate fellows and undergrad/graduate students."""
+    """Page that lists CDH student affiliates."""
     current_heading = "Students"
     past_heading = "Alumni"
 
