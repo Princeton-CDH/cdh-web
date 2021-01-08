@@ -119,19 +119,8 @@ class TestInitProfileFromLDAP(TestCase):
     def test_fields_populated(self):
         """other fields should be populated from ldap data if it exists"""
         assert self.staff_person.job_title == "Freeloader"
-        assert self.staff_person.phone_number == ""
-        assert self.staff_person.office_location == ""
         assert self.staff_person.pu_status == "stf"
         assert self.staff_person.department == "English"
-
-    def test_phone_office(self):
-        """phone number and office location should be added if present"""
-        self.ldapinfo.telephoneNumber = "4800"
-        self.ldapinfo.street = "801B"
-        init_person_from_ldap(self.staff_user, self.ldapinfo)
-        staff_person = Person.objects.get(user=self.staff_user)
-        assert staff_person.phone_number == "4800"
-        assert staff_person.office_location == "801B"
 
     def test_no_clobber(self):
         """when updating from ldap, existing fields shouldn't be changed"""

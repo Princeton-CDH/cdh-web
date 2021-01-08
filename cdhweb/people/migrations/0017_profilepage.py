@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ('wagtailcore', '0059_apply_collection_ordering'),
         ('wagtailimages', '0022_uploadedimage'),
-        ('people', '0018_person_help_text'),
+        ('people', '0016_person_help_text'),
     ]
 
     operations = [
@@ -26,6 +26,8 @@ class Migration(migrations.Migration):
                 ('bio', wagtail.core.fields.StreamField([('paragraph', wagtail.core.blocks.RichTextBlock(features=['h3', 'h4', 'bold', 'italic', 'link', 'ol', 'ul', 'hr', 'blockquote', 'document', 'superscript', 'subscript', 'strikethrough', 'code'])), ('image', wagtail.images.blocks.ImageChooserBlock()), ('document', wagtail.documents.blocks.DocumentChooserBlock()), ('embed', wagtail.embeds.blocks.EmbedBlock()), ('migrated', wagtail.core.blocks.RichTextBlock(features=('a', 'abbr', 'acronym', 'address', 'area', 'article', 'aside', 'b', 'bdo', 'big', 'blockquote', 'br', 'button', 'caption', 'center', 'cite', 'code', 'col', 'colgroup', 'dd', 'del', 'dfn', 'dir', 'div', 'dl', 'dt', 'em', 'fieldset', 'figure', 'figcaption', 'font', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hr', 'i', 'img', 'input', 'ins', 'kbd', 'label', 'legend', 'li', 'map', 'men', 'nav', 'ol', 'optgroup', 'option', 'p', 'pre', 'q', 's', 'samp', 'section', 'select', 'small', 'span', 'strike', 'strong', 'sub', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'tr', 'tt', '', 'ul', 'var', 'wbr', 'iframe'), icon='warning'))], blank=True)),
                 ('image', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='wagtailimages.Image')),
                 ('person', models.OneToOneField(help_text='Corresponding person for this profile', on_delete=django.db.models.deletion.PROTECT, to='people.Person')),
+                ('office_location', models.CharField(blank=True, help_text='Office location (optional)', max_length=255)),
+                ('phone_number', models.CharField(blank=True, help_text='Office phone number (optional)', max_length=50))
             ],
             options={
                 'abstract': False,

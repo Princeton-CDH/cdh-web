@@ -29,12 +29,14 @@ class TestProfilePage(TestCase):
 
         # set up user/person/profile
         User = get_user_model()
-        self.user = User.objects.create_user(username="tom")
+        self.user = User.objects.create_user(username="tom", email="tom@me.com")
         self.person = Person.objects.create(user=self.user, first_name="tom")
         self.profile = ProfilePage(
             person=self.person,
             title="tom r. jones",
             slug="tom-jones",
+            phone_number="867-5309",
+            office_location="everywhere and nowhere",
             education="<ul><li>college dropout</li></ul>",
             bio=json.dumps([{"type": "paragraph", "value": "<b>about me</b>"}])
         )
@@ -46,10 +48,25 @@ class TestProfilePage(TestCase):
         response = self.client.get(self.profile.relative_url(self.site))
         self.assertContains(response, "<h1>tom r. jones</h1>", html=True)
 
+    def test_phone_number(self):
+        """profile page should display link to email person"""
+        response = self.client.get(self.profile.relative_url(self.site))
+        self.assertContains(response, '<a href="mailto:tom@me.com">', html=True)
+
+    def test_phone_number(self):
+        """profile page should display person's phone number"""
+        response = self.client.get(self.profile.relative_url(self.site))
+        self.assertContains(response, "867-5309", html=True)
+
+    def test_office_location(self):
+        """profile page should display person's office location"""
+        response = self.client.get(self.profile.relative_url(self.site))
+        self.assertContains(response, "<li>college dropout</li>", html=True)
+
     def test_education(self):
         """profile page should display person's education"""
         response = self.client.get(self.profile.relative_url(self.site))
-        self.assertContains(response, "<li>college dropout</li>", html=True)
+        self.assertContains(response, "<p>everywhere and nowhere</p>", html=True)
 
     def test_bio(self):
         """profile page should display person's bio"""

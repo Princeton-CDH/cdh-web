@@ -8,7 +8,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('people', '0017_profile_phone_office_to_person'),
+        ('people', '0015_person_cluster_titles'),
     ]
 
     operations = [
@@ -20,16 +20,6 @@ class Migration(migrations.Migration):
             model_name='person',
             name='department',
             field=models.CharField(blank=True, help_text='Academic Department at Princeton or other institution', max_length=255),
-        ),
-        migrations.AlterField(
-            model_name='person',
-            name='office_location',
-            field=models.CharField(blank=True, help_text='Office number and building', max_length=255),
-        ),
-        migrations.AlterField(
-            model_name='person',
-            name='phone_number',
-            field=models.CharField(blank=True, help_text='Office phone number', max_length=50),
         ),
         migrations.AlterField(
             model_name='person',

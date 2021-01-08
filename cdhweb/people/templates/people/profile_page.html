@@ -34,11 +34,11 @@
 <div class="education">
     {{ page.education|richtext }}
     <a href="mailto:{{ page.person.user.email }}">{{ page.person.user.email }}</a>
-    {% if page.person.phone_number %}
-        <p>{{ page.person.phone_number }}</p>
+    {% if page.phone_number %}
+    <a href="tel:{{ page.phone_number }}">{{ page.phone_number }}</a>
     {% endif %}
-    {% if page.person.office_location %}
-        <p>{{ page.person.office_location }}</p>
+    {% if page.office_location %}
+    <p>{{ page.office_location }}</p>
     {% endif %}
 </div>
 

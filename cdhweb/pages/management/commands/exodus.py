@@ -298,6 +298,8 @@ class Command(BaseCommand):
                 person=person,
                 title=profile.title,
                 image=self.get_wagtail_image(profile.image) if profile.image else None,
+                office_location=profile.office_location,
+                phone_number=profile.phone_number,
                 education=profile.education,
                 bio=json.dumps([
                     {"type": "migrated", "value": profile.bio},

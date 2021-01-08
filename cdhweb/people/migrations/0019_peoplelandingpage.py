@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('cdhpages', '0001_initial'),
-        ('people', '0020_person_ordering_meta'),
+        ('people', '0018_person_ordering_meta'),
     ]
 
     operations = [

@@ -71,10 +71,6 @@ class Person(ClusterableModel):
     institution = models.CharField(
         max_length=255, blank=True,
         help_text='Institutional affiliation (for people not associated with Princeton)')
-    phone_number = models.CharField(
-        max_length=50, blank=True, help_text="Office phone number")
-    office_location = models.CharField(
-        max_length=255, blank=True, help_text="Office number and building")
 
     PU_STATUS_CHOICES = (
         ('fac', 'Faculty'),
@@ -105,8 +101,6 @@ class Person(ClusterableModel):
             FieldPanel("job_title"),
             FieldPanel("department"),
             FieldPanel("institution"),
-            FieldPanel("phone_number"),
-            FieldPanel("office_location"),
         ), heading="Employment"),
         InlinePanel("positions", heading="Positions"),
     ]
@@ -391,13 +385,21 @@ class ProfilePage(Page):
                               related_name='+')  # no reverse relationship
     education = RichTextField(features=PARAGRAPH_FEATURES, blank=True)
     bio = StreamField(BodyContentBlock, blank=True)
+    phone_number = models.CharField(
+        max_length=50, blank=True, help_text="Office phone number")
+    office_location = models.CharField(
+        max_length=255, blank=True, help_text="Office number and building")
 
     # admin edit configuration
     content_panels = Page.content_panels + [
         FieldRowPanel(
             (FieldPanel("person"), ImageChooserPanel("image")), "Person"),
+        MultiFieldPanel((
+            FieldPanel("phone_number"),
+            FieldPanel("office_location"),
+        ), heading="Contact"),
         FieldPanel("education"),
-        StreamFieldPanel("bio")
+        StreamFieldPanel("bio"),
     ]
 
     parent_page_types = ["people.PeopleLandingPage"]
@@ -473,14 +475,6 @@ def init_person_from_ldap(user, ldapinfo):
     person.first_name = person.first_name or first_name
     person.last_name = person.last_name or last_name
 
-    # set phone number
-    if ldapinfo.telephoneNumber and not person.phone_number:
-        person.phone_number = str(ldapinfo.telephoneNumber)
-
-    # set office location ("street" in ldap)
-    if ldapinfo.street and not person.office_location:
-        person.office_location = str(ldapinfo.street)
-
     # set department (organizational unit or "ou" in ldap)
     if ldapinfo.ou and not person.department:
         person.department = str(ldapinfo.ou)
@@ -488,7 +482,7 @@ def init_person_from_ldap(user, ldapinfo):
     # set job title (split and use only first portion from ldap)
     # NOTE titles for cdh staff are managed via Title/Position instead; we
     # don't want to create Titles for every possible job at Princeton. This is
-    # a change from v2.x behavior.
+    # a change from v2.x behavior
     if ldapinfo.title and not person.job_title:
         person.job_title = str(ldapinfo.title).split(",")[0]
 
