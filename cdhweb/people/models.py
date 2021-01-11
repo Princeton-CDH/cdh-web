@@ -99,7 +99,8 @@ class PersonQuerySet(models.QuerySet):
         project role. Excludes CDH staff.'''
         return self.filter(pu_status__in=('fac', 'stf'),
                            membership__role__title__in=self.director_roles) \
-            .exclude(cdh_staff=True)
+            .exclude(cdh_staff=True) \
+            .distinct()
 
     def executive_committee(self):
         '''Executive committee members; based on position title.'''
