@@ -2,6 +2,12 @@ import json
 from datetime import date, timedelta, timezone
 from unittest import skip
 
+from django.contrib.auth import get_user_model
+from django.test import TestCase
+from mezzanine.core.models import (CONTENT_STATUS_DRAFT,
+                                   CONTENT_STATUS_PUBLISHED)
+from wagtail.core.models import Page, Site
+
 from cdhweb.events.models import Event, EventType
 from cdhweb.pages.models import HomePage
 from cdhweb.people.models import (AffiliateListPage, ExecListPage, PeopleLandingPage, Person,
@@ -10,11 +16,6 @@ from cdhweb.people.models import (AffiliateListPage, ExecListPage, PeopleLanding
                                   StudentListPage, Title)
 from cdhweb.projects.models import Grant, Membership, Project, Role
 from cdhweb.resources.models import PersonResource, ResourceType
-from django.contrib.auth import get_user_model
-from django.test import TestCase
-from mezzanine.core.models import (CONTENT_STATUS_DRAFT,
-                                   CONTENT_STATUS_PUBLISHED)
-from wagtail.core.models import Page, Site
 
 
 class TestProfilePage(TestCase):

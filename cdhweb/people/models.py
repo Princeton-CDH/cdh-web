@@ -1,10 +1,5 @@
 from datetime import date
 
-from cdhweb.blog.models import BlogPost
-from cdhweb.pages.models import (PARAGRAPH_FEATURES, BodyContentBlock,
-                                 LandingPage)
-from cdhweb.resources.models import (Attachment, DateRange,
-                                     PublishedQuerySetMixin)
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -27,6 +22,12 @@ from wagtail.admin.edit_handlers import (FieldPanel, FieldRowPanel,
 from wagtail.core.fields import RichTextField, StreamField
 from wagtail.core.models import Page
 from wagtail.images.edit_handlers import ImageChooserPanel
+
+from cdhweb.blog.models import BlogPost
+from cdhweb.pages.models import (PARAGRAPH_FEATURES, BodyContentBlock,
+                                 LandingPage)
+from cdhweb.resources.models import (Attachment, DateRange,
+                                     PublishedQuerySetMixin)
 
 
 class Title(models.Model):
@@ -604,6 +605,10 @@ class SpeakerListPage(PersonListPage):
     def order_people(self, people):
         """Order speakers by most recent event."""
         return people.order_by_event()
+    # ProfilePages made in the admin automatically are created here. In reality
+    # PersonListPages will also be children of the PeopleLandingPage, but we
+    # don't allow them to be created in the admin and do it via script.
+    subpage_types = [ProfilePage]
 
 
 class Position(DateRange):
@@ -649,7 +654,9 @@ def init_person_from_ldap(user, ldapinfo):
         person.department = str(ldapinfo.ou)
 
     # set job title (split and use only first portion from ldap)
-    # NOTE titles for cdh staff are managed via Title/Position instead
+    # NOTE titles for cdh staff are managed via Title/Position instead; we
+    # don't want to create Titles for every possible job at Princeton. This is
+    # a change from v2.x behavior.
     if ldapinfo.title and not person.job_title:
         person.job_title = str(ldapinfo.title).split(",")[0]
 

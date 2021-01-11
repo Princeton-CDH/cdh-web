@@ -1,10 +1,11 @@
 from datetime import date, timedelta
 from unittest.mock import Mock
 
-from cdhweb.projects.models import Project, Membership, Role
-from cdhweb.people.models import Person, Position, Title, init_person_from_ldap
 from django.contrib.auth import get_user_model
 from django.test import TestCase
+
+from cdhweb.projects.models import Project, Membership, Role
+from cdhweb.people.models import Person, Position, Title, init_person_from_ldap
 
 
 class TestTitle(TestCase):

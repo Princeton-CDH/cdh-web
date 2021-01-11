@@ -7,11 +7,7 @@ import os.path
 import shutil
 from collections import defaultdict
 
-from cdhweb.pages.models import ContentPage, HomePage, LandingPage
-from cdhweb.people.models import (AffiliateListPage, ExecListPage,
-                                  PeopleLandingPage, Person, Profile,
-                                  ProfilePage, SpeakerListPage, StaffListPage,
-                                  StudentListPage)
+
 from django.conf import settings
 from django.core.files.images import ImageFile
 from django.core.management.base import BaseCommand
@@ -21,6 +17,12 @@ from mezzanine.pages import models as mezz_page_models
 from wagtail.core.blocks import RichTextBlock
 from wagtail.core.models import Collection, Page, Site, get_root_collection_id
 from wagtail.images.models import Image
+
+from cdhweb.pages.models import ContentPage, HomePage, LandingPage
+from cdhweb.people.models import (AffiliateListPage, ExecListPage,
+                                  PeopleLandingPage, Person, Profile,
+                                  ProfilePage, SpeakerListPage, StaffListPage,
+                                  StudentListPage)
 
 
 class Command(BaseCommand):
@@ -161,8 +163,7 @@ class Command(BaseCommand):
             people = PeopleLandingPage(
                 title=old_people.title,
                 tagline=old_people.landingpage.tagline,
-                header_image=self.get_wagtail_image(
-                    old_people.landingpage.image),
+                header_image=self.get_wagtail_image(old_people.landingpage.image),
                 slug=self.convert_slug(old_people.slug),
                 seo_title=old_people._meta_title or old_people.title,
                 body=json.dumps([{
@@ -199,12 +200,13 @@ class Command(BaseCommand):
             for page in project_pages:
                 self.migrate_pages(page, projects)
 
-        # mark all person list pages as migrated; manually migrate them later
+        # migrate people pages but use new landingpage subtype as parent
+        # TODO create new PersonListPage subtypes
         if people:
             people_pages = mezz_page_models.Page.objects \
                 .filter(slug__startswith="people/").order_by('-slug')
             for page in people_pages:
-                self.migrated.append(page.pk)
+                self.migrate_pages(page, people)
 
         # migrate all remaining pages, starting with pages with no parent
         # (i.e., top level pages)
@@ -329,29 +331,24 @@ class Command(BaseCommand):
                 continue
 
     def profile_pages(self):
-        """Exodize all non-empty Profiles to new ProfilePage model."""
+        """Exodize all existing Profiles to new ProfilePage model."""
         # all the fields on Profile that moved to Person will have been handled
         # by django migrations; we just need to create new Page models
         people_landing = PeopleLandingPage.objects.first()
         if not people_landing:
             return
-
-        # NOTE only migrate profiles that actually have content in the bio; the
-        # majority do not because they were created for technical reasons
-        for profile in Profile.objects.filter(user__person__isnull=False) \
-                                       .exclude(bio=""):
+        for profile in Profile.objects.filter(user__person__isnull=False):
             person = Person.objects.get(user=profile.user)
             profile_page = ProfilePage(
                 person=person,
                 title=profile.title,
-                image=self.get_wagtail_image(
-                    profile.image) if profile.image else None,
+                slug=self.convert_slug(profile.slug),
+                image=self.get_wagtail_image(profile.image) if profile.image else None,
                 education=profile.education,
                 bio=json.dumps([
                     {"type": "migrated", "value": profile.bio},
                 ])
             )
-
             # added as child of people landing page so slugs are correct
             people_landing.add_child(instance=profile_page)
             people_landing.save()
@@ -381,13 +378,11 @@ class Command(BaseCommand):
         # mezzanine/filebrowser_safe doesn't seem to have useful objects
         # or track metadata, so just import from the filesystem
 
-        # delete all images and collections prior to run
+        # delete all images prior to run
         # (clear out past migration attempts)
+        # NOTE we leave collections alone and don't delete them between runs;
+        # doing so seems to corrupt the page/collection tree
         Image.objects.all().delete()
-        # Collection.objects.exclude(pk=get_root_collection_id()).delete()
-        # fix collection tree so root collection is up to date
-        # FIXME: this is still not working; seems to error on alternate runs
-        # Collection.fix_tree()
 
         # also delete any wagtail image files, since they are not deleted
         # by removing the objects
@@ -488,8 +483,12 @@ class Command(BaseCommand):
     def person_image_exodus(self):
         # for people with profile, set larger image as wagtail image for person
         for profile in Profile.objects.filter(user__person__isnull=False):
-            # NOTE not sure why Profile.user.person fails; works in console?
             person = Person.objects.get(user=profile.user)
             if profile.image:
                 person.image = self.get_wagtail_image(profile.image)
+                person.save()
+
+            # if no large image but we do have thumbnail, use it as a fallback
+            elif profile.thumb:
+                person.image = self.get_wagtail_image(profile.thumb)
                 person.save()
