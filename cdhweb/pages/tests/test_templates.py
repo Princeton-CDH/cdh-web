@@ -1,8 +1,9 @@
 import pytest
-from django.test import TestCase
+from django.test import TestCase, SimpleTestCase
 from wagtail.core.models import Page, Site
 
-from cdhweb.pages.models import HomePage, LandingPage, ContentPage
+from cdhweb.pages.models import HomePage, LandingPage, ContentPage, CaptionedImageBlock, SVGImageBlock
+
 
 class TestHomePage(TestCase):
     """Test the home page."""
@@ -246,3 +247,56 @@ class TestPagesMenus(TestCase):
         # should not error, should not contain page-children attachment section
         self.assertNotContains(
             response, '<div class="attachments page-children">')
+
+
+class TestCaptionedImageBlock(SimpleTestCase):
+
+    def test_render(self):
+        block = CaptionedImageBlock()
+        test_img = {'url': 'kitty.png', 'width': 100, 'height': 200}
+        alt_text = 'picture of a kitten'
+        # NOTE: using "img" here instead of "image" means we're
+        # not actually testing the image logic; but not clear how
+        # to mock or use an image object in a test
+        html = block.render(block.to_python({
+            'img': test_img, 'alternative_text': alt_text
+        }))
+        assert '<figure>' in html
+        assert '<img srcset="' in html
+        assert 'alt="picture of a kitten" ' in html
+        # no caption
+        assert '<figcaption>' not in html
+
+        # with caption
+        caption = 'A kitten curled up in the sunshine'
+        html = block.render(block.to_python({
+            'img': test_img, 'alternative_text': alt_text,
+            'caption': caption}))
+        assert '<figcaption>' in html
+        assert caption in html
+
+
+class TestSVGImageBlock(SimpleTestCase):
+
+    def test_render(self):
+        block = SVGImageBlock()
+        test_svg = {'url': 'graph.svg'}  # Mock(spec=Document, url='graph.svg')
+        alt_text = 'membership timeline'
+        html = block.render({
+            'image': test_svg, 'alternative_text': alt_text
+        })
+        assert ('<figure ') in html
+        assert '<img role="img" ' in html
+        # no caption, no extended description
+        assert '<figcaption>' not in html
+        assert '<div class="sr-only" ' not in html
+
+        # with caption & extended description
+        caption = 'membership activity from 1919 to 1942'
+        desc = 'chart shows activity in 1920 and 1940'
+        html = block.render({
+            'image': test_svg, 'alternative_text': alt_text,
+            'caption': caption, 'extended_description': desc})
+        assert ('<figcaption>%s</figcaption' % caption) in html
+        assert '<div class="sr-only" id="graphsvg-desc">' in html
+        assert desc in html

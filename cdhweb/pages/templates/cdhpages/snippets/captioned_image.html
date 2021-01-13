@@ -1,0 +1,8 @@
+{# Render figure with responsive image and optional caption; taken from s&co #}
+{# Expects ImageWithCaption structblock with image and caption #}
+<figure>
+    {% include "cdhpages/snippets/responsive_image.html" with img=value.image alt_text=value.alternative_text %}
+    {% if value.caption %}
+    <figcaption>{{ value.caption }}</figcaption>
+    {% endif %}
+</figure>

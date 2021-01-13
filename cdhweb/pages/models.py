@@ -6,7 +6,8 @@ from django.conf import settings
 from django.db import models
 from django.template.defaultfilters import striptags, truncatechars_html
 from wagtail.admin.edit_handlers import FieldPanel, StreamFieldPanel
-from wagtail.core.blocks import RichTextBlock, StreamBlock
+from wagtail.core.blocks import (RichTextBlock, StreamBlock, StructBlock,
+                                 TextBlock)
 from wagtail.core.fields import RichTextField, StreamField
 from wagtail.core.models import Page
 from wagtail.documents.blocks import DocumentChooserBlock
@@ -22,11 +23,55 @@ PARAGRAPH_FEATURES = [
     'strikethrough', 'code'
 ]
 
+#: help text for image alternative text
+ALT_TEXT_HELP = """Alternative text for visually impaired users to
+briefly communicate the intended message of the image in this context."""
+
+
+class CaptionedImageBlock(StructBlock):
+    """:class:`~wagtail.core.blocks.StructBlock` for an image with
+    alternative text and optional formatted caption, so
+    that both caption and alternative text can be context-specific."""
+    image = ImageChooserBlock()
+    alternative_text = TextBlock(required=True, help_text=ALT_TEXT_HELP)
+    caption = RichTextBlock(
+        features=["bold", "italic", "link", "superscript"],
+        required=False)
+
+    class Meta:
+        icon = "image"
+        template = "cdhpages/snippets/captioned_image.html"
+
+
+class SVGImageBlock(StructBlock):
+    """:class:`~wagtail.core.blocks.StructBlock` for an SVG image with
+    alternative text and optional formatted caption. Separate from
+    :class:`CaptionedImageBlock` because Wagtail image handling
+    does not work with SVG."""
+    extended_description_help = """This text will only be read to \
+    non-sighted users and should describe the major insights or \
+    takeaways from the graphic. Multiple paragraphs are allowed."""
+
+    image = DocumentChooserBlock()
+    alternative_text = TextBlock(required=True, help_text=ALT_TEXT_HELP)
+    caption = RichTextBlock(
+        features=["bold", "italic", "link", "superscript"],
+        required=False)
+    extended_description = RichTextBlock(
+        features=["p"], required=False, help_text=extended_description_help)
+
+    class Meta:
+        icon = "image"
+        label = "SVG"
+        template = "cdhpages/snippets/svg_image.html"
+
 
 class BodyContentBlock(StreamBlock):
     '''Common set of blocks available in StreamFields for body text.'''
-    paragraph = RichTextBlock(features=PARAGRAPH_FEATURES)
-    image = ImageChooserBlock()
+    # allow h2 in regular paragraphs; insert before h3 for logical display
+    paragraph = RichTextBlock(features=["h2"] + PARAGRAPH_FEATURES)
+    image = CaptionedImageBlock()
+    svg_image = SVGImageBlock()
     document = DocumentChooserBlock()
     embed = EmbedBlock()
     #: used to hold content migrated from mezzanine via a "kitchen-sink"
