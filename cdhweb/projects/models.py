@@ -1,26 +1,21 @@
-from cdhweb.pages.models import BodyContentBlock
-from cdhweb.people.models import Person
-from cdhweb.resources.models import (Attachment, DateRange, ExcerptMixin,
-                                     ResourceType)
+from datetime import date
+
+from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
 from mezzanine.core.fields import FileField, RichTextField
 from mezzanine.core.models import Displayable
 from mezzanine.utils.models import AdminThumbMixin, upload_to
-from modelcluster.contrib.taggit import ClusterTaggableManager
-from modelcluster.fields import ParentalKey
-from modelcluster.models import ClusterableModel
 from taggit.managers import TaggableManager
-from taggit.models import TaggedItemBase
-from wagtail.admin.edit_handlers import (FieldPanel, FieldRowPanel,
-                                         InlinePanel, StreamFieldPanel)
-from wagtail.core.fields import StreamField
-from wagtail.core.models import Page, PageManager, PageQuerySet
-from wagtail.images.edit_handlers import ImageChooserPanel
+
+from cdhweb.people.models import Person
+from cdhweb.resources.models import (Attachment, DateRange, ExcerptMixin,
+                                     PublishedQuerySetMixin, ResourceType)
 
 
-class ProjectQuerySet(PageQuerySet):
+class ProjectQuerySet(PublishedQuerySetMixin):
 
     def highlighted(self):
         '''return projects that are marked as highlighted'''
@@ -69,12 +64,7 @@ class ProjectQuerySet(PageQuerySet):
                    .order_by('-last_start', 'title')
 
 
-# custom manager for wagtail pages, see:
-# https://docs.wagtail.io/en/stable/topics/pages.html#custom-page-managers
-ProjectManager = PageManager.from_queryset(ProjectQuerySet)
-
-
-class MezzanineProject(Displayable, AdminThumbMixin, ExcerptMixin):
+class OldProject(Displayable, AdminThumbMixin, ExcerptMixin):
     '''A CDH sponsored project'''
 
     short_description = models.CharField(max_length=255, blank=True,
@@ -86,6 +76,9 @@ class MezzanineProject(Displayable, AdminThumbMixin, ExcerptMixin):
                                     help_text='Project built by CDH Development & Design team.')
     working_group = models.BooleanField(
         'Working Group', default=False, help_text='Project is a long-term collaborative group associated with the CDH.')
+
+    members = models.ManyToManyField(Person, through='OldMembership')
+    resources = models.ManyToManyField(ResourceType, through='ProjectResource')
 
     tags = TaggableManager(blank=True)
 
@@ -128,8 +121,8 @@ class MezzanineProject(Displayable, AdminThumbMixin, ExcerptMixin):
 
     def latest_grant(self):
         '''Most recent :class:`Grant`'''
-        if self.grant_set.count():
-            return self.grant_set.order_by('-start_date').first()
+        if self.oldgrant_set.count():
+            return self.oldgrant_set.order_by('-start_date').first()
 
     def current_memberships(self):
         ''':class:`MembershipQueryset` of current members sorted by role'''
@@ -141,7 +134,7 @@ class MezzanineProject(Displayable, AdminThumbMixin, ExcerptMixin):
         latest_grant = self.latest_grant()
         if latest_grant and latest_grant.end_date and \
            latest_grant.end_date < today:
-            return self.membership_set \
+            return self.oldmembership_set \
                 .filter(start_date__lte=latest_grant.end_date) \
                 .filter(
                     models.Q(end_date__gte=latest_grant.start_date) |
@@ -149,7 +142,7 @@ class MezzanineProject(Displayable, AdminThumbMixin, ExcerptMixin):
                 )
 
         # otherwise, return current members based on date
-        return self.membership_set.filter(start_date__lte=today) \
+        return self.oldmembership_set.filter(start_date__lte=today) \
             .filter(
                 models.Q(end_date__gte=today) | models.Q(end_date__isnull=True)
         )
@@ -161,101 +154,8 @@ class MezzanineProject(Displayable, AdminThumbMixin, ExcerptMixin):
         # and because we don't care about role (always 'alum')
         return self.members \
             .distinct() \
-            .exclude(membership__in=self.current_memberships()) \
+            .exclude(oldmembership__in=self.current_memberships()) \
             .order_by('last_name')
-
-
-class ProjectTag(TaggedItemBase):
-    """Tags for Project pages."""
-    content_object = ParentalKey(
-        "projects.Project", on_delete=models.CASCADE, related_name="tagged_items")
-
-
-class Project(Page, ClusterableModel):
-    """Page type for a CDH sponsored project or working group."""
-    short_description = models.CharField(max_length=255, blank=True,
-                                         help_text="Brief tagline for display on project card in browse view")
-    long_description = StreamField(BodyContentBlock, blank=True)
-    highlight = models.BooleanField(default=False,
-                                    help_text="Include in randomized project display on the home page.")
-    cdh_built = models.BooleanField("CDH Built", default=False,
-                                    help_text="Project built by CDH Development & Design team.")
-    working_group = models.BooleanField(
-        "Working Group", default=False, help_text="Project is a long-term collaborative group associated with the CDH.")
-    image = models.ForeignKey('wagtailimages.image', null=True,
-                              blank=True, on_delete=models.SET_NULL,
-                              related_name='+')
-    members = models.ManyToManyField(Person, through="Membership")
-    tags = ClusterTaggableManager(through=ProjectTag, blank=True)
-    updated_at = models.DateTimeField(auto_now=True, null=True, editable=False)
-
-    # admin edit configuration
-    content_panels = Page.content_panels + [
-        FieldRowPanel((FieldPanel("highlight"),
-                       FieldPanel("cdh_built"),
-                       FieldPanel("working_group"))),
-        ImageChooserPanel("image"),
-        FieldPanel("short_description"),
-        StreamFieldPanel("long_description"),
-        InlinePanel("grants", label="Grants"),
-        InlinePanel("memberships", label="Members"),
-        # TODO add inline editing for ProjectRelatedLink (#181)
-    ]
-    promote_panels = Page.promote_panels + [
-        FieldPanel("tags")
-    ]
-
-    # custom manager/queryset logic
-    objects = ProjectManager()
-
-    def __str__(self):
-        return self.title
-
-    @property
-    def website_url(self):
-        """URL for this Project's website, if set"""
-        website = self.projectresource_set \
-            .filter(resource_type__name="Website").first()
-        if website:
-            return website.url
-
-    def latest_grant(self):
-        """Most recent :class:`Grant` for this Project"""
-        if self.grants.count():
-            return self.grants.order_by("-start_date").first()
-
-    def current_memberships(self):
-        """:class:`MembershipQueryset` of current members sorted by role"""
-        # uses memberships rather than members so that we can retain role
-        # information attached to the membership
-        today = timezone.now().date()
-        # if the last grant for this project is over, display the team
-        # for that grant period
-        latest_grant = self.latest_grant()
-        if latest_grant and latest_grant.end_date and \
-           latest_grant.end_date < today:
-            return self.memberships \
-                .filter(start_date__lte=latest_grant.end_date) \
-                .filter(
-                    models.Q(end_date__gte=latest_grant.start_date) |
-                    models.Q(end_date__isnull=True)
-                )
-
-        # otherwise, return current members based on date
-        return self.memberships.filter(start_date__lte=today) \
-            .filter(
-                models.Q(end_date__gte=today) | models.Q(end_date__isnull=True)
-        )
-
-    def alums(self):
-        """:class:`PersonQueryset` of past members sorted by last name"""
-        # uses people rather than memberships so that we can use distinct()
-        # to ensure people aren't counted multiple times for each grant
-        # and because we don't care about role (always 'alum')
-        return self.members \
-            .distinct() \
-            .exclude(membership__in=self.current_memberships()) \
-            .order_by("last_name")
 
 
 class GrantType(models.Model):
@@ -266,10 +166,9 @@ class GrantType(models.Model):
         return self.grant_type
 
 
-class Grant(DateRange):
+class OldGrant(DateRange):
     '''A specific grant associated with a project'''
-    project = ParentalKey(
-        Project, on_delete=models.CASCADE, related_name="grants")
+    project = models.ForeignKey(OldProject, on_delete=models.CASCADE)
     grant_type = models.ForeignKey(GrantType, on_delete=models.CASCADE)
 
     class Meta:
@@ -278,6 +177,9 @@ class Grant(DateRange):
     def __str__(self):
         return '%s: %s (%s)' % (self.project.title, self.grant_type.grant_type,
                                 self.years)
+
+
+# fixme: where does resource type go, for associated links?
 
 
 class Role(models.Model):
@@ -293,10 +195,9 @@ class Role(models.Model):
         return self.title
 
 
-class Membership(DateRange):
+class OldMembership(DateRange):
     '''Project membership - joins project, user, and role.'''
-    project = ParentalKey(
-        Project, on_delete=models.CASCADE, related_name="memberships")
+    project = models.ForeignKey(OldProject, on_delete=models.CASCADE)
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
 
@@ -312,7 +213,7 @@ class ProjectResource(models.Model):
     '''Through-model for associating projects with resource types and
     URLs'''
     resource_type = models.ForeignKey(ResourceType, on_delete=models.CASCADE)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(OldProject, on_delete=models.CASCADE)
     url = models.URLField()
 
     def display_url(self):
