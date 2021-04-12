@@ -51,4 +51,4 @@ jobs:
       - name: Push to dbdocs
         env:
             DBDOCS_TOKEN: ${{ secrets.DBDOCS_TOKEN }}
-        run: dbdocs build cdhweb.dbml --project cdhweb
+        run: npx dbdocs build cdhweb.dbml --project cdhweb
