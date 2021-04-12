@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+3.0.1
+-----
+
+* bugfix: error when previewing blog post
+* bugfix: error when adding multiple speakers to an event
+* bugfix: ensure page models are ordered, including in admin
+* chore: remove temporary models and model fields
+
 3.0
 ---
 
