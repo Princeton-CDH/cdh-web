@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - 304-update-dbdocs
 
 env:
   NODE_VERSION: 10
@@ -47,9 +48,8 @@ jobs:
 
       # Build and publish dbdocs
       - name: Generate DBML
-        run: python manage.py dbml > cdhweb.dbml
-
+        run: python manage.py dbml blog events pages people projects resources > cdhweb.dbml
       - name: Push to dbdocs
         env:
-          DBDOCS_TOKEN: ${{ secrets.DBDOCS_TOKEN }}
-        run: dbdocs build cdhweb.dbml --project cdhweb
+            DBDOCS_TOKEN: ${{ secrets.DBDOCS_TOKEN }}
+        run: npx dbdocs build cdhweb.dbml --project cdhweb
