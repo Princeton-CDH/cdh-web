@@ -1,0 +1,75 @@
+from cdhweb.settings.components.base import DATABASES, PUCAS_LDAP
+
+# Show detailed error messages on 404 pages, etc.
+DEBUG = True
+
+# Turn this on in test/QA site to show test banner
+# SHOW_TEST_WARNING = True
+
+# Turn this on to enable google analytics in production
+# INCLUDE_ANALYTICS = True
+
+# Domains for public site
+ALLOWED_HOSTS = ["*"]
+
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = ""
+
+# Database configuration
+DATABASES["default"]["PASSWORD"] = ""
+
+# configure ldap servers, search base, and filter
+CAS_SERVER_URL = 'https://fed.princeton.edu/cas/'
+CAS_VERSION = '3'
+PUCAS_LDAP.update({
+    'SERVERS': [
+        'ldap2.princeton.edu',
+        'ldap3.princeton.edu',
+        'ldap4.princeton.edu',
+        'ldap5.princeton.edu'
+    ],
+    'SEARCH_BASE': 'o=Princeton University,c=US',
+    'SEARCH_FILTER': "(uid=%(user)s)",
+})
+
+# optional configuration for compress autoprefixer
+# COMPRESS_AUTOPREFIXER_BINARY = '/usr/local/bin/postcss'
+# COMPRESS_AUTOPREFIXER_ARGS = '--use autoprefixer' (default)
+# COMPRESS_ENABLED = True
+
+# sample logging config
+#
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'formatters': {
+#         'basic': {
+#             'format': '[%(asctime)s] %(levelname)s:%(name)s::%(message)s',
+#             'datefmt': '%d/%b/%Y %H:%M:%S',
+#         },
+#     },
+#     'handlers': {
+#         'console': {
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'basic'
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['console'],
+#             'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+#         },
+#         'viapy':  {
+#             'handlers': ['console'],
+#             'level': 'DEBUG'
+#         },
+#         'derrida':  {
+#             'handlers': ['console'],
+#             'level': 'DEBUG'
+#         },
+#         'haystack':  {
+#             'handlers': ['console'],
+#             'level': 'DEBUG'
+#         }
+#     },
+# }

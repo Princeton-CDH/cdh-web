@@ -1,19 +1,15 @@
 import os
-
-# This file is exec'd from settings.py, so it has access to and can
-# modify all the variables in settings.py.
+from cdhweb.settings.components.base import DATABASES, BASE_DIR
 
 # These settings correspond to the service container settings in the
 # .github/workflow .yml files.
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.%s' % os.getenv('DJANGO_DB_BACKEND'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'USER': os.getenv('DB_USER'),
-        'NAME': os.getenv('DB_NAME'),
-        'HOST': '127.0.0.1',
-        'PORT': '',
-    },
+DATABASES['default'] = {
+    'ENGINE': 'django.db.backends.%s' % os.getenv('DJANGO_DB_BACKEND'),
+    'PASSWORD': os.getenv('DB_PASSWORD'),
+    'USER': os.getenv('DB_USER'),
+    'NAME': os.getenv('DB_NAME'),
+    'HOST': '127.0.0.1',
+    'PORT': '',
 }
 
 # turn off debug so we see 404s when testing

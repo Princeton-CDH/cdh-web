@@ -18,3 +18,4 @@ django-apptemplates
 wagtailmenus
 opencv-python
 bleach
+django-split-settings

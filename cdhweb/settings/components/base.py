@@ -1,4 +1,3 @@
-
 from __future__ import absolute_import, unicode_literals
 import os
 
@@ -45,6 +44,13 @@ WAGTAILIMAGES_FEATURE_DETECTION_ENABLED = True
 
 # custom document model
 WAGTAILDOCS_DOCUMENT_MODEL = "cdhpages.LocalAttachment"
+
+# Wagtail sends email notifications when content is submitted for moderation,
+# and when the content is accepted or rejected.
+# https://docs.wagtail.io/en/latest/reference/settings.html#email-notifications
+WAGTAILADMIN_NOTIFICATION_FROM_EMAIL = 'cdhdevteam@cdh.princeton.edu'
+WAGTAILADMIN_NOTIFICATION_USE_HTML = True
+WAGTAILADMIN_NOTIFICATION_INCLUDE_SUPERUSERS = False
 
 
 ########################
@@ -108,11 +114,11 @@ SCRIPT_USERNAME = 'script'
 DATABASES = {
     "default": {
         # Add "postgresql", "mysql", "sqlite3" or "oracle".
-        "ENGINE": "django.db.backends.",
+        "ENGINE": "django.db.backends.postgresql",
         # DB name or path to database file if using sqlite3.
-        "NAME": "",
+        "NAME": "cdhweb",
         # Not used with sqlite3.
-        "USER": "",
+        "USER": "cdhweb",
         # Not used with sqlite3.
         "PASSWORD": "",
         # Set to empty string for localhost. Not used with sqlite3.

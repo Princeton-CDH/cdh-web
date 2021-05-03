@@ -84,8 +84,8 @@ jobs:
 
       - name: Setup local_settings.py
         run: |
-          cp ci/testsettings.py cdhweb/local_settings.py
-          python -c "import uuid; print('SECRET_KEY = \'%s\'' % uuid.uuid4())" >> cdhweb/local_settings.py
+          cp ci/testsettings.py cdhweb/settings/local_settings.py
+          python -c "import uuid; print('SECRET_KEY = \'%s\'' % uuid.uuid4())" >> cdhweb/settings/local_settings.py
 
       - name: Build static assets
         run: python manage.py compress
