@@ -1,7 +1,7 @@
-from split_settings.tools import optional, include
+from split_settings.tools import include
 
 include(
     "components/base.py",
-    "components/debug.py",
+    "components/optional.py",
     "local_settings.py"
 )
