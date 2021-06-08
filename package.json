@@ -10,7 +10,7 @@
     "postcss-cli": "^8.3.1"
   },
   "devDependencies": {
-    "dbdocs": "^0.3.1",
+    "dbdocs": "^0.5.0",
     "postcss": "^8.2.15"
   }
 }
