@@ -48,7 +48,7 @@ jobs:
 
       # Build and publish dbdocs
       - name: Generate DBML
-        run: python manage.py dbml blog events pages people projects resources > cdhweb.dbml
+        run: python manage.py dbml blog events cdhpages people projects resources > cdhweb.dbml
       - name: Push to dbdocs
         env:
             DBDOCS_TOKEN: ${{ secrets.DBDOCS_TOKEN }}
