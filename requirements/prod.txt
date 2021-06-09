@@ -1,6 +1,6 @@
 ## production requirements
 
-Django==3.1.8
+Django==3.1.10
 pillow>=5.2.0
 wagtail
 django-compressor
