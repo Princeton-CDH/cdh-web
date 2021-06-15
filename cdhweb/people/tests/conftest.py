@@ -34,7 +34,7 @@ def staffer(db):
         'DH Developer',
         start_date=date(2016, 3, 1), end_date=date(2018, 3, 1),
         first_name='Staffer', cdh_staff=True, pu_status='stf')
-    rse = Title.objects.get_or_create(title='Research Sofware Engineer')[0]
+    rse = Title.objects.get_or_create(title='Research Software Engineer')[0]
     # give the staffer a second position
     Position.objects.create(person=staff_person, title=rse,
                             start_date=date(2018, 3, 2))

@@ -315,14 +315,17 @@ class Person(ClusterableModel):
         # directorship dates
         if mship:
             # find most recent grant that overlaps with membership dates
-            # - grant start before membership end OR
-            #   grant end after membership start
+            # - grant start before membership end AND
+            # - grant end after membership start OR
+            # - grant has no end
 
             # a membership might have no end date set, in which
-            # case it can't be used in a filter
-            grant_overlap = models.Q(end_date__gte=mship.start_date)
+            # case it can't be used in a filter — if grant has no end date,
+            # it's an automatic overlap
+            grant_overlap = models.Q(end_date__gte=mship.start_date) | \
+                            models.Q(end_date__isnull=True)
             if mship.end_date:
-                grant_overlap |= models.Q(start_date__lte=mship.end_date)
+                grant_overlap &= models.Q(start_date__lte=mship.end_date)
 
             return mship.project.grants \
                 .filter(grant_overlap) \

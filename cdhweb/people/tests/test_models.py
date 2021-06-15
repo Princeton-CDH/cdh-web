@@ -1,6 +1,6 @@
 import pytest
 from datetime import date, timedelta
-from unittest.mock import Mock
+from unittest.mock import Mock, MagicMock
 
 from cdhweb.projects.models import Membership, Role
 from cdhweb.people.models import Person, Position, Title, init_person_from_ldap
@@ -8,7 +8,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from wagtail.core.models import Page
 from cdhweb.pages.models import HomePage
-from cdhweb.projects.models import ProjectsLandingPage, Project
+from cdhweb.projects.models import ProjectsLandingPage, Project, Grant, GrantType
 
 
 class TestTitle(TestCase):
@@ -40,40 +40,31 @@ class TestPosition(TestCase):
         assert str(position) == "tom director (2021)"
 
 
-class TestPerson(TestCase):
+class TestPerson:
 
-    def setUp(self):
-        """create person and user for testing"""
-        User = get_user_model()
-        self.user = User.objects.create_user(username="user")
-        self.person = Person.objects.create()
-
-    def test_current_title(self):
+    def test_current_title(self, staffer):
         """person should track its currently held title, if any"""
         # should return None if no positions
-        assert self.person.current_title is None
-
-        # should return None if no positions are active
-        director = Title.objects.create(title="director")
-        old_title = Position.objects.create(
-            person=self.person, title=director, end_date=date.today(),
-            start_date=date.today() - timedelta(weeks=6))
-        assert self.person.current_title is None
+        person = Person.objects.create(last_name="smith")
+        assert person.current_title is None
 
         # should return latest position if one exists
-        developer = Title.objects.create(title="developer")
-        new_title = Position.objects.create(
-            person=self.person, title=developer, end_date=None,
-            start_date=date.today())
-        assert self.person.current_title == developer
+        assert staffer.current_title.title == "Research Software Engineer"
 
-    def test_str(self):
+        # delete current position; should return None since none are active
+        staffer.positions.first().delete()
+        assert staffer.current_title is None
+
+    def test_str(self, db):
         """person should be identified by first/last name, username, or pk"""
+        self.person = Person.objects.create()
+
         # if no associated user or names, should use pk
         assert str(self.person) == f"Person {self.person.pk}"
 
         # if only associated user, should use username
-        self.person.user = self.user
+        User = get_user_model()
+        self.person.user = User.objects.create(username="user")
         assert str(self.person) == "user"
 
         # first name only
@@ -89,7 +80,9 @@ class TestPerson(TestCase):
         self.person.first_name = "tom"
         assert str(self.person) == "tom jones"
 
-    def test_lastname_first(self):
+    def test_lastname_first(self, db):
+        self.person = Person.objects.create()
+
         # first name only
         self.person.first_name = "Tom"
         assert self.person.lastname_first == "Tom"
@@ -110,6 +103,58 @@ class TestPerson(TestCase):
         assert able_b < able_j
         assert not able_j < able_b
 
+    def test_latest_grant(self, db, projects_landing_page):
+        """person should track the most recent grant they were director on"""
+        # setup
+        project = Project(title="Project")
+        projects_landing_page.add_child(instance=project)
+        projects_landing_page.save()
+        person = Person.objects.create()
+        director = Role.objects.get_or_create(title="Project Director")[0]
+        pm = Role.objects.get_or_create(title="Project Manager")[0]
+        dcg = GrantType.objects.get_or_create(grant_type="Dataset Curation")[0]
+        grant1 = Grant.objects.create(project=project, grant_type=dcg,
+            start_date=date(2016, 5, 1), end_date=date(2016, 9, 30))
+        grant2 = Grant.objects.create(project=project, grant_type=dcg,
+            start_date=date(2017, 1, 1), end_date=date(2017, 5, 31))
+
+        # no memberships = no latest grant
+        assert person.latest_grant is None
+
+        # current grant but not project director = no latest grant
+        mship = Membership.objects.create(person=person, role=pm, project=project,
+            start_date=date(2016, 5, 1), end_date=date(2016, 9, 30))
+        assert person.latest_grant is None
+
+        # project director on older grant; should return older grant as latest
+        mship.role = director
+        mship.save()
+        assert person.latest_grant == grant1
+
+        # project director on most recent grant; should return as latest
+        mship.start_date = date(2017, 1, 1)
+        mship.end_date = date(2017, 5, 31)
+        mship.save()
+        assert person.latest_grant == grant2
+
+        # project director on both grants; should return newer one
+        mship2 = Membership.objects.create(person=person, role=director,
+            project=project, start_date=date(2016, 5, 1),
+            end_date=date(2016, 9, 30))
+        assert person.latest_grant == grant2
+
+        # project directorship with no end date; should count as latest
+        mship2.delete()
+        mship.end_date = None
+        mship.save()
+        assert person.latest_grant == grant2
+
+        # project director on grant with no end date; should count as latest
+        mship.end_date = date(2017, 5, 31)
+        mship.save()
+        grant2.end_date = None
+        grant2.save()
+        assert person.latest_grant == grant2
 
 def test_profile_url(student, staffer, staffer_profile, faculty_pi):
     # student fixture has neither profile nor website link
