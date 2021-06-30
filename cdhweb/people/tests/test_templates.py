@@ -68,6 +68,14 @@ class TestProfile(TestCase):
         self.assertContains(
             response, '<a href="mailto:tom@princeton.edu">tom@princeton.edu</a>', html=True)
 
+    def test_missing_email(self):
+        """profile page should not display person's email if not set"""
+        self.person.email = ""
+        self.person.save()
+        response = self.client.get(self.profile.relative_url(self.site))
+        self.assertNotContains(response, 'href="mailto')
+        self.assertNotContains(response, 'None')
+
     def test_phone_number(self):
         """profile page should display person's phone number"""
         response = self.client.get(self.profile.relative_url(self.site))

@@ -31,7 +31,9 @@
 
 <div class="education">
     {{ page.education|richtext }}
+    {% if page.person.email %}
     <a href="mailto:{{ page.person.email }}">{{ page.person.email }}</a>
+    {% endif %}
     {% if page.person.phone_number %}
         <p>{{ page.person.phone_number }}</p>
     {% endif %}
