@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 from django.utils.dateformat import format
@@ -7,16 +6,15 @@ from django.utils.translation import ugettext_lazy as _
 from modelcluster.contrib.taggit import ClusterTaggableManager
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
-from taggit.managers import TaggableManager
 from taggit.models import TaggedItemBase
 from wagtail.admin.edit_handlers import (FieldPanel, FieldRowPanel,
                                          InlinePanel, MultiFieldPanel,
                                          StreamFieldPanel)
 from wagtail.core.models import Orderable, Page, PageManager, PageQuerySet
 from wagtail.images.edit_handlers import ImageChooserPanel
+from wagtail.search import index
 
-from cdhweb.pages.models import (BasePage, LinkPage,
-                                 PagePreviewDescriptionMixin)
+from cdhweb.pages.models import BasePage, LinkPage, PagePreviewDescriptionMixin
 from cdhweb.people.models import Person
 
 
@@ -84,6 +82,9 @@ class BlogPost(BasePage, ClusterableModel, PagePreviewDescriptionMixin):
     promote_panels = Page.promote_panels + [
         FieldPanel("tags")
     ]
+
+    # index description in addition to body content
+    search_fields = BasePage.search_fields + [index.SearchField('description')]
 
     # custom manager/queryset logic
     objects = BlogPostManager()
