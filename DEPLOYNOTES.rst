@@ -1,6 +1,17 @@
 Deploy Notes
 ============
 
+3.3
+---
+
+- After deployment, the Wagtail search index should be populated::
+
+    python manage.py update_index
+
+  This command only needs to be run once, since signals will take care of any
+  indexing after the initial run.
+
+
 3.0.2
 -----
 

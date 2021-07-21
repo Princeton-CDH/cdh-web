@@ -1,5 +1,12 @@
+from cdhweb.projects.models import Project
+from cdhweb.events.models import Event
+from cdhweb.blog.models import BlogPost
+from cdhweb.people.models import Profile
 from django.utils.cache import get_conditional_response
+from django.views.generic import ListView
 from django.views.generic.base import View
+from wagtail.core.models import Page
+from wagtail.search.utils import parse_query_string
 
 
 class LastModifiedMixin(View):
@@ -50,3 +57,48 @@ class LastModifiedListMixin(LastModifiedMixin):
                 queryset.order_by(self.lastmodified_attr).reverse().first(),
                 self.lastmodified_attr,
             )
+
+
+class PagesSearchView(ListView):
+    """Search across all pages."""
+
+    model = Page
+    context_object_name = "results"
+    page_title = "Search"
+    query_placeholder = "Search pages"
+    template_name = "cdhpages/page_search.html"
+    filter_models = {
+        "everything": Page,
+        "people": Profile,
+        "updates": BlogPost,
+        "projects": Project,
+        "events": Event,
+    }
+
+    def get_queryset(self):
+        # choose the model to search across; Page for everything
+        filter = self.request.GET.get("filter", "everything")
+        model = self.filter_models[filter]
+
+        # get keyword query; support filters & phrase matching with double quotes
+        # see https://docs.wagtail.io/en/stable/topics/search/searching.html#query-string-parsing
+        q = self.request.GET.get("q", "")
+        _filters, query = parse_query_string(q)
+
+        # execute search against specified model; exclude unpublished pages.
+        # results sorted by relevance by default; to override sort the QS first
+        # and then pass order_by_relevance=false to .search()
+        return model.objects.live().search(query)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(
+            {
+                "page_title": self.page_title,
+                "active_query": self.request.GET.get("q", ""),
+                "filters": self.filter_models.keys(),
+                "active_filter": self.request.GET.get("filter", "everything"),
+                "query_placeholder": self.query_placeholder,
+            }
+        )
+        return context

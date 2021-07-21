@@ -226,6 +226,9 @@ class ContentPage(BasePage, PagePreviewDescriptionMixin):
         StreamFieldPanel("attachments"),
     ]
 
+    # index description in addition to body content
+    search_fields = BasePage.search_fields + [index.SearchField("description")]
+    
     parent_page_types = ["HomePage", "LandingPage", "ContentPage"]
     subpage_types = ["ContentPage"]
 

@@ -9,10 +9,12 @@ from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.contrib.sitemaps import Sitemap
 from wagtail.contrib.sitemaps import views as sitemap_views
 from wagtail.core import urls as wagtail_urls
+from wagtail.core.models import Page
 from wagtail.documents import urls as wagtaildocs_urls
 
 from cdhweb.blog.sitemaps import BlogListSitemap
 from cdhweb.events.sitemaps import EventListSitemap
+from cdhweb.pages.views import PagesSearchView
 from cdhweb.people.sitemaps import PeopleListSitemap
 from cdhweb.projects.sitemaps import ProjectListSitemap
 
@@ -48,6 +50,10 @@ urlpatterns = [
     path("updates/", include("cdhweb.blog.urls", namespace="blog")),
     path("events/", include("cdhweb.events.urls", namespace="event")),
     path("projects/", include("cdhweb.projects.urls", namespace="projects")),
+
+    # search
+    path("search/", PagesSearchView.as_view(), name="search"),
+
     # CAS login urls
     path("accounts/", include("pucas.cas_urls")),
     # - all blog urls are now under updates/
