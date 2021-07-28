@@ -1,0 +1,24 @@
+from django import forms
+
+
+class PageSearchForm(forms.Form):
+    """Search form for finding pages across the site."""
+
+    FILTER_CHOICES = (
+        ("everything", "everything"),
+        ("people", "people"),
+        ("updates", "updates"),
+        ("projects", "projects"),
+        ("events", "events"),
+    )
+
+    # keyword query
+    q = forms.CharField(
+        required=False,
+        widget=forms.TextInput(
+            attrs={"type": "search", "placeholder": "Keyword or phrase"}
+        ),
+    )
+
+    # filter to different page types
+    filter = forms.ChoiceField(choices=FILTER_CHOICES)

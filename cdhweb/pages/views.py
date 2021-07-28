@@ -1,9 +1,11 @@
+from cdhweb.pages.forms import PageSearchForm
 from cdhweb.projects.models import Project
 from cdhweb.events.models import Event
 from cdhweb.blog.models import BlogPost
 from cdhweb.people.models import Profile
 from django.utils.cache import get_conditional_response
 from django.views.generic import ListView
+from django.views.generic.edit import FormMixin
 from django.views.generic.base import View
 from wagtail.core.models import Page
 from wagtail.search.utils import parse_query_string
@@ -59,13 +61,13 @@ class LastModifiedListMixin(LastModifiedMixin):
             )
 
 
-class PagesSearchView(ListView):
+class PagesSearchView(ListView, FormMixin):
     """Search across all pages."""
 
     model = Page
-    context_object_name = "results"
+    form_class = PageSearchForm
+    paginate_by = 10
     page_title = "Search"
-    query_placeholder = "Search pages"
     template_name = "cdhpages/page_search.html"
     filter_models = {
         "everything": Page,
@@ -90,15 +92,13 @@ class PagesSearchView(ListView):
         # and then pass order_by_relevance=false to .search()
         return model.objects.live().search(query)
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        # use GET instead of default POST/PUT for form data
+        kwargs["data"] = self.request.GET.copy()
+        return kwargs
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update(
-            {
-                "page_title": self.page_title,
-                "active_query": self.request.GET.get("q", ""),
-                "filters": self.filter_models.keys(),
-                "active_filter": self.request.GET.get("filter", "everything"),
-                "query_placeholder": self.query_placeholder,
-            }
-        )
+        context.update({"page_title": self.page_title})
         return context

@@ -1,27 +1,38 @@
 {% extends 'base.html' %}
-{% load humanize wagtailcore_tags %}
+{% load humanize cdh_tags wagtailcore_tags %}
 
 {% block main %}
 <h1>{{ page_title }}</h1>
 <form action="{% url 'search' %}" method="get">
-    <input type="search" name="q" placeholder="{{ query_placeholder }}" value="{{ active_query }}">
-    <select name="filter">
-        {% for filter in filters %}
-        <option value="{{ filter }}"{% if filter == active_filter %} selected{% endif %}>{{ filter|capfirst }}</option>
-        {% endfor %}
-    </select>
+    {{ form.q }}
+    {{ form.filter }}
     <input type="submit" value="Search">
 </form>
-<div>
-    {% if results %}
-    <p>{{ results|length }} result{{ results|pluralize}}</p>
-    <ol>
-    {% for page in results %}
-    <li>{{ page.title }} (<b>{{ page.specific.cached_content_type.name }}</b>) — <i>{{ page.first_published_at|naturalday }}</i></li>
+<div class="results">
+    {% if page_obj %}
+    <p class="total-results">{{ page_obj.paginator.count }} total result{{ page_obj.paginator.count|pluralize}}</p>
+    <ol start="{{ page_obj.start_index }}">
+    {% for page in page_obj %}
+    <li><a href="{% pageurl page %}">{{ page.title }}</a> (<b>{{ page.specific.cached_content_type.name }}</b>) — <i>{{ page.first_published_at|naturalday }}</i></li>
     {% endfor %}
     </ol>
     {% else %}
-    <p>No results found.</p>
+    <p class="total-results">No results found.</p>
     {% endif %}
+</div>
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?{% url_replace 'page' '1' %}">&laquo; first</a>
+            <a href="?{% url_replace 'page' page_obj.previous_page_number %}">&lsaquo; previous</a>
+        {% endif %}
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+        {% if page_obj.has_next %}
+            <a href="?{% url_replace 'page' page_obj.next_page_number %}">next &rsaquo;</a>
+            <a href="?{% url_replace 'page' page_obj.paginator.num_pages %}">last &raquo;</a>
+        {% endif %}
+    </span>
 </div>
 {% endblock %}

@@ -55,3 +55,12 @@ def startswith(text, starts):
     if isinstance(text, str):
         return text.startswith(starts)
     return False
+
+
+@register.simple_tag(takes_context=True)
+def url_replace(context, field, value):
+    """Add or replace a single GET parameter in a URL."""
+    # Adapted from https://stackoverflow.com/questions/5755150/altering-one-query-parameter-in-a-url-django
+    params = context["request"].GET.copy()
+    params[field] = value
+    return params.urlencode()
