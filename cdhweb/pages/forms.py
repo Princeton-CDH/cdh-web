@@ -1,7 +1,7 @@
 from django import forms
 
 
-class PageSearchForm(forms.Form):
+class SiteSearchForm(forms.Form):
     """Search form for finding pages across the site."""
 
     FILTER_CHOICES = (

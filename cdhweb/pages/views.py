@@ -1,4 +1,4 @@
-from cdhweb.pages.forms import PageSearchForm
+from cdhweb.pages.forms import SiteSearchForm
 from cdhweb.projects.models import Project
 from cdhweb.events.models import Event
 from cdhweb.blog.models import BlogPost
@@ -65,7 +65,7 @@ class PagesSearchView(ListView, FormMixin):
     """Search across all pages."""
 
     model = Page
-    form_class = PageSearchForm
+    form_class = SiteSearchForm
     paginate_by = 10
     page_title = "Search"
     template_name = "cdhpages/page_search.html"

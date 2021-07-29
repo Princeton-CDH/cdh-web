@@ -6,7 +6,7 @@
     width: 100%;
     position: absolute;
     top: -$header-nav-height;
-    z-index: 11;
+    z-index: 12;
     list-style-type: none;
     margin: 0;
 
@@ -99,7 +99,9 @@ header.nav {
     }
 
     .nav-wrap {
+        position: relative;
         background-color: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 2px 4px 0 rgba(106, 106, 106, 0.315);
     }
 
     nav {
@@ -627,4 +629,41 @@ footer {
             }
         }
     }
+}
+
+// site search
+#site-search {
+    width: 100%;
+    height: $header-nav-height;
+    position: absolute;
+    visibility: hidden;
+    top: 0;
+
+    &:target {
+        visibility: visible;
+    }
+    
+    input[type="search"] {
+        width: 100%;
+        border: none;
+        margin: 0;
+        height: $header-nav-height;
+        padding-left: 10vw;
+        font-size: 24px;
+    }
+
+    .close {
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1;
+        width: $header-nav-height;
+        height: $header-nav-height;
+        top: 0;
+        right: 10vw;
+        font-size: 40px;
+    }
+
+    input[type="submit"] { display: none; }
 }

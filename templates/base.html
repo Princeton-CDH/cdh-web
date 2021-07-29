@@ -53,6 +53,11 @@
             <nav id='mainmenu'>
                 {% include "snippets/primary_navigation.html" %}
             </nav>
+            <form id="site-search" action="{% url 'search' %}" method="get">
+                {{ site_search.q }}
+                <a class="close" href="#" aria-label="cancel site search">&times;</a>
+                <input type="submit" value="search">
+            </form>
         </div>
     </header>
     {% include 'snippets/test_banner.html' %}
