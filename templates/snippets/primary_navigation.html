@@ -1,4 +1,6 @@
-{% load i18n cdh_tags %}
+{% load static i18n cdh_tags %}
+{# NOTE hardcoded homepage URL that works on error pages #}
+<a href='/' class='home-page'><img alt="home" src='{% static "img/CDH_logo.svg" %}'/></a>
 {# top level menu, with secondary nav for current site section #}
 <div class="nav-main">
     {# top-level pages #}
@@ -24,6 +26,7 @@
         {% endfor %}
     </ul>
 </div>
+<a href="{% url 'search' %}" class="search"></a>
 {% for navpage in toplevel_pages %}
     {% include "snippets/navigation_card.html" with navpages=navpage.get_children.live.in_menu %}
 {% endfor %}

@@ -87,10 +87,12 @@ header.nav {
 
     }
     #mainmenu {
+        max-width: 1440px;  /* cancel 84% max-width */
+        justify-content: space-around;
+
         @media (max-width: $small-max-width) {
             background-color: white;
             width: 100%;
-            max-width: 100%;  /* cancel 84% max-width */
             padding: 5px 8%;
             border-bottom: 1px solid $dark-grey;
         }
@@ -110,11 +112,7 @@ header.nav {
         a.home-page {
             width: 60px;
             height: 45px;
-            margin-right: 25px;
-
-            @media (max-width: $medium-max-width) {
-                margin-right: 15px;
-            }
+            margin-left: 10px;
 
             img {
                 width: 60px;
@@ -129,6 +127,15 @@ header.nav {
             max-width: 100%;
         }
 
+        a.search {
+            width: 45px;
+            height: 45px;
+            background-image: url("/static/img/cdh-icons/search.svg");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 80%;
+            margin-right: 10px;
+        }
     }
 
     div.nav-main {
@@ -137,11 +144,12 @@ header.nav {
         flex: auto;
         padding: 0;
         position: relative;
+        max-width: $large-content-width;
 
         ul {
             display: flex;
             flex: auto;
-            text-align: left;
+            justify-content: space-between;
             padding: 0;
             width: 100%;
             // Make sure margins behave for spacing between rows (~28 px)
@@ -175,7 +183,6 @@ header.nav {
             li {
                 display: inline;
                 font-size: 16px;
-                margin-right: 40px;
                 @media (max-width: $small-max-width) {
                     display: block;
                 }
@@ -206,7 +213,6 @@ header.nav {
         top: 55px;
 
         .inner {
-            margin-left: 85px;
             border-top: solid 1px #d8d8d8;
         }
 
