@@ -16,7 +16,10 @@ class SiteSearchForm(forms.Form):
     q = forms.CharField(
         required=False,
         widget=forms.TextInput(
-            attrs={"type": "search", "placeholder": "Keyword or phrase"}
+            attrs={
+                "type": "search",
+                "placeholder": "Search pages, people, projects, updates & events",
+            }
         ),
     )
 

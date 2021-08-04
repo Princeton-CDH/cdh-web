@@ -1,5 +1,5 @@
-from cdhweb.pages.models import PageIntro
 from cdhweb.pages.forms import SiteSearchForm
+from cdhweb.pages.models import PageIntro
 
 
 def page_intro(request):

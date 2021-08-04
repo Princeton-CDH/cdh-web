@@ -1,14 +1,15 @@
-from cdhweb.pages.forms import SiteSearchForm
-from cdhweb.projects.models import Project
-from cdhweb.events.models import Event
-from cdhweb.blog.models import BlogPost
-from cdhweb.people.models import Profile
 from django.utils.cache import get_conditional_response
 from django.views.generic import ListView
-from django.views.generic.edit import FormMixin
 from django.views.generic.base import View
+from django.views.generic.edit import FormMixin
 from wagtail.core.models import Page
 from wagtail.search.utils import parse_query_string
+
+from cdhweb.blog.models import BlogPost
+from cdhweb.events.models import Event
+from cdhweb.pages.forms import SiteSearchForm
+from cdhweb.people.models import Profile
+from cdhweb.projects.models import Project
 
 
 class LastModifiedMixin(View):
@@ -61,8 +62,8 @@ class LastModifiedListMixin(LastModifiedMixin):
             )
 
 
-class PagesSearchView(ListView, FormMixin):
-    """Search across all pages."""
+class SiteSearchView(ListView, FormMixin):
+    """Search across all pages on the site."""
 
     model = Page
     form_class = SiteSearchForm

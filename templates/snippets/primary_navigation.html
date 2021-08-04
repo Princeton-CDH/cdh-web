@@ -26,7 +26,7 @@
         {% endfor %}
     </ul>
 </div>
-<a href="#site-search" class="search"></a>
+<label for="{{ site_search.q.id_for_label }}" class="search" aria-label="open site search"></label>
 {% for navpage in toplevel_pages %}
     {% include "snippets/navigation_card.html" with navpages=navpage.get_children.live.in_menu %}
 {% endfor %}

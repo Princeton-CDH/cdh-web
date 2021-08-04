@@ -129,14 +129,15 @@ header.nav {
             max-width: 100%;
         }
 
-        a.search {
+        label.search {
             width: 45px;
             height: 45px;
             background-image: url("/static/img/cdh-icons/search.svg");
             background-repeat: no-repeat;
             background-position: center;
             background-size: 80%;
-            margin-right: 10px;
+            margin: 0 10px 0 0;
+            cursor: pointer;
         }
     }
 
@@ -636,11 +637,15 @@ footer {
     width: 100%;
     height: $header-nav-height;
     position: absolute;
-    visibility: hidden;
+    z-index: -1;
     top: 0;
 
-    &:target {
-        visibility: visible;
+    &:focus-within {
+        z-index: 0;
+
+        ~ label[for="clear-site-search"] {
+            display: flex;
+        }
     }
     
     input[type="search"] {
@@ -651,10 +656,17 @@ footer {
         padding-left: 10vw;
         font-size: 24px;
     }
+}
 
-    .close {
+.nav-wrap {
+    input[type="submit"],
+    input[type="reset"] {
+        @include sr-only;
+    }
+
+    label[for="clear-site-search"] {
         position: absolute;
-        display: flex;
+        display: none;
         justify-content: center;
         align-items: center;
         z-index: 1;
@@ -663,7 +675,6 @@ footer {
         top: 0;
         right: 10vw;
         font-size: 40px;
+        cursor: pointer;
     }
-
-    input[type="submit"] { display: none; }
 }

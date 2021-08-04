@@ -122,12 +122,8 @@ WAGTAILDOCS_DOCUMENT_MODEL = "cdhpages.LocalAttachment"
 
 # custom embed finders
 WAGTAILEMBEDS_FINDERS = [
-    {
-        'class': 'wagtail.embeds.finders.oembed'
-    },
-    {
-        'class': 'cdhweb.pages.embed_finders.GlitchHubEmbedFinder'
-    },
+    {"class": "wagtail.embeds.finders.oembed"},
+    {"class": "cdhweb.pages.embed_finders.GlitchHubEmbedFinder"},
 ]
 
 

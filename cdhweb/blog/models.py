@@ -92,7 +92,7 @@ class BlogPost(BasePage, ClusterableModel, PagePreviewDescriptionMixin):
     promote_panels = Page.promote_panels + [FieldPanel("tags")]
 
     # index description in addition to body content
-    search_fields = BasePage.search_fields + [index.SearchField('description')]
+    search_fields = BasePage.search_fields + [index.SearchField("description")]
 
     # custom manager/queryset logic
     objects = BlogPostManager()
