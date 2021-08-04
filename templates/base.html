@@ -53,11 +53,11 @@
             <nav id='mainmenu'>
                 {% include "snippets/primary_navigation.html" %}
             </nav>
-            <form id="site-search" action="{% url 'search' %}" method="get">
-                {{ site_search.q }}
+            <form id="nav-site-search" action="{% url 'search' %}" method="get">
+                <input id="nav_q" type="search" name="{{ site_search.q.name }}" placeholder="{{ site_search.q.field.widget.attrs.placeholder }}">
                 <input type="submit" value="search">
             </form>
-            <input form="site-search" id="clear-site-search" type="reset">
+            <input form="nav-site-search" id="clear-site-search" type="reset">
             <label for="clear-site-search" aria-label="close site search">&times;</label>
         </div>
     </header>

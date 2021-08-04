@@ -129,7 +129,7 @@ header.nav {
             max-width: 100%;
         }
 
-        label.search {
+        label[aria-label="open site search"] {
             width: 45px;
             height: 45px;
             background-image: url("/static/img/cdh-icons/search.svg");
@@ -633,7 +633,7 @@ footer {
 }
 
 // site search
-#site-search {
+#nav-site-search {
     width: 100%;
     height: $header-nav-height;
     position: absolute;
