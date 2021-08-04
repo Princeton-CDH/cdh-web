@@ -79,6 +79,9 @@ jobs:
       - name: Load test site data
         run: python manage.py create_test_site
 
+      - name: Populate search index
+        run: python manage.py update_index
+
       - name: Build static assets
         run: python manage.py compress
 
