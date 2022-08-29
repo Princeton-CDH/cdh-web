@@ -1,13 +1,15 @@
 ## production requirements
 
-Django>=3.1.12,<3.2
+Django>=3.2,<4.0
 pillow>=5.2.0
-wagtail
+# production is v2.14
+wagtail>=2.15,<2.16
 django-compressor
 django-compressor-autoprefixer
 psycopg2
 django-admin-sortable2
-django-taggit
+# wagtail 3.0 needs taggit<3.0
+django-taggit<3.0
 pucas>=0.6
 python-dateutil
 icalendar

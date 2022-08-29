@@ -109,7 +109,7 @@ WAGTAIL_USAGE_COUNT_ENABLED = True
 # https://docs.wagtail.io/en/latest/reference/contrib/postgres_search.html
 WAGTAILSEARCH_BACKENDS = {
     "default": {
-        "BACKEND": "wagtail.contrib.postgres_search.backend",
+        "BACKEND": "wagtail.search.backends.database",
         "SEARCH_CONFIG": "english",
     },
 }
@@ -328,7 +328,6 @@ INSTALLED_APPS = [
     "wagtail.search",
     "wagtail.admin",
     "wagtail.contrib.modeladmin",
-    "wagtail.contrib.postgres_search",
     "wagtail.core",
     "wagtailmenus",
     "modelcluster",
@@ -361,6 +360,9 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
 ]
+
+# needed as of django 3.2
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # pucas configuration that is not expected to change across deploys
 # and does not reference local server configurations or fields
