@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  NODE_VERSION: 10
+  NODE_VERSION: 16
   DB_NAME: cdhweb
   DB_USER: cdhweb
   DB_PASSWORD: cdhweb
