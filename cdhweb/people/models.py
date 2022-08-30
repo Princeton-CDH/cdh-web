@@ -217,9 +217,11 @@ class PersonQuerySet(models.QuerySet):
         return self.filter(
             models.Q(self._current_position_query())
             | models.Q(self._current_project_member_query())
-        ).extra(select={"is_current": True})
+        ).annotate(
+            is_current=models.Value(True, output_field=models.BooleanField())
+        )  # , output_field=models.BooleanField))
+        # ).extra(select={"is_current": True}, output_field=models.BooleanField)
         # NOTE: couldn't get annotate to work
-        # .annotate(is_current=models.Value(True, output_field=models.BooleanField))
 
     def current_grant(self):
         """Return profiles for users with a current grant."""
@@ -235,7 +237,11 @@ class PersonQuerySet(models.QuerySet):
         cpq = self._current_position_query()
         return (
             self.filter(cpq)
-            .annotate(current_position_title=models.F("positions__title__title"))
+            .annotate(
+                current_position_title=models.F(
+                    "positions__title__title", output_field=models.CharField()
+                )
+            )
             .exclude(current_position_title__in=self.exec_committee_titles)
         )
 
@@ -245,8 +251,12 @@ class PersonQuerySet(models.QuerySet):
         # sort on highest position title (= lowest number) and earliest start date (may
         # not be from the same position)
         return self.annotate(
-            min_title=models.Min("positions__title__sort_order"),
-            min_start=models.Min("positions__start_date"),
+            min_title=models.Min(
+                "positions__title__sort_order", output_field=models.IntegerField()
+            ),
+            min_start=models.Min(
+                "positions__start_date", output_field=models.DateField()
+            ),
         ).order_by("min_title", "min_start", "last_name")
 
 

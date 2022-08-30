@@ -19,6 +19,11 @@ class TestRelatedLinkType:
         assert str(restype) == restype.name
 
 
+class DateRangeTestModel(DateRange):
+    class Meta:
+        managed = False
+
+
 class TestLocalAttachment:
     @patch.object(
         LocalAttachment,
@@ -70,7 +75,7 @@ class TestDisplayUrlMixin:
 class TestDateRange:
     def test_is_current(self):
         # start date in past, no end date
-        span = DateRange(start_date=date.today() - timedelta(days=50))
+        span = DateRangeTestModel(start_date=date.today() - timedelta(days=50))
         assert span.is_current
 
         # end date in future
@@ -91,7 +96,7 @@ class TestDateRange:
 
     def test_years(self):
         # start date, no end date
-        span = DateRange(start_date=date(2016, 6, 1))
+        span = DateRangeTestModel(start_date=date(2016, 6, 1))
         assert span.years == "2016–"
         # end date same year as start
         span.end_date = date(2016, 12, 1)
@@ -103,19 +108,21 @@ class TestDateRange:
 
     def test_clean_fields(self):
         with pytest.raises(ValidationError):
-            DateRange(
+            DateRangeTestModel(
                 start_date=date(1901, 1, 1), end_date=date(1900, 1, 1)
             ).clean_fields()
 
         # should not raise exception
         # - end after start
-        DateRange(start_date=date(1901, 1, 1), end_date=date(1905, 1, 1)).clean_fields()
+        DateRangeTestModel(
+            start_date=date(1901, 1, 1), end_date=date(1905, 1, 1)
+        ).clean_fields()
         # - only start date set
-        DateRange(start_date=date(1901, 1, 1)).clean_fields()
+        DateRangeTestModel(start_date=date(1901, 1, 1)).clean_fields()
         # exclude set
-        DateRange(start_date=date(1901, 1, 1), end_date=date(1900, 1, 1)).clean_fields(
-            exclude=["start_date"]
-        )
-        DateRange(start_date=date(1901, 1, 1), end_date=date(1900, 1, 1)).clean_fields(
-            exclude=["end_date"]
-        )
+        DateRangeTestModel(
+            start_date=date(1901, 1, 1), end_date=date(1900, 1, 1)
+        ).clean_fields(exclude=["start_date"])
+        DateRangeTestModel(
+            start_date=date(1901, 1, 1), end_date=date(1900, 1, 1)
+        ).clean_fields(exclude=["end_date"])
