@@ -1,10 +1,12 @@
 CHANGELOG
 =========
 
-4.0.0-dev1
+4.0.0
 -----
-- Redesigned and rebuilt
-- TODO
+- Major overhaul, redesigned and rebuilt by Springload 
+  - Dropped custom views and shift logic to using wagtail pages throughout
+  - numerous new wagtail blocks added
+  - frontend build now uses webpack, dropped django compressor
 
 3.5.3
 -----
