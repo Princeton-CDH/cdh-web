@@ -1,0 +1,8 @@
+{% if INCLUDE_ANALYTICS and PLAUSIBLE_ANALYTICS_SCRIPT %}
+{# TODO: move plausible opts to config, then pass through #}
+{# plausible analytics #}
+<script defer data-domain="cdh.princeton.edu" src="{{ PLAUSIBLE_ANALYTICS_SCRIPT }} "></script>
+{% if PLAUSIBLE_ANALYTICS_404s %}
+<script>window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }</script>
+{% endif %}
+{% endif %}

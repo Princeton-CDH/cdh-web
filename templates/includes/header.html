@@ -44,8 +44,11 @@
                                 class="main-nav-desktop__item 
                                     {% if request.path|starts_with:item.link_url %}
                                         main-nav-desktop__item--current-section
-                                    {% endif %}
-                            ">  
+                                    {% endif %}"
+                                {% if request.path|starts_with:item.link_url and not item.l2_items.all %}
+                                    aria-current="page"
+                                {% endif %}
+                                >  
                                 <span>{{ item.title }}</span>
                                 {# Reserve space for dropdown icon, to stop jank when the React version replaces this version. #}
                                 {% if item.l2_items.all %}

@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+4.0.1
+-----
+- bugfix: `Title` related positions should be optional when creating new titles
+- Add support for Plausible analytics; configurable with ``PLAUSIBLE_ANALYTICS_SCRIPT``
+  and ``PLAUSIBLE_ANALYTICS_404s = True``
+- Accessibility fixes
+
 4.0.0
 -----
 - Major overhaul, redesigned and rebuilt by Springload 

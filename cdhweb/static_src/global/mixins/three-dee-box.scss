@@ -64,7 +64,7 @@
   }
 
   & > * {
+    // Make content appear in front of 3d box's solid background
     isolation: isolate;
-    z-index: 1;
   }
 }

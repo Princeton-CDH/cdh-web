@@ -10,3 +10,9 @@
 {% endwith %}
 {% endwith %}
 {% endblock %}
+
+{% block extra_js %}
+{% if PLAUSIBLE_ANALYTICS_404s %}
+<script>document.addEventListener('DOMContentLoaded', function () { plausible('404', { props: { path: document.location.pathname } }); });</script>
+{% endif %}
+{% endblock %}

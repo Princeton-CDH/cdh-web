@@ -28,8 +28,14 @@ NEVERCACHE_KEY = ""
 # DATABASES["default"]["USER"] = ""
 DATABASES["default"]["PASSWORD"] = ""
 
+# INCLUDE_ANALYTICS = True
+
 # Configure google id to enable analytics in production
 # GTAGS_ANALYTICS_ID = ""
+
+# Configure to enable Plausible analytics in production with desired options
+# PLAUSIBLE_ANALYTICS_SCRIPT = "https://plausible.io/js/script.file-downloads.hash.outbound-links.js"
+# PLAUSIBLE_ANALYTICS_404s = True
 
 # configure ldap servers, search base, and filter
 PUCAS_LDAP.update(

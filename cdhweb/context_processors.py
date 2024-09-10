@@ -21,6 +21,12 @@ def template_settings(request):
         "GTAGS_ANALYTICS_ID": getattr(
             settings, "GTAGS_ANALYTICS_ID", not settings.DEBUG
         ),
+        "PLAUSIBLE_ANALYTICS_SCRIPT": getattr(
+            settings, "PLAUSIBLE_ANALYTICS_SCRIPT", not settings.DEBUG
+        ),
+        "PLAUSIBLE_ANALYTICS_404s": getattr(
+            settings, "PLAUSIBLE_ANALYTICS_404s", not settings.DEBUG
+        ),
         # pass any feature flags that are configured
         "FEATURE_FLAGS": feature_flags,
         "FAVICON": favicon_path(),

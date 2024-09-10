@@ -158,6 +158,7 @@ const DesktopMenuItem = ({
           className={cx('main-nav-desktop__item', {
             'main-nav-desktop__item--current-section': item.is_current,
           })}
+          aria-current={item.is_current ? 'page' : undefined}
         >
           <span>{item.title}</span>
         </a>

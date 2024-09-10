@@ -39,7 +39,7 @@ class Title(models.Model):
 
     title = models.CharField(max_length=255, unique=True)
     sort_order = models.PositiveIntegerField(default=0, blank=False, null=False)
-    positions = models.ManyToManyField("people.Person", through="Position")
+    positions = models.ManyToManyField("people.Person", through="Position", blank=True)
 
     class Meta:
         ordering = ["sort_order"]
@@ -647,8 +647,10 @@ class PeopleCategoryPage(BaseLandingPage, SidebarNavigationMixin, RoutablePageMi
             "sits_with_executive_committee",
             "Sits with Executive Committee",
         )
-        PAST_EXECUTIVE_COMMITTEE = "past executive committee", "Past Executive Committee"
-
+        PAST_EXECUTIVE_COMMITTEE = (
+            "past executive committee",
+            "Past Executive Committee",
+        )
 
     category = models.CharField(
         choices=PeopleCategories.choices,
@@ -671,7 +673,7 @@ class PeopleCategoryPage(BaseLandingPage, SidebarNavigationMixin, RoutablePageMi
             self.PeopleCategories.PAST_AFFILIATES: self.get_past_affiliates,
             self.PeopleCategories.EXECUTIVE_COMMITTEE: self.get_executive_committee,
             self.PeopleCategories.SITS_WITH_EXECUTIVE_COMMITTEE: self.get_sits_with_executive_committee,
-            self.PeopleCategories.PAST_EXECUTIVE_COMMITTEE: self.get_past_executive_committee
+            self.PeopleCategories.PAST_EXECUTIVE_COMMITTEE: self.get_past_executive_committee,
         }
 
         people = category_mapping[self.category]()
@@ -791,7 +793,7 @@ class PeopleCategoryPage(BaseLandingPage, SidebarNavigationMixin, RoutablePageMi
             .distinct()
         )
         return people
-    
+
     def get_past_executive_committee(self):
         people_queryset = (
             Person.objects.executive_committee()

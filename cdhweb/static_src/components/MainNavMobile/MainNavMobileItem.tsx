@@ -35,7 +35,11 @@ const MobileMenuItem = ({
           />
         </button>
       ) : (
-        <a href={item.link_url} className="mobile-menu__nav-btn">
+        <a
+          href={item.link_url}
+          className="mobile-menu__nav-btn"
+          aria-current={item.is_current ? 'page' : undefined}
+        >
           <span>{item.title}</span>
           <Svg
             sprite="two-tone"

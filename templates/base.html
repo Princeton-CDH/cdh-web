@@ -18,6 +18,7 @@
       document.documentElement.classList.remove('no-js');
       document.documentElement.classList.add('js');
     </script>
+    {% include "snippets/plausible_analytics.html" %}
 
     {% block extra_css %}
       {# Needed for specific cases #}

@@ -12,7 +12,7 @@
 
       {#  always display current page, marked as active #}
       {% if number == page_obj.number %}
-          <a title="page {{number}}" class="pagination__item pagination__item--current" href="?{% url_replace 'page' number %}">{{ number }}</a>
+          <a title="page {{number}}" class="pagination__item pagination__item--current" href="?{% url_replace 'page' number %}" aria-current="page">{{ number }}</a>
 
       {# for current page 1 or 2, display first 5 #}
       {% elif page_obj.number <= 2  and number <= 5 %}
