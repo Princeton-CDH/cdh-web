@@ -35,6 +35,12 @@ class ProjectAdmin(ThumbnailMixin, ModelAdmin):
     thumb_col_header_text = "thumbnail"
     ordering = ("title",)
 
+    def tags(self, obj):
+        """
+        Generate text tags like we got prior to v4
+        """
+        return obj.display_tags()
+
 
 class MembershipAdmin(ModelAdmin):
     model = Membership
