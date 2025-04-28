@@ -45,8 +45,8 @@
                 <h2 class="sr-only">Speakers</h2>
                 <ul>
                     {% for speaker in page.speakers.all %}
-                        {% if speaker.person.profile %}
-                            <li><a href="{% pageurl speaker.person.profile %}">{{ speaker.person }}</a></li>
+                        {% if speaker.person.profile_url %}
+                            <li><a href="{{ speaker.person.profile_url }}">{{ speaker.person }}</a></li>
                         {% else %}
                             <li>{{ speaker.person }}</li>
                         {% endif %}
