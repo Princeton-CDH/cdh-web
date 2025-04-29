@@ -1,6 +1,8 @@
 from wagtail_modeladmin.mixins import ThumbnailMixin
 from wagtail_modeladmin.options import ModelAdmin, ModelAdminGroup, modeladmin_register
 
+from django.template.defaultfilters import striptags
+
 from cdhweb.projects.models import (
     GrantType,
     Membership,
@@ -24,8 +26,8 @@ class ProjectAdmin(ThumbnailMixin, ModelAdmin):
         "working_group",
         "cdh_built",
         "tags",
-        "description",
-        "body",
+        "page_summary",
+        "page_content",
         "website_url",
         "last_published_at",
     )
@@ -40,6 +42,15 @@ class ProjectAdmin(ThumbnailMixin, ModelAdmin):
         Generate text tags like we got prior to v4
         """
         return obj.display_tags()
+
+    # Supply plaintext versions of these -- named to
+    # maintain the existing spreadsheet field header (from
+    # verbose_names)
+    def page_summary(self, obj):
+        return striptags(obj.description)
+
+    def page_content(self, obj):
+        return striptags(obj.body)
 
 
 class MembershipAdmin(ModelAdmin):
