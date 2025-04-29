@@ -590,15 +590,16 @@ class Profile(BasePage):
         """Add recent BlogPosts by this Person to their Profile."""
         context = super().get_context(request)
         # get 3 most recent published posts with this person as author;
-        # get 3 most recent events with this person as a speaker;
         # get 3 most recent projects with this person as a member;
+        # get 3 most newest events with this person as a speaker;
         # add to context and set open graph metadata
         context.update(
             {
                 "opengraph_type": "profile",
                 "recent_posts": self.person.posts.live().recent()[:3],
-                "recent_events": self.person.events.live().recent()[:3],
                 "recent_projects": self.person.members.live().recent()[:3],
+                # `recent` filter excludes upcoming, but we want future ones listed here
+                "related_events": self.person.events.live().order_by("-start_time")[:3],
             }
         )
         return context
