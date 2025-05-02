@@ -10,6 +10,8 @@ from wagtail.fields import RichTextField
 from wagtail.models import Page
 from wagtail.search import index
 
+from cdhweb.constants import NOHEADINGS_FEATURES
+
 from .utils import (
     LengthOverrideWidget,
     absolutize_url,
@@ -92,6 +94,38 @@ class StandardHeroMixinNoImage(models.Model):
 
     class Meta:
         abstract = True
+
+
+class IndexPageMixin(StandardHeroMixinNoImage):
+    class Meta:
+        abstract = True
+
+    preface = RichTextField(
+        blank=True,
+        features=NOHEADINGS_FEATURES,
+        help_text="""
+            Text that sits between the description and the child-page listing
+        """,
+    )
+
+    search_fields = StandardHeroMixinNoImage.search_fields + [
+        index.SearchField("preface")
+    ]
+
+    content_panels = [
+        MultiFieldPanel(
+            [
+                TitleFieldPanel(
+                    "title",
+                    help_text="""Main heading for the page. Ideally up to five words long (max.100 chars).""",
+                    widget=LengthOverrideWidget(max_length=100),
+                ),
+                FieldPanel("description"),
+                FieldPanel("preface"),
+            ],
+            "Standard Hero",
+        )
+    ]
 
 
 class StandardHeroMixin(StandardHeroMixinNoImage):

@@ -6,6 +6,7 @@ from django.apps import apps
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.template.defaultfilters import striptags, truncatechars_html
+from cdhweb.constants import PARAGRAPH_FEATURES
 from springkit.blocks import CTABlock, JumplinkableH2Block
 from springkit.models.mixins import JumplinksMixin
 from taggit.managers import TaggableManager
@@ -46,23 +47,6 @@ from .mixin import (
     SidebarNavigationMixin,
     StandardHeroMixin,
 )
-
-#: common features for paragraph text
-PARAGRAPH_FEATURES = [
-    "h3",
-    "h4",
-    "bold",
-    "italic",
-    "link",
-    "ol",
-    "ul",
-    "hr",
-    "blockquote",
-    "superscript",
-    "subscript",
-    "strikethrough",
-    "code",
-]
 
 #: help text for image alternative text
 ALT_TEXT_HELP = """Alternative text for visually impaired users to
