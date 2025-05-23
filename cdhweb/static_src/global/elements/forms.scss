@@ -1,3 +1,8 @@
+button {
+  // mobile safari's UA is a bit different, so we need to explicitly override it
+  color: currentColor;
+}
+
 input {
   &:where([type='text'], [type='email'], [type='password'], [type='number']) {
     font: inherit;
