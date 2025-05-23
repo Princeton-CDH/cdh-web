@@ -1,4 +1,4 @@
-import { MouseEvent, useId } from 'react';
+import { JSX, MouseEvent, useId } from 'react';
 import Svg from '../svg/svg';
 import cx from 'classnames';
 import { MainNavItemPrimary, NavItem } from '../../data-types';

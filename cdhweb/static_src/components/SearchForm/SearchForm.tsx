@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { JSX, useId } from 'react';
 import cx from 'classnames';
 
 type Props = {

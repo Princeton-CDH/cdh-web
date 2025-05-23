@@ -1,6 +1,5 @@
 const path = require('path');
 const glob = require('glob');
-// const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const cssnano = require('cssnano');
 const autoprefixer = require('autoprefixer');
@@ -25,11 +24,11 @@ module.exports = (env, options) => {
 
   // SVG sprites. Each directory will create a spritemap (spritesheet).
   // It's a good idea to have several different spritemaps, especially to split out
-  // larger or one-off SVGs, so that pages that don't use any of the svgs from that
+  // larger or one-off SVGs, so that pages which don't use any of the svgs from a
   // spritemap don't need to download that file.
   const svgSpriteDirs = glob.sync(svgSpritePattern);
   svgSpriteDirs.forEach((svgSpriteDir) => {
-    const svgPattern = `${svgSpriteDir}*.svg`;
+    const svgPattern = path.resolve(__dirname, svgSpriteDir, '*.svg');
     const opts = {
       output: {
         filename: `${path.basename(svgSpriteDir)}.svg`,

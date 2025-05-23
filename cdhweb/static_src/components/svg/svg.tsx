@@ -1,3 +1,4 @@
+import { JSX } from 'react';
 import { staticSVGRoot } from '../../constants';
 
 type SvgProps = {
