@@ -21,7 +21,14 @@
 
                 {% if internal_page.specific.page_type == 'BlogPost' %}
                     <p>{{ internal_page.specific.first_published_at|date:"j F Y" }}</p>
-                    {{ internal_page.specific.short_description|default:internal_page.specific.description|richtext }}
+                    {# Summary/description is replaced by authors for blog tiles #}
+                    {% if internal_page.specific.authors.all %}
+                        <p>
+                            {% for author in internal_page.specific.authors.all %}
+                                {{ author.person }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+                    {% endif %}
 
                 {% elif internal_page.specific.page_type != 'Profile' and internal_page.specific.page_type != 'Event' %}
                     {{ internal_page.specific.short_description|default:internal_page.specific.description|richtext }}
