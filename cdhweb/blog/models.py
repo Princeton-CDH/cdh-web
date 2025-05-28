@@ -16,7 +16,7 @@ from wagtail.models import Orderable, Page, PageManager, PageQuerySet
 from wagtail.search import index
 from wagtailautocomplete.edit_handlers import AutocompletePanel
 
-from cdhweb.pages.mixin import StandardHeroMixinNoImage
+from cdhweb.pages.mixin import IndexPageMixin, StandardHeroMixinNoImage
 from cdhweb.pages.models import BasePage, ContentPage, LinkPage
 from cdhweb.people.models import Person
 
@@ -237,15 +237,15 @@ class BlogLinkPageArchived(LinkPage):
     subpage_types = [BlogPost]
 
 
-class BlogLandingPage(StandardHeroMixinNoImage, RoutablePageMixin, Page):
+class BlogLandingPage(IndexPageMixin, RoutablePageMixin, Page):
     """Container page that defines where Event pages can be created."""
 
     page_size = 12
     template_name = "blog/blog_landing_page.html"
 
-    content_panels = StandardHeroMixinNoImage.content_panels
+    content_panels = IndexPageMixin.content_panels
 
-    search_fields = StandardHeroMixinNoImage.search_fields
+    search_fields = IndexPageMixin.search_fields
 
     settings_panels = Page.settings_panels
 

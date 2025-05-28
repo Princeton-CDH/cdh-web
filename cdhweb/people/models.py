@@ -22,9 +22,9 @@ from wagtail.fields import RichTextField
 from wagtail.models import Page
 from wagtail.search import index
 
+from cdhweb.constants import PARAGRAPH_FEATURES
 from cdhweb.pages.mixin import SidebarNavigationMixin, StandardHeroMixin
 from cdhweb.pages.models import (
-    PARAGRAPH_FEATURES,
     BaseLandingPage,
     BasePage,
     DateRange,

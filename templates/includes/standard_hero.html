@@ -1,16 +1,19 @@
 {% load wagtailcore_tags wagtailimages_tags l10n %}
 
 <div class="standard-hero content-width grid-standard">
-    
+
     <h1 class="standard-hero__title">{{ self.title}}</h1>
     <div class="standard-hero__description">
         {% if self.description %}
             {{ self.description | richtext }}
         {% endif %}
+        {% if self.preface %}
+            {{ self.preface | richtext }}
+        {% endif %}
     </div>
 
     {% if self.hero_image %}
-        {% comment %}    
+        {% comment %}
             All are cropped to a 16:9 ratio. This differs from design, as discussed.
             If changing this by image rendition, update aspect-ratio in the CSS instead
             of via inline style.
@@ -24,11 +27,11 @@
             <source srcset="{{ img_sm.url }}" media="(min-width: 500px)">
             <source srcset="{{ img_xl.url }}" media="(min-width: 1200px)">
             <img
-                src="{{ img_base.url }}" 
+                src="{{ img_base.url }}"
                 alt="{{ self.alt_text|default:img_base.alt }}"
                 style="aspect-ratio: {{ img_base.width|unlocalize }} / {{ img_base.height|unlocalize }}"
             />
         </picture>
     {% endif %}
-    
+
 </div>

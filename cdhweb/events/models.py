@@ -24,7 +24,7 @@ from wagtail.search import index
 from wagtailautocomplete.edit_handlers import AutocompletePanel
 
 from cdhweb.pages.blocks.image_block import UnsizedImageBlock
-from cdhweb.pages.mixin import StandardHeroMixinNoImage
+from cdhweb.pages.mixin import IndexPageMixin, StandardHeroMixinNoImage
 from cdhweb.pages.models import BasePage, ContentPage, LandingPage, LinkPage
 from cdhweb.people.models import Person
 
@@ -414,14 +414,14 @@ class EventsLinkPageArchived(LinkPage):
     subpage_types = [Event, LinkPage, ContentPage]
 
 
-class EventsLandingPage(StandardHeroMixinNoImage, RoutablePageMixin, Page):
+class EventsLandingPage(IndexPageMixin, RoutablePageMixin, Page):
     """Container page that defines where Event pages can be created."""
 
     template_name = "events/events_landing_page.html"
 
-    content_panels = StandardHeroMixinNoImage.content_panels
+    content_panels = IndexPageMixin.content_panels
 
-    search_fields = StandardHeroMixinNoImage.search_fields
+    search_fields = IndexPageMixin.search_fields
 
     settings_panels = Page.settings_panels
 
