@@ -1,17 +1,17 @@
 {% load wagtailcore_tags wagtailimages_tags l10n %}
 
 <div class="event-hero content-width grid-standard">
-    
+
     <div class="event-hero__text">
         <h1>{{ self.title}}</h1>
-    
+
         <p class="event-hero__date">
             {# Display date differently depending on if it spans multiple days #}
             {% if self.start_time.date == self.end_time.date %}
-                <time datetime="{{ self.start_time|date:'c' }}">{{ self.start_time|date:"M d g:i a" }}</time> – 
+                <time datetime="{{ self.start_time|date:'c' }}">{{ self.start_time|date:"M d g:i a" }}</time> –
                 <time datetime="{{ self.end_time|date:'c' }}">{{ self.end_time|date:"g:i a" }}</time>
             {% else %}
-                <time datetime="{{ self.start_time|date:'c' }}">{{ self.start_time|date:"M d g:i a" }}</time> – 
+                <time datetime="{{ self.start_time|date:'c' }}">{{ self.start_time|date:"M d g:i a" }}</time> –
                 <time datetime="{{ self.end_time|date:'c' }}">{{ self.end_time|date:"M d g:i a" }}</time>
             {% endif %}
         </p>
@@ -22,13 +22,13 @@
         {# Much of this schema is ported over from the old event template #}
         {% if self.location %}
             <div
-                class="event-hero__location" 
+                class="event-hero__location"
                 property="schema:location"
                 typeof="{% if self.location.name %}schema:VirtualLocation{% else %}schema:Place{% endif %}"
             >
                 <span property="schema:name">{{ self.location.name }}</span>
                 {% if not self.location.name == "Virtual" %}
-                    <div 
+                    <div
                         property="schema:address"
                         {% if self.location.name == self.location.address %}style="display:none"{% endif %}
                     >
@@ -45,7 +45,11 @@
                 <h2 class="sr-only">Speakers</h2>
                 <ul>
                     {% for speaker in page.speakers.all %}
-                        <li>{{ speaker.person }}</li>
+                        {% if speaker.person.profile_url %}
+                            <li><a href="{{ speaker.person.profile_url }}">{{ speaker.person }}</a></li>
+                        {% else %}
+                            <li>{{ speaker.person }}</li>
+                        {% endif %}
                     {% endfor %}
                 </ul>
             </div>
@@ -54,7 +58,7 @@
         {% if self.tags.all %}
             <div class="tag-list">
                 {% for tag in self.tags.all %}
-                    <div class="tag">{{ tag }}</div>    
+                    <div class="tag">{{ tag }}</div>
                 {% endfor %}
             </div>
         {% endif %}
@@ -62,7 +66,7 @@
 
     {% if self.image %}
         <figure class="event-hero__img">
-            {% comment %}    
+            {% comment %}
                 All are cropped to a 16:9 ratio. This differs from design, as discussed.
                 If changing this by image rendition, update aspect-ratio in the CSS instead
                 of via inline style.
@@ -76,12 +80,12 @@
                 <source srcset="{{ img_sm.url }}" media="(min-width: 500px)">
                 <source srcset="{{ img_xl.url }}" media="(min-width: 1200px)">
                 <img
-                    src="{{ img_base.url }}" 
+                    src="{{ img_base.url }}"
                     alt="{{ self.alt_text|default:img_base.alt }}"
                     style="aspect-ratio: {{ img_base.width|unlocalize }} / {{ img_base.height|unlocalize }}"
                 />
             </picture>
-            
+
             {% if self.caption or self.credit %}
                 <figcaption class="sk-image__text-content">
                     {% if self.credit %}
@@ -97,7 +101,7 @@
                 </figcaption>
             {% endif %}
         </figure>
-            
+
     {% endif %}
-    
+
 </div>
