@@ -1,15 +1,16 @@
 from wagtail_modeladmin.mixins import ThumbnailMixin
-from wagtail_modeladmin.options import (ModelAdmin, ModelAdminGroup,
-                                        modeladmin_register)
+from wagtail_modeladmin.options import ModelAdmin, ModelAdminGroup, modeladmin_register
 
 from cdhweb.events.models import Event, EventType, Location
+
+from django.template.defaultfilters import striptags
 
 
 class EventAdmin(ThumbnailMixin, ModelAdmin):
     model = Event
     menu_icon = "date"
     list_display = (
-    "admin_thumb",
+        "admin_thumb",
         "title",
         "type",
         "speaker_list",
@@ -30,7 +31,7 @@ class EventAdmin(ThumbnailMixin, ModelAdmin):
         "attendance",
         "join_url",
         "content",
-        "tags",
+        "tags_",
         "updated",
     )
     export_filename = "cdhweb-events"
@@ -48,6 +49,18 @@ class EventAdmin(ThumbnailMixin, ModelAdmin):
     thumb_col_header_text = "thumbnail"
     ordering = ("-start_time",)
     list_per_page = 25
+
+    def content(self, obj):
+        # Plaintext body, named to match existing field
+        return striptags(obj.body)
+
+    def updated(self, obj):
+        # Alias for last update, named to match existing field
+        return obj.latest_revision_created_at
+
+    def tags_(self, obj):
+        # Transform tags into a spreadsheet-friendly form
+        return ", ".join([t.name for t in obj.tags.all()])
 
 
 class EventTypeAdmin(ModelAdmin):
