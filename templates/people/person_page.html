@@ -26,20 +26,19 @@
                 </div>
             {% endif %}
 
-            {% if recent_events %}
+            {% if related_events %}
                 <div class="block block--tiles">
                     <div class="tiles__title-wrapper">
                         <h2>Related events</h2>
                     </div>
                     <div class="tiles__list">
-                        {% for event in recent_events %}
+                        {% for event in related_events %}
                             {% include 'cdhpages/blocks/tile.html' with internal_page=event tile_type='internal_page_tile' has_component_title=True %}
                         {% endfor %}
                     </div>
                 </div>
             {% endif %}
 
-            {# TODO - when blog page exists #}
             {% if recent_posts %}
                 <div class="block block--tiles">
                     <div class="tiles__title-wrapper">
