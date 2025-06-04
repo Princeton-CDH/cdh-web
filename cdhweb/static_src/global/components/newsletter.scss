@@ -1,3 +1,6 @@
+@use '../mixins/mx';
+@use '../functions/fn';
+
 /*
 Newsletter streamfield block.
 Note: this uses the same `includes/newsletter_form.html` rendered by in <footer>.
@@ -17,23 +20,23 @@ We don't have a streamfield-specific template for it, but we conditionally add a
   color: var(--color-white);
   padding: 16px;
 
-  @include three-dee-box;
+  @include mx.three-dee-box;
 
-  @include xl {
+  @include mx.xl {
     padding: 24px;
     --three-dee-side-size: 56px;
   }
 
   :where(h2) {
     font-weight: bold;
-    font-size: px2rem(18);
+    font-size: fn.rem(18);
     margin-block-end: 14px;
     display: flex;
     gap: 8px;
     align-items: center;
 
-    @include sm {
-      font-size: px2rem(22);
+    @include mx.sm {
+      font-size: fn.rem(22);
     }
 
     :where(svg) {

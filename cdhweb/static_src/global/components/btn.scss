@@ -1,14 +1,17 @@
+@use '../mixins/mx';
+@use '../functions/fn';
+
 .sk-btn {
-  @include btn;
+  @include mx.btn;
 }
 .sk-btn--primary {
-  @include btn-primary;
+  @include mx.btn-primary;
 }
 .sk-btn--secondary {
-  @include btn-secondary;
+  @include mx.btn-secondary;
 }
 .sk-btn--link-style {
-  @include btn-link-style;
+  @include mx.btn-link-style;
 }
 
 .sk-btn-group {
@@ -17,7 +20,7 @@
   gap: 13px 16px;
   align-items: center;
 
-  @include sm {
+  @include mx.sm {
     flex-direction: row;
     flex-wrap: wrap;
   }
@@ -29,7 +32,7 @@
   // a "primary" style is if there are two buttons.
   &:not(:has(.sk-btn--secondary)) {
     .sk-btn--primary {
-      @include btn-secondary;
+      @include mx.btn-secondary;
     }
   }
 }

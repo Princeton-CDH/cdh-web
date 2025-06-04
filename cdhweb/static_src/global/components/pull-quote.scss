@@ -1,26 +1,29 @@
+@use '../mixins/mx';
+@use '../functions/fn';
+
 .pull-quote {
-  @include outdented-line-block;
+  @include mx.outdented-line-block;
 }
 
 .pull-quote__quote {
-  font-size: px2rem(24);
+  font-size: fn.rem(24);
   line-height: 1.25;
 
-  @include sm {
-    font-size: px2rem(32);
+  @include mx.sm {
+    font-size: fn.rem(32);
   }
 }
 
 .pull-quote__citation {
   font-style: italic;
   margin-block-start: 16px;
-  font-size: px2rem(20);
+  font-size: fn.rem(20);
 
   // for endash pseudo content:
   position: relative;
   padding-left: 1.5ch;
 
-  @include sm {
+  @include mx.sm {
     margin-block-start: 24px;
   }
 

@@ -1,9 +1,12 @@
+@use '../mixins/mx';
+@use '../functions/fn';
+
 .cta {
   border: 1px solid var(--color-brand-100);
   background-color: var(--color-brand-5);
   padding: 24px;
 
-  @include sm {
+  @include mx.sm {
     padding: 40px;
   }
 

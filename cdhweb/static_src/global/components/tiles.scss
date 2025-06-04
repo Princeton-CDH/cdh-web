@@ -1,11 +1,14 @@
+@use '../mixins/mx';
+@use '../functions/fn';
+
 .tiles--featured {
   // The "featured" setting (i.e. full bleed bg) is only designed to work on the homepage.
   // It could be used on any page without a side-nav in theory, but that's not in scope.
   .template-home & {
-    @include full-bleed-bg(var(--color-grey-5));
+    @include mx.full-bleed-bg(var(--color-grey-5));
     padding-block: 40px;
 
-    @include md {
+    @include mx.md {
       padding-block: 72px;
     }
   }
@@ -24,20 +27,20 @@
   :where(h2) {
     margin-bottom: 0;
 
-    @include md {
+    @include mx.md {
       margin-inline-start: calc(-1 * var(--content-outdent));
     }
   }
 
   :where(a) {
-    font-size: px2rem(14);
+    font-size: fn.rem(14);
   }
 }
 
 .tiles__intro {
   margin-block-end: 40px;
 
-  @include sm {
+  @include mx.sm {
     margin-block-end: 64px;
   }
 }
@@ -46,20 +49,17 @@
   display: grid;
   row-gap: 40px;
 
-  @include sm {
-    grid-template-columns: repeat(auto-fill, minmax(px2rem(280), 1fr));
+  @include mx.sm {
+    grid-template-columns: repeat(auto-fill, minmax(fn.rem(280), 1fr));
     column-gap: 28px;
   }
 
   // For tile lists on wider landing pages, make them outdented too.
   :where(
-      :has(
-          .page-layout--with-sidenav-wider,
-          .page-layout--without-sidenav-wider
-        )
-        &
-    ) {
-    @include md {
+    :has(.page-layout--with-sidenav-wider, .page-layout--without-sidenav-wider)
+      &
+  ) {
+    @include mx.md {
       margin-inline-start: calc(-1 * var(--content-outdent));
     }
   }
@@ -90,18 +90,18 @@
     // causes layout bugs.
     grid-column: 1 / -1;
 
-    @include lg {
+    @include mx.lg {
       grid-column: span 2;
     }
   }
 }
 
-@container featured-tile (min-width: #{px2rem(400)}) {
+@container featured-tile (min-width: #{fn.rem(400)}) {
   .tile--featured {
     grid-template-rows: 1fr;
     grid-template-columns: 0.9fr 1fr;
     height: 100%;
-    min-height: px2rem(250);
+    min-height: fn.rem(250);
 
     .tile__img-wrapper {
       grid-column: 1;
@@ -132,22 +132,22 @@
   padding: 24px 12px;
 
   // Default. Some text elements get different treatment.
-  font-size: px2rem(16);
+  font-size: fn.rem(16);
   line-height: 1.5;
 
   :where(h2, h3) {
-    font-size: px2rem(24);
+    font-size: fn.rem(24);
     font-weight: 900;
     margin-block-end: 12px;
   }
 }
 
 .tile__event-date {
-  font-size: px2rem(16);
+  font-size: fn.rem(16);
 }
 
 .tile__event-speakers {
-  font-size: px2rem(18);
+  font-size: fn.rem(18);
 }
 
 .tile__link {

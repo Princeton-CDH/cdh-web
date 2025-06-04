@@ -1,3 +1,6 @@
+@use '../mixins/mx';
+@use '../functions/fn';
+
 /* 
 Simple filter `<select>` menu that can appear above a tiles list.
 Used on Events and Blog/News landing page.
@@ -13,19 +16,19 @@ Layout code currently assumes there's only one label & select.
   align-items: center;
   gap: 8px;
 
-  @include sm {
+  @include mx.sm {
     justify-content: end;
   }
 
   :where(label) {
     font-weight: bold;
-    font-size: px2rem(17);
+    font-size: fn.rem(17);
     line-height: 1.33;
   }
   :where(select) {
     flex-grow: 1;
 
-    @include sm {
+    @include mx.sm {
       flex-grow: unset;
       width: auto;
       max-width: 100%;

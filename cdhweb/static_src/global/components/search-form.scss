@@ -1,3 +1,6 @@
+@use '../mixins/mx';
+@use '../functions/fn';
+
 // .search-form {
 // }
 
@@ -10,7 +13,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px 16px;
-  font-size: px2rem(15);
+  font-size: fn.rem(15);
   line-height: 1.33;
   font-weight: bold;
 
@@ -25,7 +28,7 @@
     flex-direction: column;
     gap: 8px;
 
-    @include md {
+    @include mx.md {
       flex-direction: row;
       gap: 8px 40px;
     }

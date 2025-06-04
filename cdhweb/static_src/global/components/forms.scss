@@ -1,3 +1,6 @@
+@use '../mixins/mx';
+@use '../functions/fn';
+
 // Input with joined-up inline submit button.
 // Used for search and email signup forms.
 .text-input-and-button-group {
@@ -16,7 +19,7 @@
     border: 1px solid var(--form-control-border-color, var(--color-grey-110));
     border-right: 0;
     border-radius: var(--radius) 0 0 var(--radius);
-    font-size: px2rem(16);
+    font-size: fn.rem(16);
   }
   :where(input[type='submit']) {
     cursor: pointer;
@@ -26,7 +29,7 @@
     border: 1px solid var(--form-control-border-color, transparent);
     border-left: 0;
     border-radius: 0 var(--radius) var(--radius) 0;
-    font-size: px2rem(15);
+    font-size: fn.rem(15);
     font-weight: bold;
 
     &:hover {
@@ -38,14 +41,14 @@
 // Custom checkboxes and radios.
 // Shared styles here. radio/checkbox-specific styles afterwards.
 :is(.checkbox, .radio) {
-  --input-size: #{px2rem(20)};
+  --input-size: #{fn.rem(20)};
 
   position: relative;
   display: flex;
   align-items: center;
 
   :where(input) {
-    @include visuallyHidden;
+    @include mx.visuallyHidden;
   }
   :where(label) {
     cursor: pointer;
@@ -103,9 +106,9 @@
       content: '';
       opacity: 0; // only shown when :checked
       position: absolute;
-      left: px2rem(3);
-      top: px2rem(5);
-      width: px2rem(13);
+      left: fn.rem(3);
+      top: fn.rem(5);
+      width: fn.rem(13);
       aspect-ratio: 14/10; // from viewbox
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 10'%3E%3Cpath fill='%23fff' d='m12.8 2.5-6.6 6.6a1.2 1.2 0 01-1.7 0l-3.3-3.3a1.2 1.2 0 010-1.7 1.2 1.2 0 011.7 0l2.5 2.6 5.7-5.8a1.2 1.2 0 011.7 0 1.2 1.2 0 010 1.6z' /%3E%3C/svg%3E%0A");
       background-repeat: no-repeat;

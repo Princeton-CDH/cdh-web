@@ -1,58 +1,61 @@
+@use '../functions/fn';
+@use './breakpoints' as bp;
+
 // Mixins for typography
 
 // These mixins are intended to allow you to style (e.g.) an h2 to look like (e.g.) an h3.
 @mixin h1 {
-  font-size: px2rem(36);
+  font-size: fn.rem(36);
   line-height: 1;
   font-weight: 900;
   text-wrap: balance;
 
-  @include md {
-    font-size: px2rem(48);
+  @include bp.md {
+    font-size: fn.rem(48);
   }
 
-  @include xl {
-    font-size: px2rem(56);
+  @include bp.xl {
+    font-size: fn.rem(56);
   }
 }
 
 @mixin h2 {
-  font-size: px2rem(32);
+  font-size: fn.rem(32);
   line-height: 1.125;
   font-weight: 900;
 
-  @include xl {
-    font-size: px2rem(36);
+  @include bp.xl {
+    font-size: fn.rem(36);
   }
 }
 
 @mixin h3 {
-  font-size: px2rem(24);
+  font-size: fn.rem(24);
   line-height: 1.125;
   font-weight: 900;
 
-  @include xl {
-    font-size: px2rem(28);
+  @include bp.xl {
+    font-size: fn.rem(28);
   }
 }
 
 @mixin h4 {
-  font-size: px2rem(20);
+  font-size: fn.rem(20);
   line-height: 1.125;
   font-weight: 900;
 
-  @include xl {
-    font-size: px2rem(24);
+  @include bp.xl {
+    font-size: fn.rem(24);
   }
 }
 
 @mixin h5 {
-  font-size: px2rem(20);
+  font-size: fn.rem(20);
   line-height: 1.125;
   font-weight: bold;
 
-  @include xl {
-    font-size: px2rem(24);
+  @include bp.xl {
+    font-size: fn.rem(24);
   }
 }
 

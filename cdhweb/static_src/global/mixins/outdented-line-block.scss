@@ -1,8 +1,10 @@
+@use './breakpoints' as bp;
+
 @mixin outdented-line-block {
   position: relative;
   padding-inline-start: 32px;
 
-  @include md {
+  @include bp.md {
     padding-inline-start: 0;
   }
 

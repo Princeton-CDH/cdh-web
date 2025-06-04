@@ -1,3 +1,5 @@
+@use './breakpoints' as bp;
+
 /**
     Fancy 3D-lookin' box.
     - Default look: white content area, teal border/sides (overridable). 
@@ -24,7 +26,7 @@
   // `margin-block-end` on your component as needed.
   margin-block-end: var(--side-size);
 
-  @include xl {
+  @include bp.xl {
     // Undo capped width now it's likely spaced away from the page edge.
     width: 100%;
   }

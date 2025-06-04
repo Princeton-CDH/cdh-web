@@ -1,3 +1,6 @@
+@use '../mixins/mx';
+@use '../functions/fn';
+
 // has `.grid-standard`
 .home-hero {
   --bg-box-border-width: 8px;
@@ -21,18 +24,18 @@
     'i i i i i i i i i i i i'
     '. c c c c c c c c c . .';
 
-  @include sm {
+  @include mx.sm {
     --space-below-box: 80px;
   }
 
-  @include md {
+  @include mx.md {
     --space-below-box: 104px;
 
     grid-template-areas:
       'i i i i i i i i i i i i'
       '. c c c c c c c . . . .';
   }
-  @include lg {
+  @include mx.lg {
     --bg-box-x-pad: 56px;
     --bg-box-y-pad: 40px;
 
@@ -41,13 +44,13 @@
       '. . c c c c c c . . . .';
   }
 
-  @include xl {
+  @include mx.xl {
     grid-template-areas:
       '. i i i i i i i i i i .'
       '. . c c c c c . . . . .';
   }
 
-  @include xxl {
+  @include mx.xxl {
     --space-below-box: 136px;
   }
 }
@@ -64,13 +67,13 @@
 
   :where(h1) {
     margin: 0 0 8px;
-    @include lg {
+    @include mx.lg {
       margin-block-end: 16px;
     }
   }
   :where(p) {
     margin: 0;
-    font-size: px2rem(24);
+    font-size: fn.rem(24);
     line-height: 1.5;
   }
 }
@@ -79,24 +82,23 @@
 // This usage is different to the others because the *text content* is what
 // aligns to the grid, and the 3d box is absolute-positioned around it as a separate element.
 .hero-home__box {
-  position: absolute;
+  @include mx.three-dee-box;
+  & {
+    position: absolute;
+    top: 0;
+    width: calc(100% + var(--bg-box-x-pad) * 2);
+    height: calc(100% + var(--bg-box-y-pad) * 2);
+    transform: translate(
+      calc(-1 * var(--bg-box-x-pad)),
+      calc(-1 * var(--bg-box-y-pad))
+    );
+  }
 
-  @include three-dee-box;
-
-  position: absolute;
-  top: 0;
-  width: calc(100% + var(--bg-box-x-pad) * 2);
-  height: calc(100% + var(--bg-box-y-pad) * 2);
-  transform: translate(
-    calc(-1 * var(--bg-box-x-pad)),
-    calc(-1 * var(--bg-box-y-pad))
-  );
-
-  @include md {
+  @include mx.md {
     --three-dee-side-size: 56px;
   }
 
-  @include xl {
+  @include mx.xl {
     // Same as declaration above. Needed to stop mixin setting it to something else.
     width: calc(100% + var(--bg-box-x-pad) * 2);
   }
@@ -104,16 +106,16 @@
 
 .home-hero__img {
   grid-area: i;
-  @include break-grid;
+  @include mx.break-grid;
 
   object-fit: cover;
   height: 312px;
 
-  @include sm {
+  @include mx.sm {
     height: 498px;
   }
 
-  @include xl {
-    @include undo-break-grid;
+  @include mx.xl {
+    @include mx.undo-break-grid;
   }
 }

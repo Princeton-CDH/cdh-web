@@ -1,3 +1,6 @@
+@use '../mixins/mx';
+@use '../functions/fn';
+
 .alert-banner {
   --alert-accent-color: var(--color-brand-100);
   --alert-bg-color: var(--color-brand-5);
@@ -31,7 +34,7 @@
   // c = content (including dismiss button)
   grid-template-areas: 'd c c c c c c c c c c c';
 
-  @include lg {
+  @include mx.lg {
     grid-template-areas: 'd d c c c c c c c c c c';
   }
 }
@@ -47,7 +50,7 @@
   justify-content: end;
   padding: 6px 4px;
 
-  @include lg {
+  @include mx.lg {
     padding: 20px 8px;
   }
 
@@ -62,10 +65,10 @@
   background-color: var(--alert-bg-color);
   position: relative; // for pseudo element placement
 
-  font-size: px2rem(16);
+  font-size: fn.rem(16);
   padding-block: 8px;
 
-  @include lg {
+  @include mx.lg {
     padding-block: 16px;
   }
 
@@ -82,7 +85,7 @@
 }
 
 .alert-banner__heading {
-  font-size: px2rem(20);
+  font-size: fn.rem(20);
 }
 
 // Wrapper for a) text and b) dismiss button
@@ -94,7 +97,7 @@
 }
 
 .alert-banner__text {
-  max-inline-size: px2rem(1080);
+  max-inline-size: fn.rem(1080);
 }
 
 .alert-banner__dismiss-btn {
@@ -106,7 +109,7 @@
   padding: 4px;
 
   :where(svg) {
-    width: px2rem(18);
+    width: fn.rem(18);
     aspect-ratio: 1;
   }
 }

@@ -1,11 +1,13 @@
+@use 'sass:meta';
 @use 'sass:math';
+
 // =============================================================================
 // Functions
 // =============================================================================
 
 // Used by `rem` function
 @function strip-unit($number) {
-  @if type-of($number) == 'number' and not unitless($number) {
+  @if meta.type-of($number) == 'number' and not math.is-unitless($number) {
     @return math.div($number, ($number * 0 + 1));
   }
 
@@ -13,13 +15,13 @@
 }
 
 // Convert pixels to rems
-@function px2rem($size) {
+@function rem($size) {
   $rem-size: math.div(strip-unit($size), strip-unit(16));
   @return #{$rem-size}rem;
 }
 
 // Convert pixels to ems
 // (USE FOR BREAKPOINTS ONLY)
-@function px2em($size) {
-  @return math.div($size, 16px) * 1em;
+@function em($size) {
+  @return math.div(strip-unit($size), strip-unit(16)) * 1em;
 }

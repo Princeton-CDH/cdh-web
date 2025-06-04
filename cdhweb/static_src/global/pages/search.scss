@@ -1,12 +1,15 @@
+@use '../mixins/mx';
+@use '../functions/fn';
+
 // has `.grid-standard`
 .search-page {
   & > * {
     grid-column: 1 / -1;
 
-    @include xl {
+    @include mx.xl {
       grid-column: 3 / -2;
     }
-    @include xxxl {
+    @include mx.xxxl {
       grid-column: 3 / -3;
     }
   }
@@ -15,15 +18,15 @@
     margin-block-start: 40px;
     margin-block-end: 24px;
 
-    @include md {
+    @include mx.md {
       margin-block-start: 80px;
     }
-    @include xl {
+    @include mx.xl {
       margin-block-start: 104px;
       margin-block-end: 56px;
       margin-inline-start: calc(-1 * var(--content-outdent));
     }
-    @include xxl {
+    @include mx.xxl {
       margin-block-start: 160px;
     }
   }
@@ -32,32 +35,32 @@
 .search-page__results {
   margin-block-start: 40px;
 
-  @include md {
+  @include mx.md {
     margin-block-start: 80px;
   }
-  @include xl {
+  @include mx.xl {
     margin-block-start: 104px;
   }
 }
 
 .search-page__results-heading {
   margin-block-end: 4px;
-  font-size: px2rem(24);
+  font-size: fn.rem(24);
   font-weight: 900;
 
-  @include sm {
-    font-size: px2rem(28);
+  @include mx.sm {
+    font-size: fn.rem(28);
   }
 }
 
 .search-page__results-summary {
-  font-size: px2rem(16);
+  font-size: fn.rem(16);
   padding-block-end: 20px;
   margin-block-end: 56px;
   border-bottom: 1px solid var(--color-brand-100);
 
-  @include sm {
-    font-size: px2rem(18);
+  @include mx.sm {
+    font-size: fn.rem(18);
   }
 }
 
@@ -69,13 +72,13 @@
   gap: 56px;
 
   :where(h3) {
-    font-size: px2rem(18);
+    font-size: fn.rem(18);
     font-weight: bold;
     margin-block-end: 12px;
     line-height: 1.625;
 
-    @include sm {
-      font-size: px2rem(22);
+    @include mx.sm {
+      font-size: fn.rem(22);
     }
   }
 
@@ -99,12 +102,12 @@
 }
 
 .search-page__result-last-updated {
-  font-size: px2rem(14);
+  font-size: fn.rem(14);
 }
 
 .search-page__form {
   --btn-bg: var(--color-brand-100);
   --btn-color: var(--color-black);
   --btn-bg-hover: Var(--color-brand-110);
-  max-inline-size: px2rem(800);
+  max-inline-size: fn.rem(800);
 }

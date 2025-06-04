@@ -1,9 +1,11 @@
+@use '../functions/fn';
+
 .pagination {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 16px;
-  font-size: px2rem(16);
+  font-size: fn.rem(16);
   margin-block-start: 56px;
   padding-block-start: 40px;
   border-top: 1px solid var(--color-brand-100);

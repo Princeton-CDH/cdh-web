@@ -1,3 +1,6 @@
+@use '../mixins/mx';
+@use '../functions/fn';
+
 /*
 Project page has a similar layout to the standard page with sidenav,
 except the sidenav is replaced by a meta-details box, which sits to
@@ -14,14 +17,14 @@ the right of the content (when unstacked).
     's s s s s s s s s s s s'
     'm m m m m m m m m m m m';
 
-  @include sm {
+  @include mx.sm {
     row-gap: 80px;
   }
-  @include lg {
+  @include mx.lg {
     grid-template-areas: 'm m m m m m m m s s s s';
   }
 
-  @include xl {
+  @include mx.xl {
     grid-template-areas: '. . m m m m m m m s s s';
   }
 }
@@ -31,36 +34,37 @@ the right of the content (when unstacked).
 }
 
 .project-page__side-content {
-  grid-area: s;
+  @include mx.three-dee-box;
+  & {
+    grid-area: s;
+    position: relative;
 
-  position: relative;
-  @include three-dee-box;
+    padding: 20px 32px;
+    font-size: fn.rem(16);
 
-  padding: 20px 32px;
-  font-size: px2rem(16);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
 
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
-
-  @include sm {
+  @include mx.sm {
     padding-inline: 48px;
   }
-  @include md {
+  @include mx.md {
     padding-inline: 24px;
   }
-  @include lg {
+  @include mx.lg {
     align-self: start;
   }
 
   :where(h2) {
-    font-size: px2rem(16);
+    font-size: fn.rem(16);
     font-weight: 900;
     line-height: 1.125;
     margin-block-end: 16px;
   }
   :where(h3) {
-    font-size: px2rem(13);
+    font-size: fn.rem(13);
     font-weight: bold;
     line-height: 1.125;
     margin-block-end: 4px;
@@ -78,7 +82,7 @@ the right of the content (when unstacked).
 }
 
 .project-page__side-content-block {
-  flex: 1 1 px2rem(185);
+  flex: 1 1 fn.rem(185);
 }
 
 .project-page__side-content-item {
