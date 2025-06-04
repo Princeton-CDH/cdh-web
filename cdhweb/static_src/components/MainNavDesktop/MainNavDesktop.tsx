@@ -1,6 +1,6 @@
 import DesktopMenuItem from './MainNavDesktopItem';
 import { MainNavDataPrimarySimplified } from '../../data-types';
-import { MouseEvent, createRef, useEffect, useRef, useState } from 'react';
+import { JSX, MouseEvent, createRef, useEffect, useRef, useState } from 'react';
 
 type DesktopMenuDataType = {
   primaryNavData: MainNavDataPrimarySimplified;
@@ -29,7 +29,9 @@ const DesktopMenu = ({
   ];
 
   const dropdownRefs = useRef(
-    navDataPlusSearch.map(() => createRef<HTMLDivElement>()),
+    navDataPlusSearch.map(() =>
+      createRef<HTMLDivElement>(),
+    ) as React.RefObject<HTMLDivElement>[],
   );
 
   // Check for clicks outside the megamenu, to see if we should close it.

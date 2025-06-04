@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { JSX, useState } from 'react';
 import cx from 'classnames';
 import Svg from '../svg/svg';
 import { MainNavItemPrimary } from '../../data-types';
