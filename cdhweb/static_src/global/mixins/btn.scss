@@ -1,6 +1,10 @@
 @use '../functions/fn';
-@use './breakpoints' as bp;
 @use './typography' as typo;
+
+// Note, importing breakpoints only as `mx` here to make searching
+// for instances of breakpoints the same across the codebase
+// (regardless of whether we're inside the mixins directory)
+@use './breakpoints' as mx;
 
 @mixin btn {
   // <button> fixes (in case it's literally a button)
@@ -28,7 +32,7 @@
   width: 100%;
   text-align: center;
 
-  @include bp.sm {
+  @include mx.sm {
     width: auto;
     max-width: fit-content;
   }

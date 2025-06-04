@@ -1,5 +1,9 @@
 @use '../functions/fn';
-@use './breakpoints' as bp;
+
+// Note, importing breakpoints only as `mx` here to make searching
+// for instances of breakpoints the same across the codebase
+// (regardless of whether we're inside the mixins directory)
+@use './breakpoints' as mx;
 
 // Mixins for typography
 
@@ -10,11 +14,11 @@
   font-weight: 900;
   text-wrap: balance;
 
-  @include bp.md {
+  @include mx.md {
     font-size: fn.rem(48);
   }
 
-  @include bp.xl {
+  @include mx.xl {
     font-size: fn.rem(56);
   }
 }
@@ -24,7 +28,7 @@
   line-height: 1.125;
   font-weight: 900;
 
-  @include bp.xl {
+  @include mx.xl {
     font-size: fn.rem(36);
   }
 }
@@ -34,7 +38,7 @@
   line-height: 1.125;
   font-weight: 900;
 
-  @include bp.xl {
+  @include mx.xl {
     font-size: fn.rem(28);
   }
 }
@@ -44,7 +48,7 @@
   line-height: 1.125;
   font-weight: 900;
 
-  @include bp.xl {
+  @include mx.xl {
     font-size: fn.rem(24);
   }
 }
@@ -54,7 +58,7 @@
   line-height: 1.125;
   font-weight: bold;
 
-  @include bp.xl {
+  @include mx.xl {
     font-size: fn.rem(24);
   }
 }
