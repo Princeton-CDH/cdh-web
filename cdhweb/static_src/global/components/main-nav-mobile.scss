@@ -1,3 +1,6 @@
+@use '../mixins/mx';
+@use '../functions/fn';
+
 // This is the header element that wraps both tme mobile and desktop <nav>s.
 .header {
   border-bottom: 1px solid var(--color-brand-100);
@@ -12,7 +15,7 @@
 }
 
 .main-nav-mobile {
-  @include lg {
+  @include mx.lg {
     display: none;
   }
 }
@@ -57,7 +60,7 @@
 }
 
 .mobile-menu__header-btn-icon {
-  width: px2rem(20);
+  width: fn.rem(20);
   aspect-ratio: 1;
 }
 
@@ -87,10 +90,10 @@
   padding: 20px 0;
   border-bottom: 1px solid transparent;
   font-weight: bold;
-  font-size: px2rem(22);
+  font-size: fn.rem(22);
 
   &[aria-expanded='true'] {
-    @include full-bleed-bg(var(--color-brand-40));
+    @include mx.full-bleed-bg(var(--color-brand-40));
   }
   &:not([aria-expanded='true']) {
     --icon-color: var(--icon-color-dark);
@@ -127,9 +130,9 @@
   --icon-accent-color: var(--color-brand-120);
   background-color: var(--color-brand-100);
   padding-block-end: 32px;
-  font-size: px2rem(16);
+  font-size: fn.rem(16);
 
-  @include full-bleed-bg(var(--color-brand-40));
+  @include mx.full-bleed-bg(var(--color-brand-40));
 }
 
 .mobile-menu__sub-menu-description {
@@ -137,7 +140,7 @@
 }
 
 .mobile-menu__sub-menu-goto-link {
-  font-size: px2rem(14);
+  font-size: fn.rem(14);
 }
 
 .mobile-menu__sub-menu-list {
@@ -154,7 +157,7 @@
   padding-block: 32px 48px;
 
   :where(h2) {
-    font-size: px2rem(17);
+    font-size: fn.rem(17);
     margin-block-end: 20px;
     font-weight: 900;
   }
@@ -168,7 +171,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  font-size: px2rem(18);
+  font-size: fn.rem(18);
   margin-block-start: 32px;
 }
 

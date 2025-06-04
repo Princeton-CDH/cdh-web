@@ -1,3 +1,6 @@
+@use '../mixins/mx';
+@use '../functions/fn';
+
 /* 
 Person hero. Similar to standard hero. Key differences:
 - image ratio (TODO – maybe?)
@@ -18,30 +21,30 @@ Person hero. Similar to standard hero. Key differences:
     'h h h h h h h h h h h h'
     'c c c c c c c c c c c c';
 
-  @include sm {
+  @include mx.sm {
     margin-block-end: 120px;
   }
 
-  @include md {
+  @include mx.md {
     --title-top-space: 64px;
 
     grid-template-areas:
       'h h h h h h h h h h h h'
       '. c c c c c c c c c c c';
   }
-  @include lg {
+  @include mx.lg {
     --title-top-space: 80px;
     grid-template-areas:
       '. h h h h h h h h h h .'
       '. . c c c c c c c c c .';
   }
-  @include xl {
+  @include mx.xl {
     --title-top-space: 104px;
     grid-template-areas:
       '. h h h h h h h h . . .'
       '. . c c c c c c c . . .';
   }
-  @include xxl {
+  @include mx.xxl {
     --title-top-space: 160px;
     grid-template-areas:
       '. h h h h h h h h . . .'
@@ -55,12 +58,12 @@ Person hero. Similar to standard hero. Key differences:
       'h h h h h h h h h h h h'
       'c c c c c c c c c c c c';
 
-    @include md {
+    @include mx.md {
       grid-template-areas:
         'h h h h h h i i i i i i'
         '. c c c c c i i i i i i';
     }
-    @include lg {
+    @include mx.lg {
       grid-template-areas:
         '. h h h h h i i i i i i'
         '. . c c c c i i i i i i';
@@ -82,22 +85,22 @@ Person hero. Similar to standard hero. Key differences:
 
 .person-hero__job {
   margin: 16px 0 0;
-  font-size: px2rem(24);
+  font-size: fn.rem(24);
   line-height: 1.125;
 
-  @include xl {
-    font-size: px2rem(28);
+  @include mx.xl {
+    font-size: fn.rem(28);
   }
 }
 
 .person-hero__education {
   margin-block-start: 16px;
-  font-size: px2rem(15);
+  font-size: fn.rem(15);
 }
 
 .person-hero__contact {
   grid-area: c;
-  font-size: px2rem(14);
+  font-size: fn.rem(14);
   line-height: 1.62;
   margin-block-start: 48px;
 
@@ -105,21 +108,21 @@ Person hero. Similar to standard hero. Key differences:
   flex-direction: column;
   gap: 24px;
 
-  @include sm {
+  @include mx.sm {
     flex-direction: row;
     flex-wrap: wrap;
   }
 
-  @include lg {
+  @include mx.lg {
     margin-block-start: 56px;
   }
-  @include xl {
-    font-size: px2rem(16);
+  @include mx.xl {
+    font-size: fn.rem(16);
   }
 }
 
 .person-hero__contact-links {
-  flex: 1 1 px2rem(210);
+  flex: 1 1 fn.rem(210);
 
   list-style-type: none;
   padding: 0;
@@ -136,7 +139,7 @@ Person hero. Similar to standard hero. Key differences:
 }
 
 .person-hero__icon {
-  width: px2rem(24);
+  width: fn.rem(24);
   flex-shrink: 0;
 }
 .person-hero__icon--email {
@@ -151,16 +154,16 @@ Person hero. Similar to standard hero. Key differences:
 
 .person-hero__img {
   grid-area: i;
-  @include break-grid;
+  @include mx.break-grid;
 
-  @include sm {
-    @include undo-break-grid;
+  @include mx.sm {
+    @include mx.undo-break-grid;
   }
-  @include md {
-    @include break-grid-right;
+  @include mx.md {
+    @include mx.break-grid-right;
   }
 
-  @include xxxl {
-    @include undo-break-grid;
+  @include mx.xxxl {
+    @include mx.undo-break-grid;
   }
 }

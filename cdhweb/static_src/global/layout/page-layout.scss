@@ -1,12 +1,15 @@
+@use '../mixins/mx';
+@use '../functions/fn';
+
 // Has `.grid-standard`
 .page-layout {
   & > * {
     grid-column: 1 / -1;
 
-    @include md {
+    @include mx.md {
       grid-column: 2 / -1;
     }
-    @include lg {
+    @include mx.lg {
       grid-column: 3 / -2;
     }
   }
@@ -15,10 +18,10 @@
 // From xl, with- and without-sidenav layouts diverge
 .page-layout--without-sidenav {
   // m = main content
-  @include xl {
+  @include mx.xl {
     grid-template-areas: '. . m m m m m m m m . .';
   }
-  @include xxxl {
+  @include mx.xxxl {
     grid-template-areas: '. . m m m m m m m . . .';
   }
 }
@@ -27,10 +30,10 @@
   // s = side-nav
   // Note, we must keep the extra space between the `s` and `m` because otherwise
   // content that has the negative "outdent" (e.g. headings) can collide with the sidenav.
-  @include xl {
+  @include mx.xl {
     grid-template-areas: 's s s . m m m m m m m .';
   }
-  @include xxxl {
+  @include mx.xxxl {
     grid-template-areas: 's s . m m m m m m m . .';
   }
 }
@@ -38,26 +41,26 @@
 // "wider" variants, for tile landing pages such as people, events & blog/news.
 // Similar to above, but uses an extra col for content sometimes.
 .page-layout--without-sidenav-wider {
-  @include xl {
+  @include mx.xl {
     grid-template-areas: '. . m m m m m m m m m .';
   }
-  @include xxxl {
+  @include mx.xxxl {
     grid-template-areas: '. . m m m m m m m m . .';
   }
 }
 .page-layout--with-sidenav-wider {
   // Note, we must keep the extra space between the `s` and `m` because otherwise
   // content that has the negative "outdent" (e.g. headings) can collide with the sidenav.
-  @include xl {
+  @include mx.xl {
     grid-template-areas: 's s s . m m m m m m m .';
   }
-  @include xxxl {
+  @include mx.xxxl {
     grid-template-areas: 's s . m m m m m m m . .';
   }
 }
 
 .page-layout__main-content {
-  @include xl {
+  @include mx.xl {
     grid-area: m;
   }
 }
@@ -66,14 +69,14 @@
   // Vertical space between sidenav and main content when stacked:
   margin-block-start: 56px;
 
-  @include sm {
+  @include mx.sm {
     margin-block-start: 80px;
   }
-  @include md {
+  @include mx.md {
     margin-block-start: 104px;
   }
 
-  @include xl {
+  @include mx.xl {
     grid-area: s;
     margin-block-start: 0; // unstacked now
   }

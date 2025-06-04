@@ -1,3 +1,6 @@
+@use '../mixins/mx';
+@use '../functions/fn';
+
 /*
 Similar to standard hero, but with a tag/chip thing that can show above the title,
 and some meta info that can appear below the description (like blog hero).
@@ -18,25 +21,25 @@ and some meta info that can appear below the description (like blog hero).
     't t t t t t t t t t t t'
     'd d d d d d d d d d d d';
 
-  @include sm {
+  @include mx.sm {
     margin-block-end: 120px;
   }
 
-  @include md {
+  @include mx.md {
     --title-top-space: 40px;
 
     grid-template-areas:
       't t t t t t t t t t t t'
       '. d d d d d d d d d d d';
   }
-  @include lg {
+  @include mx.lg {
     --title-top-space: 80px;
 
     grid-template-areas:
       '. t t t t t t t t t t .'
       '. . d d d d d d d d d .';
   }
-  @include xxl {
+  @include mx.xxl {
     grid-template-areas:
       '. t t t t t t t t t . .'
       '. . d d d d d d d d . .';
@@ -49,12 +52,12 @@ and some meta info that can appear below the description (like blog hero).
       't t t t t t t t t t t t'
       'd d d d d d d d d d d d';
 
-    @include md {
+    @include mx.md {
       grid-template-areas:
         't t t t t t i i i i i i'
         '. d d d d d i i i i i i';
     }
-    @include lg {
+    @include mx.lg {
       grid-template-areas:
         '. t t t t t i i i i i i'
         '. . d d d d i i i i i i';
@@ -74,10 +77,10 @@ and some meta info that can appear below the description (like blog hero).
     gap: 32px;
     align-items: flex-start;
 
-    @include md {
+    @include mx.md {
       gap: 40px;
     }
-    @include lg {
+    @include mx.lg {
       gap: 56px;
     }
 
@@ -89,24 +92,24 @@ and some meta info that can appear below the description (like blog hero).
 
 .project-hero__description {
   grid-area: d;
-  font-size: px2rem(22);
+  font-size: fn.rem(22);
   line-height: 1.5;
   margin: 16px 0 0;
 
-  @include md {
-    font-size: px2rem(20);
+  @include mx.md {
+    font-size: fn.rem(20);
     margin-block-start: 24px;
   }
-  @include lg {
+  @include mx.lg {
     margin-block-start: 56px;
   }
-  @include xl {
-    font-size: px2rem(24);
+  @include mx.xl {
+    font-size: fn.rem(24);
   }
 
   :where(.tag-list) {
     margin-block-start: 24px;
-    @include lg {
+    @include mx.lg {
       margin-block-start: 40px;
     }
   }
@@ -114,15 +117,15 @@ and some meta info that can appear below the description (like blog hero).
   :where(.sk-btn) {
     margin-block-start: 32px;
 
-    @include md {
+    @include mx.md {
       margin-block-start: 40px;
     }
-    @include lg {
+    @include mx.lg {
       margin-block-start: 56px;
     }
 
     :where(svg) {
-      width: px2rem(16);
+      width: fn.rem(16);
       aspect-ratio: 1;
     }
   }
@@ -130,15 +133,15 @@ and some meta info that can appear below the description (like blog hero).
 
 .project-hero__img {
   grid-area: i;
-  @include break-grid;
+  @include mx.break-grid;
 
-  @include sm {
-    @include undo-break-grid;
+  @include mx.sm {
+    @include mx.undo-break-grid;
   }
-  @include md {
-    @include break-grid-right;
+  @include mx.md {
+    @include mx.break-grid-right;
   }
-  @include xxxl {
-    @include undo-break-grid;
+  @include mx.xxxl {
+    @include mx.undo-break-grid;
   }
 }

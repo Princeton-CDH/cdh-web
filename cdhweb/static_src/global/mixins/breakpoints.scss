@@ -1,3 +1,5 @@
+@use '../functions/fn';
+
 $breakpoint-sm: 500px;
 $breakpoint-md: 768px;
 $breakpoint-lg: 1024px;
@@ -6,32 +8,32 @@ $breakpoint-xxl: 1440px;
 $breakpoint-xxxl: 1920px;
 
 @mixin sm {
-  @media (min-width: px2em($breakpoint-sm)) {
+  @media (min-width: fn.em($breakpoint-sm)) {
     @content;
   }
 }
 @mixin md {
-  @media (min-width: px2em($breakpoint-md)) {
+  @media (min-width: fn.em($breakpoint-md)) {
     @content;
   }
 }
 @mixin lg {
-  @media (min-width: px2em($breakpoint-lg)) {
+  @media (min-width: fn.em($breakpoint-lg)) {
     @content;
   }
 }
 @mixin xl {
-  @media (min-width: px2em($breakpoint-xl)) {
+  @media (min-width: fn.em($breakpoint-xl)) {
     @content;
   }
 }
 @mixin xxl {
-  @media (min-width: px2em($breakpoint-xxl)) {
+  @media (min-width: fn.em($breakpoint-xxl)) {
     @content;
   }
 }
 @mixin xxxl {
-  @media (min-width: px2em($breakpoint-xxxl)) {
+  @media (min-width: fn.em($breakpoint-xxxl)) {
     @content;
   }
 }

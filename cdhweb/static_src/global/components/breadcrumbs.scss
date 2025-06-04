@@ -1,17 +1,20 @@
+@use '../mixins/mx';
+@use '../functions/fn';
+
 .breadcrumbs {
-  font-size: px2rem(14);
+  font-size: fn.rem(14);
   line-height: 1.62;
   margin-block: 20px 12px;
   grid-column: 1 / -1;
 
-  @include sm {
+  @include mx.sm {
     margin-block: 40px 24px;
   }
-  @include md {
+  @include mx.md {
     grid-column: 2 / -1;
     margin-block: 48px 16px;
   }
-  @include lg {
+  @include mx.lg {
     grid-column: 3 / -1;
   }
 }
@@ -27,10 +30,10 @@
 .breadcrumbs__item {
   display: none;
   align-items: center;
-  gap: px2rem(9); // space before '/'
+  gap: fn.rem(9); // space before '/'
   margin: 0;
 
-  @include sm {
+  @include mx.sm {
     display: flex;
   }
 }
@@ -46,7 +49,7 @@
 .breadcrumbs__item--current-page {
   display: none;
 
-  @include sm {
+  @include mx.sm {
     display: flex;
   }
 }
@@ -56,24 +59,24 @@
 
 .breadcrumbs__link--parent {
   display: flex;
-  gap: px2rem(8);
+  gap: fn.rem(8);
 }
 
 // mobile-only back icon:
 .breadcrumbs__back-icon {
-  width: px2rem(15);
+  width: fn.rem(15);
   aspect-ratio: 11 / 16;
 
-  @include sm {
+  @include mx.sm {
     display: none;
   }
 }
 
 .breadcrumbs__separator {
   display: none;
-  margin-right: px2rem(9); // space after '/'
+  margin-right: fn.rem(9); // space after '/'
 
-  @include sm {
+  @include mx.sm {
     display: inline-block;
   }
 }

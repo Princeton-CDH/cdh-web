@@ -1,3 +1,5 @@
+@use '../functions/fn';
+
 .sk-accordion {
   :where(details) {
     margin: 0;
@@ -27,7 +29,7 @@
   :where(summary) {
     cursor: pointer;
     padding-block: 16px;
-    font-size: px2rem(20);
+    font-size: fn.rem(20);
     font-weight: 700;
 
     display: flex;

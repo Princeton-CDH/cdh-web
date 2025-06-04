@@ -1,20 +1,23 @@
+@use '../mixins/mx';
+@use '../functions/fn';
+
 .download {
   border: 1px solid var(--color-brand-100);
   background-color: var(--color-brand-5);
-  font-size: px2rem(18);
+  font-size: fn.rem(18);
   padding: 24px;
 
-  @include sm {
+  @include mx.sm {
     padding: 32px;
   }
 
   :where(h2) {
     font-weight: 900;
-    font-size: px2rem(20);
+    font-size: fn.rem(20);
     margin-block-end: 8px;
 
-    @include sm {
-      font-size: px2rem(24);
+    @include mx.sm {
+      font-size: fn.rem(24);
     }
   }
 
@@ -45,10 +48,10 @@
     aspect-ratio: 18 / 25;
     width: 18px;
     position: relative;
-    top: px2rem(4);
+    top: fn.rem(4);
   }
 }
 
 .download__file-title {
-  @include link-style;
+  @include mx.link-style;
 }

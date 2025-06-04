@@ -1,3 +1,6 @@
+@use '../mixins/mx';
+@use '../functions/fn';
+
 .main-nav-desktop {
   --logo-overlap: 24px;
 
@@ -8,10 +11,10 @@
   padding-block-start: 24px;
   color: var(--color-grey-110);
 
-  @include lg {
+  @include mx.lg {
     display: block;
   }
-  @include xl {
+  @include mx.xl {
     --logo-overlap: 28px;
   }
 
@@ -56,7 +59,7 @@
     width: 138px;
     aspect-ratio: 160 / 120;
 
-    @include xl {
+    @include mx.xl {
       width: 160px;
     }
   }
@@ -71,7 +74,7 @@
 
   list-style-type: none;
   padding: 0;
-  font-size: px2rem(14);
+  font-size: fn.rem(14);
 
   display: flex;
   flex-wrap: wrap;
@@ -80,7 +83,7 @@
 }
 
 .main-nav-desktop__cta {
-  font-size: px2rem(14);
+  font-size: fn.rem(14);
   padding: 8px 16px;
 }
 
@@ -95,10 +98,10 @@
   flex-wrap: wrap; // hopefully won't need to, but just in case.
   gap: 32px;
   padding: 0;
-  font-size: px2rem(16);
+  font-size: fn.rem(16);
 
-  @include xxl {
-    font-size: px2rem(18);
+  @include mx.xxl {
+    font-size: fn.rem(18);
   }
 }
 
@@ -178,11 +181,11 @@
 
   :where(h2) {
     margin-block-end: 16px;
-    font-size: px2rem(32);
+    font-size: fn.rem(32);
   }
   :where(p) {
     margin: 0;
-    font-size: px2rem(18);
+    font-size: fn.rem(18);
   }
   :where(.sk-btn) {
     margin-block-start: 24px;
@@ -197,7 +200,7 @@
     text-decoration-thickness: 4px;
   }
 
-  @include xl {
+  @include mx.xl {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 48px;
@@ -214,7 +217,7 @@
   & + & {
     margin-block-start: var(--space-between-links);
 
-    @include xl {
+    @include mx.xl {
       margin-block-start: 0;
     }
   }

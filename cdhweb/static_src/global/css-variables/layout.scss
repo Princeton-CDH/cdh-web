@@ -1,3 +1,6 @@
+@use '../mixins/mx';
+@use '../functions/fn';
+
 // =============================================================================
 // Custom properties (variables) the standard grid, gaps and page gutters.
 // Mainly used by the layout utility classes, and also to make things full-bleed
@@ -9,31 +12,31 @@
   --standard-cols: 12;
   --standard-gap: 16px;
   --page-gutter: 16px;
-  --content-max-width: #{px2rem(1770)};
-  --reading-max-width: #{px2rem(865)};
+  --content-max-width: #{fn.rem(1770)};
+  --reading-max-width: #{fn.rem(865)};
   --streamfield-space-xs: 16px;
   --streamfield-space-sm: 24px;
   --streamfield-space-lg: 56px;
   --content-outdent: 0px; // px unit present so calc()s don't break
-  --form-field-height: #{px2rem(40)};
+  --form-field-height: #{fn.rem(40)};
 
-  @include sm {
+  @include mx.sm {
     --standard-gap: 24px;
     --page-gutter: 24px;
   }
-  @include md {
+  @include mx.md {
     --streamfield-space-xs: 24px;
     --streamfield-space-sm: 40px;
     --streamfield-space-lg: 80px;
     --content-outdent: 72px;
   }
-  @include lg {
+  @include mx.lg {
     --streamfield-space-lg: 104px;
   }
-  @include xl {
+  @include mx.xl {
     --content-outdent: 104px;
   }
-  @include xxl {
+  @include mx.xxl {
     --content-outdent: 128px;
   }
 }

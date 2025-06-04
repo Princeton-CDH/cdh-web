@@ -3,41 +3,42 @@
 // Should not add any code to the main bundle.
 // i.e. DO NOT add classes here.
 // ================================================
-@import './global/functions';
-@import './global/mixins';
+// @use 'global/sass-variables/var';
+@use './global/functions/fn';
+@use './global/mixins/mx';
 
 // ================================================
 // Code above this line should not output any CSS.
 // ================================================
 
 // CSS variables
-@import './global/css-variables';
+@use './global/css-variables';
 
 // Reset
-@import './global/reset';
+@use './global/reset';
 
 // Fonts. Put font files in this directory (only woff2 is needed).
-@import './global/fonts/fonts';
+@use './global/fonts/fonts';
 
 // Elements
-@import './global/elements/typography';
-@import './global/elements/forms';
-@import './global/elements/page.scss';
+@use './global/elements/typography';
+@use './global/elements/forms' as formElements;
+@use './global/elements/page.scss';
 
 // Layout
-@import './global/layout/content-width.scss';
-@import './global/layout/grid.scss';
-@import './global/layout/page-layout.scss';
-@import './global/layout/streamfields.scss';
+@use './global/layout/content-width.scss';
+@use './global/layout/grid.scss';
+@use './global/layout/page-layout.scss';
+@use './global/layout/streamfields.scss';
 
 // Page templates
-@import './global/pages/search.scss';
-@import './global/pages/projects-landing.scss';
-@import './global/pages/project-page.scss';
-@import './global/pages/error-page.scss';
+@use './global/pages/search.scss';
+@use './global/pages/projects-landing.scss';
+@use './global/pages/project-page.scss';
+@use './global/pages/error-page.scss';
 
 // Spacing between each type of typographic element.
-@import './global/rich-text';
+@use './global/rich-text';
 
 // Components
 
@@ -46,43 +47,43 @@
 // aren't "utilities" (they aren't !important - they're just base styles
 // that can be overridden easily).
 // Should be listed before other components.
-@import './global/components/btn.scss';
-@import './global/components/forms.scss';
-@import './global/components/tag.scss';
+@use './global/components/btn.scss';
+@use './global/components/forms.scss' as formComponents;
+@use './global/components/tag.scss';
 
 // All other components go here:
-@import './global/components/main-nav-mobile.scss';
-@import './global/components/main-nav-desktop.scss';
-@import './global/components/site-alert.scss';
-@import './global/components/skip-link.scss';
-@import './global/components/home-hero.scss';
-@import './global/components/standard-hero.scss';
-@import './global/components/project-hero.scss';
-@import './global/components/person-hero.scss';
-@import './global/components/event-hero.scss';
-@import './global/components/blog-hero.scss';
-@import './global/components/breadcrumbs.scss';
-@import './global/components/jumplinks.scss';
-@import './global/components/sidenav.scss';
-@import './global/components/image.scss';
-@import './global/components/tiles.scss';
-@import './global/components/accordion.scss';
-@import './global/components/cta.scss';
-@import './global/components/note.scss';
-@import './global/components/pull-quote.scss';
-@import './global/components/download.scss';
-@import './global/components/feature.scss';
-@import './global/components/table.scss';
-@import './global/components/video.scss';
-@import './global/components/newsletter.scss';
-@import './global/components/search-form.scss';
-@import './global/components/pagination.scss';
-@import './global/components/simple-filter-bar.scss';
-@import './global/components/footer.scss';
+@use './global/components/main-nav-mobile.scss';
+@use './global/components/main-nav-desktop.scss';
+@use './global/components/site-alert.scss';
+@use './global/components/skip-link.scss';
+@use './global/components/home-hero.scss';
+@use './global/components/standard-hero.scss';
+@use './global/components/project-hero.scss';
+@use './global/components/person-hero.scss';
+@use './global/components/event-hero.scss';
+@use './global/components/blog-hero.scss';
+@use './global/components/breadcrumbs.scss';
+@use './global/components/jumplinks.scss';
+@use './global/components/sidenav.scss';
+@use './global/components/image.scss';
+@use './global/components/tiles.scss';
+@use './global/components/accordion.scss';
+@use './global/components/cta.scss';
+@use './global/components/note.scss';
+@use './global/components/pull-quote.scss';
+@use './global/components/download.scss';
+@use './global/components/feature.scss';
+@use './global/components/table.scss';
+@use './global/components/video.scss';
+@use './global/components/newsletter.scss';
+@use './global/components/search-form.scss';
+@use './global/components/pagination.scss';
+@use './global/components/simple-filter-bar.scss';
+@use './global/components/footer.scss';
 
 // TODO delete migrated content styles once all migrated content is moved from
 // the "migrated" streamfield block and re-created using new (2024) components.
-@import './global/migrated-content.scss';
+@use './global/migrated-content.scss';
 
 // Utility classes. This should go last.
-@import './global/utilities';
+@use './global/utilities';

@@ -1,3 +1,8 @@
+// Note, importing breakpoints only as `mx` here to make searching
+// for instances of breakpoints the same across the codebase
+// (regardless of whether we're inside the mixins directory)
+@use './breakpoints' as mx;
+
 /**
     Fancy 3D-lookin' box.
     - Default look: white content area, teal border/sides (overridable). 
@@ -24,7 +29,7 @@
   // `margin-block-end` on your component as needed.
   margin-block-end: var(--side-size);
 
-  @include xl {
+  @include mx.xl {
     // Undo capped width now it's likely spaced away from the page edge.
     width: 100%;
   }

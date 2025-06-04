@@ -1,44 +1,47 @@
+@use '../mixins/mx';
+@use '../functions/fn';
+
 .feature {
   --three-dee-side-size: 18px;
 
-  font-size: px2rem(20);
+  font-size: fn.rem(20);
   display: grid;
 
   position: relative;
-  @include three-dee-box;
+  @include mx.three-dee-box;
 
-  @include xl {
+  @include mx.xl {
     --three-dee-side-size: 56px;
     grid-template-columns: repeat(2, 1fr);
-    font-size: px2rem(22);
+    font-size: fn.rem(22);
   }
 }
 
 .feature__text-content {
   padding: 24px 16px;
 
-  @include sm {
+  @include mx.sm {
     padding: 32px;
   }
 
   :where(h2) {
-    font-size: px2rem(24);
+    font-size: fn.rem(24);
     text-wrap: pretty;
 
-    @include sm {
-      font-size: px2rem(32);
+    @include mx.sm {
+      font-size: fn.rem(32);
     }
-    @include xl {
-      font-size: px2rem(36);
+    @include mx.xl {
+      font-size: fn.rem(36);
     }
   }
   :where(.sk-btn-group) {
     margin-block-start: 16px;
 
-    @include sm {
+    @include mx.sm {
       margin-block-start: 24px;
     }
-    @include xl {
+    @include mx.xl {
       margin-block-start: 40px;
     }
   }
@@ -47,7 +50,7 @@
 .feature__img {
   order: -1; // on top when stacked
 
-  @include xl {
+  @include mx.xl {
     order: unset;
   }
 
@@ -55,7 +58,7 @@
     object-fit: cover;
     max-height: 350px;
 
-    @include xl {
+    @include mx.xl {
       height: 100%;
       max-height: unset;
     }

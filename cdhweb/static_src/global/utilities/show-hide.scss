@@ -1,9 +1,12 @@
+@use '../mixins/mx';
+@use '../functions/fn';
+
 .sr-only {
-  @include visuallyHidden;
+  @include mx.visuallyHidden;
 }
 
 .sr-only-until-focused {
-  @include visuallyHiddenUntilFocused;
+  @include mx.visuallyHiddenUntilFocused;
 }
 
 .u-hidden {
@@ -11,9 +14,9 @@
 }
 
 .u-no-js-hide {
-  @include no-js-hide;
+  @include mx.no-js-hide;
 }
 
 .u-js-hide {
-  @include js-hide;
+  @include mx.js-hide;
 }

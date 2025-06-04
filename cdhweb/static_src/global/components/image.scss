@@ -1,13 +1,16 @@
+@use '../mixins/mx';
+@use '../functions/fn';
+
 // .sk-image {
 // }
 
 .sk-image--small {
   :where(img) {
     inline-size: 50%;
-    max-inline-size: px2rem(550);
+    max-inline-size: fn.rem(550);
   }
   :where(figcaption) {
-    @include xl {
+    @include mx.xl {
       inline-size: 50%;
     }
   }
@@ -17,7 +20,7 @@
   :where(img) {
     inline-size: 85%;
 
-    @include md {
+    @include mx.md {
       inline-size: 75%;
     }
   }
@@ -25,10 +28,10 @@
 
 .sk-image--large {
   :where(img) {
-    @include break-grid;
+    @include mx.break-grid;
 
-    @include md {
-      @include undo-break-grid;
+    @include mx.md {
+      @include mx.undo-break-grid;
       inline-size: calc(var(--content-outdent) + 100%);
       margin-inline-start: calc(-1 * var(--content-outdent));
     }
@@ -37,13 +40,13 @@
 
 .sk-image__text-content {
   --color-link-underline: currentColor;
-  font-size: px2rem(14);
+  font-size: fn.rem(14);
 
   // The image block itself is wider, to allow images to be wider than captions
   max-inline-size: var(--reading-max-width);
 
-  @include sm {
-    font-size: px2rem(16);
+  @include mx.sm {
+    font-size: fn.rem(16);
   }
 }
 

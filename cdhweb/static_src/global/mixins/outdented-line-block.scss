@@ -1,8 +1,13 @@
+// Note, importing breakpoints only as `mx` here to make searching
+// for instances of breakpoints the same across the codebase
+// (regardless of whether we're inside the mixins directory)
+@use './breakpoints' as mx;
+
 @mixin outdented-line-block {
   position: relative;
   padding-inline-start: 32px;
 
-  @include md {
+  @include mx.md {
     padding-inline-start: 0;
   }
 

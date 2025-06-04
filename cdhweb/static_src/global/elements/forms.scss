@@ -1,3 +1,5 @@
+@use '../functions/fn';
+
 button {
   // mobile safari's UA is a bit different, so we need to explicitly override it
   color: currentColor;
@@ -9,7 +11,7 @@ input {
     width: 100%;
     border: 1px solid var(--color-grey-60);
     border-radius: 8px;
-    font-size: px2rem(16);
+    font-size: fn.rem(16);
     height: var(--form-field-height);
     padding-inline: 16px;
   }
@@ -27,7 +29,7 @@ select {
   padding-inline: 16px 38px;
   border: 1px solid var(--color-grey-60);
   border-radius: 8px;
-  font-size: px2rem(16);
+  font-size: fn.rem(16);
   font-weight: bold;
   height: var(--form-field-height);
 }

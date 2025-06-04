@@ -1,3 +1,6 @@
+@use '../mixins/mx';
+@use '../functions/fn';
+
 .sidenav {
   --three-dee-side-size: 18px;
   --three-dee-border-width: 6px;
@@ -8,20 +11,20 @@
   padding-inline: var(--pad-x);
   padding-block: 24px 0;
 
-  @include three-dee-box;
+  @include mx.three-dee-box;
 
-  @include sm {
+  @include mx.sm {
     --three-dee-border-width: 8px;
   }
-  @include xl {
-    max-width: px2rem(222);
+  @include mx.xl {
+    max-width: fn.rem(222);
     position: sticky;
     top: 24px;
   }
 
   // Sidenav content styles
   :where(h2) {
-    font-size: px2rem(18);
+    font-size: fn.rem(18);
     border-bottom: 1px solid var(--color-brand-100);
     padding-block-end: 18px;
     margin: 0;
@@ -45,7 +48,7 @@
     display: block;
     padding-block: 12px;
     width: fit-content;
-    font-size: px2rem(16);
+    font-size: fn.rem(16);
     text-decoration-line: none;
     font-weight: 400;
 

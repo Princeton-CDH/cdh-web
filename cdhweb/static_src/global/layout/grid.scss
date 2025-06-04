@@ -1,3 +1,6 @@
+@use '../mixins/mx';
+@use '../functions/fn';
+
 .grid-standard {
-  @include grid-standard;
+  @include mx.grid-standard;
 }

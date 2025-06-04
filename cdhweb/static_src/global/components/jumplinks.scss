@@ -1,3 +1,6 @@
+@use '../mixins/mx';
+@use '../functions/fn';
+
 .sk-jumplinks {
   margin-bottom: var(--streamfield-space-lg);
 }
@@ -5,7 +8,7 @@
 .sk-jumplinks__heading {
   margin-block-end: 24px;
 
-  @include md {
+  @include mx.md {
     margin-left: calc(-1 * var(--content-outdent));
   }
 }
@@ -13,7 +16,7 @@
 .sk-jumplinks__list {
   padding: 0;
   list-style-type: none;
-  font-size: px2rem(18);
+  font-size: fn.rem(18);
 }
 
 .sk-jumplinks__link {

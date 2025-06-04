@@ -1,10 +1,12 @@
+@use './mixins/mx';
+
 /*
     Regarding content migrated as part of Springload's 2024 rebuild.
     Existing content was dumped into a "migrated" content streamfield block.
 */
 .block--migrated-content {
   :where(h2) {
-    @include md {
+    @include mx.md {
       margin-left: calc(-1 * var(--content-outdent));
     }
   }

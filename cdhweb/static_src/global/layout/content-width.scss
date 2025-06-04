@@ -1,3 +1,6 @@
+@use '../mixins/mx';
+@use '../functions/fn';
+
 .content-width {
-  @include content-width;
+  @include mx.content-width;
 }

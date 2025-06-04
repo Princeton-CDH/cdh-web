@@ -1,3 +1,6 @@
+@use '../mixins/mx';
+@use '../functions/fn';
+
 // Apply to both the video block (.sk-video__iframe) and the
 // hosted video block (which we can't access the DOM for)
 .block--video :where(iframe) {
@@ -8,12 +11,12 @@
 }
 
 .sk-video__transcript {
-  --transcript-side-pad: #{px2rem(20)};
+  --transcript-side-pad: #{fn.rem(20)};
 
   margin-block-start: 16px;
   border: 1px solid var(--color-brand-100);
   background: var(--color-brand-5);
-  font-size: px2rem(16);
+  font-size: fn.rem(16);
 
   // This site uses two-tone icons with a built-in shadow.
   // That means we can't simply flip the chevron – it needs to
@@ -46,13 +49,13 @@
 .sk-video__transcript-summary {
   list-style: none;
   cursor: pointer;
-  padding: px2rem(16) var(--transcript-side-pad);
+  padding: fn.rem(16) var(--transcript-side-pad);
   display: flex;
   align-items: center;
-  gap: px2rem(6);
+  gap: fn.rem(6);
   line-height: 1.25;
   font-weight: 500;
-  @include link-style;
+  @include mx.link-style;
 
   &::marker,
   &::-webkit-details-marker {
@@ -69,5 +72,5 @@
 }
 
 .sk-video__transcript-content {
-  padding: px2rem(16) var(--transcript-side-pad);
+  padding: fn.rem(16) var(--transcript-side-pad);
 }

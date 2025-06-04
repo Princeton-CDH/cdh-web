@@ -1,3 +1,6 @@
+@use '../mixins/mx';
+@use '../functions/fn';
+
 .streamfields-wrapper {
   // The flex column layout is to disable collapsing margins.
   // Usually collapsing margins is fine, but the 3d boxes have absolute-
@@ -14,16 +17,16 @@
     // Cases where there should be a `sm` space above:
     &:where(
         :is(
-            .block--image,
-            .block--table,
-            .block--note,
-            .block--paragraph,
-            .block--migrated-content,
-            .block--pull-quote,
-            .block--accordion:not(:has(> h2)),
-            .block--video:not(:has(> h2)),
-            .code-toolbar
-          )
+          .block--image,
+          .block--table,
+          .block--note,
+          .block--paragraph,
+          .block--migrated-content,
+          .block--pull-quote,
+          .block--accordion:not(:has(> h2)),
+          .block--video:not(:has(> h2)),
+          .code-toolbar
+        )
       ) {
       margin-block-start: var(--streamfield-space-sm);
     }
@@ -58,12 +61,12 @@
   // (Note: `.block--paragraph > h2` can't happen in the new CMS fields,
   // but may happen with migrated content.
   :where(
-      .block--heading,
-      .block--accordion > h2,
-      .block--video > h2,
-      .block--paragraph > h2
-    ) {
-    @include md {
+    .block--heading,
+    .block--accordion > h2,
+    .block--video > h2,
+    .block--paragraph > h2
+  ) {
+    @include mx.md {
       margin-left: calc(-1 * var(--content-outdent));
     }
   }

@@ -1,10 +1,13 @@
+@use '../mixins/mx';
+@use '../functions/fn';
+
 // Has `grid-standard`.
 // Uses more cols than other pages, so doesn't use `.page-layout--*`
 .projects-landing {
   > * {
     grid-column: 1 / -1;
 
-    @include md {
+    @include mx.md {
       grid-column: 2 / -2;
     }
   }
@@ -15,21 +18,23 @@
 }
 
 .projects-landing__form {
-  position: relative;
-  @include three-dee-box;
-  padding: 24px;
+  @include mx.three-dee-box;
+  & {
+    position: relative;
+    padding: 24px;
 
-  display: grid;
-  // f = fields (selects and text)
-  // c = checkboxes
-  // b = buttons/links
-  grid-template-areas:
-    'f'
-    'c'
-    'b';
-  gap: 24px;
+    display: grid;
+    // f = fields (selects and text)
+    // c = checkboxes
+    // b = buttons/links
+    grid-template-areas:
+      'f'
+      'c'
+      'b';
+    gap: 24px;
+  }
 
-  @include md {
+  @include mx.md {
     --three-dee-side-size: 56px;
     padding: 32px;
     grid-template-areas:
@@ -37,7 +42,7 @@
       'c c'
       'b b';
   }
-  @include lg {
+  @include mx.lg {
     grid-template-areas:
       'f f'
       'c b';
@@ -49,18 +54,18 @@
   display: grid;
   gap: 20px;
 
-  @include sm {
+  @include mx.sm {
     grid-template-columns: repeat(2, 1fr);
     gap: 16px 24px;
   }
-  @include lg {
+  @include mx.lg {
     grid-template-columns: repeat(4, 1fr);
     column-gap: 24px;
   }
 
   :where(label) {
     font-weight: bold;
-    font-size: px2rem(17);
+    font-size: fn.rem(17);
     line-height: 1.33;
   }
 }
@@ -73,13 +78,13 @@
 
   :where(label) {
     font-weight: bold;
-    font-size: px2rem(15);
+    font-size: fn.rem(15);
     line-height: 1.33;
   }
 }
 .projects-landing__form-btns {
   grid-area: b;
-  @include sm {
+  @include mx.sm {
     justify-self: end;
   }
 

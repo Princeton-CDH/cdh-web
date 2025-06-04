@@ -1,3 +1,6 @@
+@use '../mixins/mx';
+@use '../functions/fn';
+
 @view-transition {
   navigation: auto;
 }
@@ -24,11 +27,11 @@ html {
 body {
   color: var(--color-text, var(--color-black));
   font-family: var(--font-family-primary);
-  font-size: px2rem(20);
+  font-size: fn.rem(20);
   line-height: var(--base-line-height);
 
-  @include xl {
-    font-size: px2rem(22);
+  @include mx.xl {
+    font-size: fn.rem(22);
   }
 }
 

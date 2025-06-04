@@ -1,21 +1,24 @@
+@use '../functions/fn';
+@use '../mixins/mx';
+
 h1 {
-  @include h1;
+  @include mx.h1;
 }
 h2 {
-  @include h2;
   scroll-margin-top: 0.8em; // jumplink headings
+  @include mx.h2;
 }
 h3 {
-  @include h3;
+  @include mx.h3;
 }
 h4 {
-  @include h4;
+  @include mx.h4;
 }
 h5,
 h6 {
-  @include h5;
+  @include mx.h5;
 }
 
 a {
-  @include link-style;
+  @include mx.link-style;
 }

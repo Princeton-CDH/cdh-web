@@ -1,3 +1,11 @@
+@use '../functions/fn';
+@use './typography' as typo;
+
+// Note, importing breakpoints only as `mx` here to make searching
+// for instances of breakpoints the same across the codebase
+// (regardless of whether we're inside the mixins directory)
+@use './breakpoints' as mx;
+
 @mixin btn {
   // <button> fixes (in case it's literally a button)
   background: none;
@@ -6,12 +14,12 @@
   cursor: pointer;
 
   text-decoration-line: none;
-  font-size: px2rem(16);
+  font-size: fn.rem(16);
   font-weight: bold;
   background-color: var(--btn-bg);
   border: 2px solid var(--btn-border-color);
   color: var(--btn-color);
-  border-radius: px2rem(32);
+  border-radius: fn.rem(32);
   padding: 8px 24px;
   line-height: 1.5;
 
@@ -24,7 +32,7 @@
   width: 100%;
   text-align: center;
 
-  @include sm {
+  @include mx.sm {
     width: auto;
     max-width: fit-content;
   }
@@ -73,6 +81,6 @@
   --btn-focus-ring-color: var(--color-brand-120);
 
   border-radius: 0;
-  @include link-style;
+  @include typo.link-style;
   padding-inline: 0;
 }
