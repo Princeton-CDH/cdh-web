@@ -36,7 +36,7 @@
             {% endif %}
 
             {% if past_events %}
-            <h2>Past events</h2>
+            <h2 class="tiles__past-events-title">Past events</h2>
                 <div class="tiles__list">
                     {% for event in past_events %}
                         {% include 'cdhpages/blocks/tile.html' with internal_page=event tile_type='internal_page_tile' %}
