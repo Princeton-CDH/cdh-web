@@ -100,6 +100,9 @@
   padding: 0;
   font-size: fn.rem(16);
 
+  @include mx.xl {
+    gap: 56px;
+  }
   @include mx.xxl {
     font-size: fn.rem(18);
   }
