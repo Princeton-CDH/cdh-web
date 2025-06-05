@@ -134,6 +134,10 @@
       border-bottom-color: var(--color-brand-120);
     }
   }
+
+  @include mx.xl {
+    padding-block-end: 32px;
+  }
 }
 
 .main-nav-desktop__item--current-section {
