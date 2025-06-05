@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from dataclasses import dataclass
 import datetime
 
 import icalendar
@@ -402,6 +403,52 @@ class Event(BasePage, ClusterableModel):
         return event
 
 
+@dataclass
+class EventsSemester:
+    name: str
+    key_name: str  # lookup, lowercased, name
+    # Ordinal position in year - 1-indexed so that
+    # `ordinal-1 or 3` rolls over years
+    ordinal: int
+    # Dates are stored with a dummy year, defaulted to 1970,
+    # and need .replace()-ing when used
+    start_date: datetime.date
+    end_date: datetime.date
+
+    DUMMY_YEAR = 1970
+
+    def dates_for_year(self, year):
+        return (
+            self.start_date.replace(year=year),
+            self.end_date.replace(year=year),
+        )
+
+
+SEMESTERS = {
+    "spring": EventsSemester(
+        name="Spring",
+        key_name="spring",
+        ordinal=1,
+        start_date=datetime.date(EventsSemester.DUMMY_YEAR, 1, 1),
+        end_date=datetime.date(EventsSemester.DUMMY_YEAR, 5, 31),
+    ),
+    "summer": EventsSemester(
+        name="Summer",
+        key_name="summer",
+        ordinal=2,
+        start_date=datetime.date(EventsSemester.DUMMY_YEAR, 6, 1),
+        end_date=datetime.date(EventsSemester.DUMMY_YEAR, 8, 31),
+    ),
+    "fall": EventsSemester(
+        name="Fall",
+        key_name="fall",
+        ordinal=3,
+        start_date=datetime.date(EventsSemester.DUMMY_YEAR, 9, 1),
+        end_date=datetime.date(EventsSemester.DUMMY_YEAR, 12, 31),
+    ),
+}
+
+
 class EventsLinkPageArchived(LinkPage):
     """Container page that defines where Event pages can be created."""
 
@@ -431,19 +478,30 @@ class EventsLandingPage(IndexPageMixin, RoutablePageMixin, Page):
     def get_context(self, request, semester=None, year=None):
         context = super().get_context(request)
 
-        if semester and year:
-            events = self.get_upcoming_events_for_semester(semester=semester, year=year)
-        else:
-            events = self.get_upcoming_events()
+        date_list = self.get_semester_date_list()
 
-        context["events"] = events
-        context["date_list"] = self.get_semester_date_list()
+        if semester and year:
+            print(f"in semester and year block with {semester=} and {year=}")
+            context["events"] = self.get_events_for_semester(
+                semester=semester, year=year
+            )
+        else:
+            print(f"in else block with {semester=} and {year=}")
+            context["events"] = self.get_upcoming_events()
+            # add past events, limited to last semester, if no semester selected
+            last_semester, last_semester_year = self.get_last_semester()
+            last_semester_events = self.get_events_for_semester(
+                last_semester.key_name, last_semester_year
+            )
+            context["past_events"] = last_semester_events
+
+        context["date_list"] = date_list
+
         return context
 
     @re_path(r"^(?P<semester>spring|summer|fall)-(?P<year>\d{4})/", name="by-semester")
     def by_semester(self, request, semester=None, year=None):
-        context = self.get_context(request, semester=semester, year=int(year))
-        return self.render(request, context_overrides=context)
+        return self.render(request, semester=semester, year=int(year))
 
     @path("<int:year>/<int:month>/<slug:slug>/", name="dated_child")
     def dated_child(self, request, year=None, month=None, slug=None):
@@ -459,19 +517,13 @@ class EventsLandingPage(IndexPageMixin, RoutablePageMixin, Page):
         )
         return child.specific.serve(request)
 
-    def get_upcoming_events_for_semester(self, semester, year):
+    def get_events_for_semester(self, semester, year):
         # Adjust the semester and year to datetime ranges
-        if semester == "spring":
-            start_date = datetime.date(year, 1, 1)
-            end_date = datetime.date(year, 5, 31)
-        elif semester == "summer":
-            start_date = datetime.date(year, 6, 1)
-            end_date = datetime.date(year, 8, 31)
-        elif semester == "fall":
-            start_date = datetime.date(year, 9, 1)
-            end_date = datetime.date(year, 12, 31)
-        else:
+        semester = SEMESTERS.get(semester)
+        if not semester:
             raise ValueError(f"Invalid semester: {semester}")
+
+        start_date, end_date = semester.dates_for_year(year)
 
         child_pages = self.get_children().live().specific().type(Event)
         # Filter events based on start_time within the semester range
@@ -494,21 +546,37 @@ class EventsLandingPage(IndexPageMixin, RoutablePageMixin, Page):
         """Return the semester a date occurs in as a string."""
         # determine semester based on the month
         if date.month <= 5:
-            return "Spring"
+            return SEMESTERS["spring"]
         if date.month <= 8:
-            return "Summer"
-        return "Fall"
+            return SEMESTERS["summer"]
+        return SEMESTERS["fall"]
 
     def get_semester_date_list(self):
-        """Get a list of semester labels (semester and year) for published
+        """
+        Get a list of semester labels (semester and year) for published
         events. Semesters are Spring (through May), Summer (through
-        August), and Fall."""
+        August), and Fall.
+        """
         date_list = []
         dates = Event.objects.live().dates("start_time", "month", order="ASC")
         for date in dates:
             # add semester + year to list if not already present
-            sem_date = (self.get_semester(date), date.year)
+            sem_date = (self.get_semester(date).name, date.year)
             if sem_date not in date_list:
                 date_list.append(sem_date)
 
         return date_list
+
+    def get_last_semester(self):
+        today = timezone.now().date()
+        this_semester = self.get_semester(today)
+        ordinal_last_semester = this_semester.ordinal - 1
+        year = today.year
+        if ordinal_last_semester < 1:
+            ordinal_last_semester = 3
+            year -= 1
+
+        last_semester = {s.ordinal: s for s in SEMESTERS.values()}.get(
+            ordinal_last_semester
+        )
+        return last_semester, year

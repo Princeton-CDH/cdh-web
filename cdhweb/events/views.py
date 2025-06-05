@@ -66,7 +66,7 @@ class EventsLandingPageView(TemplateView, EventSemesterDates):
         year = self.kwargs.get("year")
 
         if semester and year:
-            upcoming_events = self.get_object().get_upcoming_events_for_semester(
+            upcoming_events = self.get_object().get_events_for_semester(
                 semester, int(year)
             )
             context["events"] = upcoming_events

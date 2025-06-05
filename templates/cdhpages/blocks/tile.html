@@ -2,7 +2,7 @@
 
     <div class="tile">
         <div class="tile__text">
-            <a 
+            <a
                 class="tile__link"
                 href="{% if tile_type == 'internal_page_tile' %}{{ internal_page.url }}{% else %}{{ tile.value.external_link }}{% endif %}"
             >
@@ -35,21 +35,24 @@
 
                 {# Extra event-specific deets #}
                 {% elif internal_page.specific.page_type == 'Event' %}
-                    
+
                     {# Complex logic to show different formats depending on if the event spans multiple days (or months!) #}
                     {% with start_day=internal_page.specific.start_time|date:"j" %}
                     {% with start_month=internal_page.specific.start_time|date:"M" %}
                     {% with end_day=internal_page.specific.end_time|date:"j" %}
                     {% with end_month=internal_page.specific.end_time|date:"M" %}
+                    {% with end_year=internal_page.specific.end_time|date:"Y" %}
+                    {% now "Y" as current_year %}
                         <div class="tile__event-date">
                             {% if start_day == end_day and start_month == end_month %}
-                                {{ start_month }} {{ start_day }} {{ internal_page.specific.start_time|time:"g:iA" }}–{{ internal_page.specific.end_time|time:"g:iA" }}
+                                {{ start_month }} {{ start_day }} {% if not end_year == current_year %}{{ end_year }}{% endif %} {{ internal_page.specific.start_time|time:"g:iA" }}–{{ internal_page.specific.end_time|time:"g:iA" }}
                             {% elif start_month == end_month %}
-                                {{ start_month }} {{ start_day }}–{{ end_day }} 
+                                {{ start_month }} {{ start_day }}–{{ end_day }} {% if not end_year == current_year %}{{ end_year }}{% endif %}
                             {% else %}
-                                {{ start_month }} {{ start_day }}–{{ end_month }} {{ end_day }} 
+                                {{ start_month }} {{ start_day }}–{{ end_month }} {{ end_day }} {% if not end_year == current_year %}{{ end_year }}{% endif %}
                             {% endif %}
                         </div>
+                    {% endwith %}
                     {% endwith %}
                     {% endwith %}
                     {% endwith %}
@@ -106,8 +109,8 @@
                 {% image img.image fill-800x444 as img_lg %}
                 {% image img.image fill-1000x556 as img_xl %}
                 {# 655 = Approx viewport size of when tiles may go to 2 cols #}
-                <img 
-                    src="{{ img_lg.url }}" 
+                <img
+                    src="{{ img_lg.url }}"
                     srcset="{{ img_sm.url }} 400w,
                             {{ img_md.url }} 500w,
                             {{ img_lg.url }} 800w,
