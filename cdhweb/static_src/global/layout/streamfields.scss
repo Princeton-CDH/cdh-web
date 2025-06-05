@@ -20,7 +20,7 @@
           .block--image,
           .block--table,
           .block--note,
-          .block--paragraph,
+          .block--paragraph:not(:has(:first-child:is(h2))),
           .block--migrated-content,
           .block--pull-quote,
           .block--accordion:not(:has(> h2)),
