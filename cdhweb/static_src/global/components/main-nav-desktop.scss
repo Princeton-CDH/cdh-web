@@ -157,12 +157,7 @@
   padding-block: 128px 96px;
   border-top: 1px solid var(--color-brand-110);
   border-bottom: 8px solid var(--color-brand-100);
-  background: linear-gradient(
-    to bottom,
-    var(--color-brand-100),
-    #c4fbff 80px,
-    #c4fbff
-  );
+  background: linear-gradient(to bottom, var(--color-brand-100), #c4fbff 80px);
 }
 
 .main-nav-desktop__sub-menu-goto-link {
