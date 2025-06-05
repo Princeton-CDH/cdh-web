@@ -2,9 +2,10 @@
 
 <div class="block block--tiles">
   <div class="tiles {% if self.featured %}tiles--featured{% endif %}">
-    {% if self.heading or self.see_more_link.page %}
+
+    {% if self.heading.heading or self.see_more_link.page %}
       <div class="tiles__title-wrapper">
-        {% if self.heading %}
+        {% if self.heading.heading %}
             {% include_block self.heading %}
         {% endif %}
 

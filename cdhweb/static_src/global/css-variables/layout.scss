@@ -2,10 +2,7 @@
 @use '../functions/fn';
 
 // =============================================================================
-// Custom properties (variables) the standard grid, gaps and page gutters.
-// Mainly used by the layout utility classes, and also to make things full-bleed
-// or have things be offset by a standard gap's width to align with a gap instead
-// of a column (edge case, but sometimes needed).
+// Variables that control site-wide layout and spacing.
 // =============================================================================
 
 :root {
@@ -14,7 +11,7 @@
   --page-gutter: 16px;
   --content-max-width: #{fn.rem(1770)};
   --reading-max-width: #{fn.rem(865)};
-  --streamfield-space-xs: 16px;
+  --streamfield-space-xs: 16px; // currently only used for h2-related spacing
   --streamfield-space-sm: 24px;
   --streamfield-space-lg: 56px;
   --content-outdent: 0px; // px unit present so calc()s don't break
@@ -32,6 +29,7 @@
   }
   @include mx.lg {
     --streamfield-space-lg: 104px;
+    --streamfield-space-xs: 56px;
   }
   @include mx.xl {
     --content-outdent: 104px;

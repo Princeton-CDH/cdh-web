@@ -64,7 +64,8 @@
     .block--heading,
     .block--accordion > h2,
     .block--video > h2,
-    .block--paragraph > h2
+    .block--paragraph > h2,
+    .sk-jumplinks > h2
   ) {
     @include mx.md {
       margin-left: calc(-1 * var(--content-outdent));

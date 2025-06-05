@@ -7,7 +7,8 @@
 .block--migrated-content {
   :where(h2) {
     @include mx.md {
-      margin-left: calc(-1 * var(--content-outdent));
+      margin-inline-start: calc(-1 * var(--content-outdent));
+      margin-block-end: 56px;
     }
   }
 }
