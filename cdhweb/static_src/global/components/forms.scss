@@ -27,7 +27,6 @@
     background-color: var(--btn-bg, var(--color-grey-100));
     color: var(--btn-color, var(--color-white));
     border: 1px solid var(--form-control-border-color, transparent);
-    border-left: 0;
     border-radius: 0 var(--radius) var(--radius) 0;
     font-size: fn.rem(15);
     font-weight: bold;
