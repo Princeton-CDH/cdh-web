@@ -15,7 +15,7 @@
   --streamfield-space-sm: 24px;
   --streamfield-space-lg: 56px;
   --content-outdent: 0px; // px unit present so calc()s don't break
-  --form-field-height: #{fn.rem(40)};
+  --form-field-height: #{fn.rem(48)};
 
   @include mx.sm {
     --standard-gap: 24px;
