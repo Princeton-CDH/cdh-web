@@ -29,6 +29,7 @@ body {
   font-family: var(--font-family-primary);
   font-size: fn.rem(20);
   line-height: var(--base-line-height);
+  text-wrap: pretty;
 
   @include mx.xl {
     font-size: fn.rem(22);
