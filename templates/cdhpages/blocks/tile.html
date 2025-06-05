@@ -78,11 +78,11 @@
         {% if internal_page.specific.cdh_built or internal_page.specific.page_type == 'Event' or internal_page.specific.page_type == 'BlogPost' %}
             <div class="tile__tag">
                 {% if internal_page.specific.cdh_built %}
-                    <div class="tag tag--dark">Built by CDH</div>
+                    <div class="tag tag--dark tag--bigger">Built by CDH</div>
                 {% elif internal_page.specific.page_type == 'Event' and internal_page.specific.type %}
-                    <div class="tag tag--dark">{{ internal_page.specific.type }}</div>
+                    <div class="tag tag--dark tag--bigger">{{ internal_page.specific.type }}</div>
                 {% elif internal_page.specific.category  %}
-                    <div class="tag tag--dark">{{ internal_page.specific.category }}</div>
+                    <div class="tag tag--dark tag--bigger">{{ internal_page.specific.category }}</div>
                 {% endif %}
             </div>
         {% endif %}
