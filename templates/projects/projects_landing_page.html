@@ -60,12 +60,12 @@
 
             <div class="projects-landing__form-btns">
                 <div class="sk-btn-group">
-                    <button type="submit" class="sk-btn sk-btn--secondary" aria-label="Apply filters. Note: page will reload.">
+                    <button type="submit" class="sk-btn sk-btn--primary" aria-label="Apply filters. Note: page will reload.">
                         Submit
                     </button>
-                    <a href="{{ request.path }}?current=False" class="sk-btn sk-btn--link-style" aria-label="Clear filters. Note: page will reload.">
-                        {% include 'includes/svg.html' with sprite="two-tone" svg="x" %}
+                    <a href="{{ request.path }}?current=False" class="sk-btn sk-btn--secondary" aria-label="Clear filters. Note: page will reload.">
                         Clear All
+                        {% include 'includes/svg.html' with sprite="two-tone" svg="x" %}
                     </a>
                 </div>
             </div>

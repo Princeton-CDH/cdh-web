@@ -91,6 +91,20 @@
   :where(button[type='submit']) {
     order: 1;
   }
+
+  // Note: Deliberate specificity bump, since pages are earlier in the cascade than components
+  // We don't want these buttons being full-width-stacked on mobile UNLESS they wrap.
+  // TODO?: apply this to .sk-btn-group globally. It's only used here and in the feature block currently.
+  .sk-btn-group {
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    :where(.sk-btn) {
+      inline-size: unset;
+      // But if they do need to stack (i.e. they won't fit on one line), they should be full-width
+      flex-grow: 1;
+    }
+  }
 }
 
 .projects-landing__form-group {
