@@ -1,6 +1,6 @@
 {% load wagtailcore_tags wagtailimages_tags l10n %}
 
-    <div class="tile">
+    <div class="tile {% if is_featured %}tile--featured{% endif %}">
         <div class="tile__text">
             <a
                 class="tile__link"
@@ -78,11 +78,11 @@
         {% if internal_page.specific.cdh_built or internal_page.specific.page_type == 'Event' or internal_page.specific.page_type == 'BlogPost' %}
             <div class="tile__tag">
                 {% if internal_page.specific.cdh_built %}
-                    <div class="tag tag--dark">Built by CDH</div>
+                    <div class="tag tag--dark tag--bigger">Built by CDH</div>
                 {% elif internal_page.specific.page_type == 'Event' and internal_page.specific.type %}
-                    <div class="tag tag--dark">{{ internal_page.specific.type }}</div>
+                    <div class="tag tag--dark tag--bigger">{{ internal_page.specific.type }}</div>
                 {% elif internal_page.specific.category  %}
-                    <div class="tag tag--dark">{{ internal_page.specific.category }}</div>
+                    <div class="tag tag--dark tag--bigger">{{ internal_page.specific.category }}</div>
                 {% endif %}
             </div>
         {% endif %}
@@ -103,11 +103,11 @@
             {% endif %}
 
             {% if img %}
-                {# All images must have the same ratio (9:5) for this technique to work properly #}
-                {% image img.image fill-400x222 as img_sm %}
-                {% image img.image fill-500x278 as img_md %}
-                {% image img.image fill-800x444 as img_lg %}
-                {% image img.image fill-1000x556 as img_xl %}
+                {# All images must have the same ratio (8:5) for this technique to work properly #}
+                {% image img.image fill-400x250 as img_sm %}
+                {% image img.image fill-500x313 as img_md %}
+                {% image img.image fill-800x500 as img_lg %}
+                {% image img.image fill-1000x625 as img_xl %}
                 {# 655 = Approx viewport size of when tiles may go to 2 cols #}
                 <img
                     src="{{ img_lg.url }}"

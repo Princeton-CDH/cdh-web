@@ -27,6 +27,7 @@
   :where(h2) {
     font-size: fn.rem(24);
     text-wrap: pretty;
+    margin-block-end: 8px;
 
     @include mx.sm {
       font-size: fn.rem(32);

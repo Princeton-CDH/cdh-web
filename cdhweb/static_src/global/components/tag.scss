@@ -7,6 +7,10 @@
 }
 
 .tag {
+  --tag-shadow-offset: 4px;
+  --tag-padding-block: 4px;
+  --tag-padding-inline: 8px;
+
   text-align: center;
   font-size: fn.rem(13);
   line-height: 1;
@@ -15,13 +19,14 @@
   color: var(--tag-color, var(--color-grey-110));
   background-color: var(--tag-bg, var(--color-grey-10));
   border-radius: 2px;
-  padding: 4px 8px;
+  padding-block: var(--tag-padding-block);
+  padding-inline: var(--tag-padding-inline);
 
   &::after {
     content: '';
     position: absolute;
-    left: 4px;
-    top: 4px;
+    left: var(--tag-shadow-offset);
+    top: var(--tag-shadow-offset);
     width: 100%;
     height: 100%;
     background-color: var(--color-brand-100);
@@ -33,4 +38,13 @@
 .tag--dark {
   --tag-color: var(--color-white);
   --tag-bg: var(--color-grey-100);
+}
+
+// Currently all "big" tags are "dark" tags and vice-versa, but it seems
+// maybe useful to split these features out.
+.tag--bigger {
+  --tag-shadow-offset: 6px;
+
+  --tag-padding-block: 8px;
+  --tag-padding-inline: 12px;
 }

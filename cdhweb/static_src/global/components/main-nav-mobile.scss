@@ -49,7 +49,6 @@
 .mobile-menu__header-btn {
   // Some overrides to .sk-btn
   width: auto;
-  border-width: 4px;
   padding-block: 10px;
 
   .mobile-menu__header--open & {
@@ -133,6 +132,14 @@
   font-size: fn.rem(16);
 
   @include mx.full-bleed-bg(var(--color-brand-40));
+
+  :where(a) {
+    text-decoration-color: var(--color-brand-110);
+
+    &:hover {
+      text-decoration-color: var(--color-brand-120);
+    }
+  }
 }
 
 .mobile-menu__sub-menu-description {

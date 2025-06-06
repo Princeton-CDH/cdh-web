@@ -3,13 +3,14 @@
 
 .sk-jumplinks {
   margin-bottom: var(--streamfield-space-lg);
-}
 
-.sk-jumplinks__heading {
-  margin-block-end: 24px;
-
-  @include mx.md {
-    margin-left: calc(-1 * var(--content-outdent));
+  :where(h2) {
+    // Matches the "big h2 outdent" rule in streamfields.scss
+    // (but jumplinks doesn't live inside the streamfields wrapper)
+    // TODO, maybe it should...?
+    @include mx.md {
+      margin-left: calc(-1 * var(--content-outdent));
+    }
   }
 }
 
