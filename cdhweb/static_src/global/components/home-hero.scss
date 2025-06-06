@@ -45,6 +45,8 @@
   }
 
   @include mx.xl {
+    --bg-box-y-pad: 56px;
+
     grid-template-areas:
       '. i i i i i i i i i i .'
       '. . c c c c c . . . . .';
