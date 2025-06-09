@@ -3,6 +3,7 @@
 
 .footer {
   --color-link-underline: var(--color-brand-110);
+  --footer-gradient-stop: 224px;
 
   color: var(--color-grey-110);
   margin-block-start: 112px;
@@ -10,7 +11,7 @@
   background: linear-gradient(
     to bottom,
     var(--color-white),
-    var(--color-brand-100) 224px
+    var(--color-brand-100) var(--footer-gradient-stop)
   );
 
   @include mx.md {
@@ -27,6 +28,7 @@
     margin-block-start: 208px;
   }
   @include mx.xl {
+    --footer-gradient-stop: 400px;
     padding-block-start: 176px;
   }
 }
