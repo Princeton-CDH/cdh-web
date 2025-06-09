@@ -1,4 +1,5 @@
 @use '../functions/fn';
+@use '../mixins/mx';
 
 .sk-accordion {
   :where(details) {
@@ -36,6 +37,10 @@
     justify-content: space-between;
     gap: 8px;
 
+    @include mx.xl {
+      padding-block: 32px;
+    }
+
     &::-webkit-details-marker,
     &::marker {
       display: none;
@@ -62,4 +67,8 @@
 
 .sk-accordion__content {
   padding-block-end: 32px;
+
+  @include mx.xl {
+    padding-block-end: 40px;
+  }
 }
