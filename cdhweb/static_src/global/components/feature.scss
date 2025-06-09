@@ -23,6 +23,9 @@
   @include mx.sm {
     padding: 32px;
   }
+  @include mx.xl {
+    padding-block: 40px;
+  }
 
   :where(h2) {
     font-size: fn.rem(24);
@@ -34,6 +37,9 @@
     }
     @include mx.xl {
       font-size: fn.rem(36);
+    }
+    @include mx.xl {
+      margin-block-start: 16px;
     }
   }
   :where(.sk-btn-group) {
