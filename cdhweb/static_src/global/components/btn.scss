@@ -24,15 +24,4 @@
     flex-direction: row;
     flex-wrap: wrap;
   }
-
-  // This project is special.
-  // Whenever we _can_ display two links, but only one is set, it should use the secondary style.
-  // ... even though it will have the `primary` class on it.
-  // In other words, the only time the `sk-btn-group` should display a button in
-  // a "primary" style is if there are two buttons.
-  &:not(:has(.sk-btn--secondary)) {
-    .sk-btn--primary {
-      @include mx.btn-secondary;
-    }
-  }
 }
