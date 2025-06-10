@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load wagtailcore_tags wagtailimages_tags %}
 
+{% block body_class %}template-project{% endblock %}
+
 {% block main %}
     {% include 'includes/breadcrumbs.html' with breadcrumbs=page.breadcrumbs current_page=page %}
     {% include 'includes/project_hero.html' %}
@@ -19,14 +21,15 @@
         </div>
         <div class="project-page__side-content">
             {% if page.related_links.all %}
-                <div class="project-page__side-content-block">
+                <div class="project-page__side-content-block project-page__side-content-block--links">
                     <h2>Links</h2>
                     <ul>
                         {% for link in page.related_links.all %}
                             {% with link_type=link.type.name %}
                             <li class="{{ link_type|lower }}">
                                 <a href="{{ link.url }}">
-                                    {{ link_type }}
+                                    <span>{{ link_type }}</span>
+                                    {% include 'includes/svg.html' with sprite="two-tone" svg="external" %}
                                 </a>
                             </li>
                             {% endwith %}

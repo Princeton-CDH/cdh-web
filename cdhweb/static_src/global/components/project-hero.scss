@@ -12,14 +12,11 @@ and some meta info that can appear below the description (like blog hero).
 
   margin-block-end: 56px;
 
-  // t = title
-  // d = description + meta deets + project link
+  // c = text content (one or more of: "built by CDH" tag, title, meta deets, project link)
   // i = image
 
   // Layout if there is _no_ image:
-  grid-template-areas:
-    't t t t t t t t t t t t'
-    'd d d d d d d d d d d d';
+  grid-template-areas: 'c c c c c c c c c c c c';
 
   @include mx.sm {
     margin-block-end: 120px;
@@ -27,71 +24,60 @@ and some meta info that can appear below the description (like blog hero).
 
   @include mx.md {
     --title-top-space: 40px;
-
-    grid-template-areas:
-      't t t t t t t t t t t t'
-      '. d d d d d d d d d d d';
   }
   @include mx.lg {
     --title-top-space: 80px;
 
-    grid-template-areas:
-      '. t t t t t t t t t t .'
-      '. . d d d d d d d d d .';
-  }
-  @include mx.xxl {
-    grid-template-areas:
-      '. t t t t t t t t t . .'
-      '. . d d d d d d d d . .';
+    grid-template-areas: '. . c c c c c c c c c .';
   }
 
   // Different layout if the hero has an image:
   &:has(img) {
     grid-template-areas:
       'i i i i i i i i i i i i'
-      't t t t t t t t t t t t'
-      'd d d d d d d d d d d d';
+      'c c c c c c c c c c c c';
 
     @include mx.md {
-      grid-template-areas:
-        't t t t t t i i i i i i'
-        '. d d d d d i i i i i i';
+      grid-template-areas: '. c c c c c i i i i i i';
     }
     @include mx.lg {
-      grid-template-areas:
-        '. t t t t t i i i i i i'
-        '. . d d d d i i i i i i';
+      grid-template-areas: '. . c c c c i i i i i i';
     }
   }
 }
 
-// Wrapper for the h1 and the optional "built by CDH" tag
-.project-hero__title {
-  grid-area: t;
-  margin-block-start: var(--title-top-space);
+.project-hero__text-content {
+  grid-area: c;
+  display: flex; // to support visual re-ordering (tag before h1)
+  flex-direction: column;
 
-  // separate "built by CDH" tag from h1 text
-  &:where(:has(.tag)) {
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-    align-items: flex-start;
+  padding-block-start: 32px;
 
-    @include mx.md {
-      gap: 40px;
-    }
-    @include mx.lg {
-      gap: 56px;
-    }
-
-    .tag {
-      order: -1;
-    }
+  @include mx.md {
+    padding-block-start: 40px;
   }
+}
+
+.project-hero__title {
+  &:where(:not(:has(+ .project-hero__cdh-built-tag))) {
+    margin-block-start: var(--title-top-space);
+  }
+  &:where(:has(+ .project-hero__cdh-built-tag)) {
+    margin-block-start: 40px;
+  }
+
+  @include mx.md {
+    margin-inline-start: calc(-1 * var(--content-outdent));
+  }
+}
+
+.project-hero__cdh-built-tag {
+  justify-self: start;
+  align-self: start;
+  order: -1; // visually before h1
 }
 
 .project-hero__description {
-  grid-area: d;
   font-size: fn.rem(22);
   line-height: 1.5;
   margin: 16px 0 0;

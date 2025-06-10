@@ -5,6 +5,10 @@
 Project page has a similar layout to the standard page with sidenav,
 except the sidenav is replaced by a meta-details box, which sits to
 the right of the content (when unstacked).
+The sidebar shows earlier than on standard content pages (`lg` vs `xl`),
+which means we need th make the main content area occupy the first column
+at `lg` so it isn't too narrow. We also need to change when the h2 outdenting 
+happens for this template (handled in streamfields.scss)
 */
 
 // has `.grid-standard`
@@ -21,9 +25,12 @@ the right of the content (when unstacked).
     row-gap: 80px;
   }
   @include mx.lg {
+    // This differs from the design. We need more space for main content.
     grid-template-areas: 'm m m m m m m m s s s s';
-  }
 
+    // Known issue: The `pull quote` block's decoration line isn't visible, because it is outdented.
+    // TODO, fix one day.
+  }
   @include mx.xl {
     grid-template-areas: '. . m m m m m m m s s s';
   }
@@ -31,6 +38,7 @@ the right of the content (when unstacked).
 
 .project-page__main-content {
   grid-area: m;
+  align-items: start;
 }
 
 .project-page__side-content {
@@ -51,10 +59,8 @@ the right of the content (when unstacked).
     padding-inline: 48px;
   }
   @include mx.md {
-    padding-inline: 24px;
-  }
-  @include mx.lg {
     align-self: start;
+    padding-inline: 24px;
   }
 
   :where(h2) {
@@ -83,6 +89,19 @@ the right of the content (when unstacked).
 
 .project-page__side-content-block {
   flex: 1 1 fn.rem(185);
+}
+
+.project-page__side-content-block--links {
+  :where(a) {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    :where(svg) {
+      flex-shrink: 0;
+      inline-size: 16px;
+      aspect-ratio: 1;
+    }
+  }
 }
 
 .project-page__side-content-item {
