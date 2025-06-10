@@ -65,9 +65,7 @@
     // One-off breakpoint window where we want the logo size to be fluid:
     @media (min-width: fn.em(1616)) {
       width: 10vw;
-    }
-    @include mx.xxxl {
-      width: 180px;
+      max-width: 180px;
     }
   }
 }
