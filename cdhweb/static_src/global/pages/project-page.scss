@@ -91,6 +91,19 @@ happens for this template (handled in streamfields.scss)
   flex: 1 1 fn.rem(185);
 }
 
+.project-page__side-content-block--links {
+  :where(a) {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    :where(svg) {
+      flex-shrink: 0;
+      inline-size: 16px;
+      aspect-ratio: 1;
+    }
+  }
+}
+
 .project-page__side-content-item {
   & + .project-page__side-content-item {
     margin-block-start: 24px;

@@ -21,14 +21,15 @@
         </div>
         <div class="project-page__side-content">
             {% if page.related_links.all %}
-                <div class="project-page__side-content-block">
+                <div class="project-page__side-content-block project-page__side-content-block--links">
                     <h2>Links</h2>
                     <ul>
                         {% for link in page.related_links.all %}
                             {% with link_type=link.type.name %}
                             <li class="{{ link_type|lower }}">
                                 <a href="{{ link.url }}">
-                                    {{ link_type }}
+                                    <span>{{ link_type }}</span>
+                                    {% include 'includes/svg.html' with sprite="two-tone" svg="external" %}
                                 </a>
                             </li>
                             {% endwith %}
