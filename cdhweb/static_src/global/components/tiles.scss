@@ -26,10 +26,6 @@
 
   :where(h2) {
     margin-bottom: 0;
-
-    @include mx.md {
-      margin-inline-start: calc(-1 * var(--content-outdent));
-    }
   }
 
   :where(a) {

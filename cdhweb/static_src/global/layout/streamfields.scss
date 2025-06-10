@@ -65,10 +65,26 @@
     .block--accordion > h2,
     .block--video > h2,
     .block--paragraph > h2,
-    .sk-jumplinks > h2
+    .sk-jumplinks > h2,
+    .block--tiles h2
   ) {
     @include mx.md {
-      margin-left: calc(-1 * var(--content-outdent));
+      margin-inline-start: calc(-1 * var(--content-outdent));
+
+      // Project page override:
+      // Because we have the right-hand sidebar from lg, the body content needs to start in the first col
+      // (unlike other standard-content-esque templates). This means we need to NOT outdent the main content h2s,
+      // at `lg`, which is the standard behaviour for other templates, otherwise they will go off-screen.
+      :where(.template-project) & {
+        margin-inline-start: 0;
+      }
+    }
+
+    @include mx.xl {
+      // It is now safe to outdent headings on the project page
+      :where(.template-project) & {
+        margin-inline-start: calc(-1 * var(--content-outdent));
+      }
     }
   }
 }

@@ -2,29 +2,34 @@
 
 <div class="project-hero content-width grid-standard">
 
-    <div class="project-hero__title">
-        <h1>{{ self.title}}</h1>
-        {% if page.cdh_built %}<div class="tag tag--dark tag--bigger">Built by CDH</div>{% endif %}
-    </div>
-    <div class="project-hero__description">
-        {% if self.description %}
-            {{ self.description | richtext }}
-        {% endif %}
+    <div class="project-hero__text-content">
 
-        {% if self.display_tags %}
-            <div class="tag-list">
-                {% for tag in self.display_tags %}
-                    <div class="tag">{{ tag }}</div>
-                {% endfor %}
-            </div>
-        {% endif %}
+        <div class="project-hero__title">
+            <h1>{{ self.title}}</h1>
+        </div>
+        
+        {% if page.cdh_built %}<div class="project-hero__cdh-built-tag tag tag--dark tag--bigger">Built by CDH</div>{% endif %}
+        
+        <div class="project-hero__description">
+            {% if self.description %}
+                {{ self.description | richtext }}
+            {% endif %}
 
-        {% if page.website_url %}
-            <a href="{{ page.website_url }}" class="sk-btn sk-btn--secondary">
-                <span>View project website</span>
-                {% include 'includes/svg.html' with sprite="two-tone" svg="external" %}
-            </a>
-        {% endif %}
+            {% if self.display_tags %}
+                <div class="tag-list">
+                    {% for tag in self.display_tags %}
+                        <div class="tag">{{ tag }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% if page.website_url %}
+                <a href="{{ page.website_url }}" class="sk-btn sk-btn--secondary">
+                    <span>View project website</span>
+                    {% include 'includes/svg.html' with sprite="two-tone" svg="external" %}
+                </a>
+            {% endif %}
+        </div>
     </div>
 
     {% if self.hero_image %}
