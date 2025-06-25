@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load wagtailcore_tags wagtailimages_tags %}
 
+{% block extra_head %}
+    {% include "snippets/blog_meta.html" %}
+{% endblock %}
+
 {% block main %}
     {% include 'includes/breadcrumbs.html' with breadcrumbs=page.breadcrumbs current_page=page %}
     {% include 'includes/blog_hero.html' %}
