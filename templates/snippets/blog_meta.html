@@ -23,3 +23,48 @@
   <meta name="citation_author"           content="{{ page.owner.get_full_name|default:page.owner.username }}">
 {% endif %}
 
+
+
+{# – COinS metadata span for Zotero fallback parsing – #}
+<span class="Z3988"
+      title="ctx_ver=Z39.88-2004
+            &amp;rft_val_fmt={{ 'info:ofi/fmt:kev:mtx:journal'|urlencode }}
+            &amp;rft.genre={{ 'blog'|urlencode }}
+            &amp;rft.atitle={{ TITLE|urlencode }}
+            &amp;rft.date={{ PUB_DATE|date:'Y-m-d'|urlencode }}
+            &amp;rft_id={{ CANON_URL|urlencode }}
+            {% if page.authors.exists %}
+              {% for a in page.authors.all %}
+                &amp;rft.au={{ a.person|urlencode }}
+              {% endfor %}
+            {% endif %}
+            "></span>
+
+            
+{# – schema.org JSON-LD block to help Zotero and search engines detect blog post type – #}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "{{ TITLE|escapejs }}",
+  "datePublished": "{{ PUB_DATE|date:'Y-m-d' }}",
+  "url": "{{ CANON_URL|escapejs }}",
+  "inLanguage": "en",
+  "articleBody": "{{ ABSTRACT|striptags|escapejs }}",
+  "author": [
+    {% if page.authors.exists %}
+      {% for a in page.authors.all %}
+        {
+          "@type": "Person",
+          "name": "{{ a.person|escapejs }}"
+        }{% if not forloop.last %},{% endif %}
+      {% endfor %}
+    {% else %}
+      {
+        "@type": "Person",
+        "name": "{{ page.owner.get_full_name|default:page.owner.username|escapejs }}"
+      }
+    {% endif %}
+  ]
+}
+</script>
