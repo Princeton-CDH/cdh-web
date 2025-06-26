@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path, re_path
 from django.views.generic.base import RedirectView, TemplateView
+from debug_toolbar.toolbar import debug_toolbar_urls
 from wagtail import urls as wagtail_urls
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.contrib.sitemaps import Sitemap
@@ -76,7 +77,7 @@ urlpatterns = [
         name="blog-detail",
     ),
     path("updates/<slug>/", BlogPostRedirectView.as_view(), name="blog-detail"),
-]
+] + debug_toolbar_urls()
 
 if settings.DEBUG:
     from django.contrib.staticfiles.urls import staticfiles_urlpatterns
