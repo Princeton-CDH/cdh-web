@@ -1,16 +1,16 @@
 {% load wagtailcore_tags %}
 
 
-{# – extract fields from Wagtail Page objects – #}
+{# – extract fields from Wagtail Page objects– #}
 {% firstof page.seo_title page.title as TITLE %}
 {% firstof page.search_description page.body_excerpt|striptags|truncatewords:40 '' as ABSTRACT %}
 {% firstof page.first_published_at page.date as PUB_DATE %}
 {% firstof request.build_absolute_uri as CANON_URL %}
 
 
-{# 1 – Highwire matadata <meta> tags #}
+{# – use Highwire <meta> tags to pass metadata to Zotero #}
 <meta name="citation_title"              content="{{ TITLE }}">
-<meta name="citation_publication_date"   content="{{ PUB_DATE|date:'Y-m-d' }}">
+<meta name="citation_date"   content="{{ PUB_DATE|date:'Y-m-d' }}">
 <meta name="citation_webpage_title"      content="{{ TITLE }}">
 <meta name="citation_webpage_url"        content="{{ CANON_URL }}">
 <meta name="citation_language"           content="en">
@@ -23,18 +23,3 @@
   <meta name="citation_author"           content="{{ page.owner.get_full_name|default:page.owner.username }}">
 {% endif %}
 
-
-{# 2 – COinS <span> fallback #}
-<span class="Z3988"
-      title="ctx_ver=Z39.88-2004
-            &amp;rft_val_fmt={{ 'info:ofi/fmt:kev:mtx:journal'|urlencode }}
-            &amp;rft.genre={{ 'blog'|urlencode }}
-            &amp;rft.atitle={{ TITLE|urlencode }}
-            &amp;rft.date={{ PUB_DATE|date:'Y-m-d'|urlencode }}
-            &amp;rft_id={{ CANON_URL|urlencode }}
-            {% if page.authors.exists %}
-              {% for a in page.authors.all %}
-                &amp;rft.au={{ a.person|urlencode }}
-              {% endfor %}
-            {% endif %}
-            "></span>
