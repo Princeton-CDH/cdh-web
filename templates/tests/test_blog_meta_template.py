@@ -16,7 +16,6 @@ class MockPage:
         self.title = "Test CDH Blog Post"
         self.search_description = "Test description"
         self.first_published_at = datetime(2025, 6, 26)
-        self.date = None
         self.owner = User(username="testuser", first_name="Test", last_name="User")
         
     class authors:
@@ -35,7 +34,6 @@ class MockPageWithAuthors:
         self.title = "Multi Author Post"
         self.search_description = "Post with multiple authors"
         self.first_published_at = datetime(2025, 6, 26)
-        self.date = None
         self.owner = User(username="testuser")
         
     class authors:
