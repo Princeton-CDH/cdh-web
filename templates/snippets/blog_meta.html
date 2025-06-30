@@ -3,7 +3,6 @@
 
 {# – extract fields from Wagtail Page objects– #}
 {% firstof page.seo_title page.title as TITLE %}
-{% firstof page.search_description page.body_excerpt|striptags|truncatewords:40 '' as ABSTRACT %}
 {% firstof request.build_absolute_uri as CANON_URL %}
 
 
@@ -13,7 +12,7 @@
 <meta name="citation_webpage_title"      content="{{ TITLE }}">
 <meta name="citation_webpage_url"        content="{{ CANON_URL }}">
 <meta name="citation_language"           content="en">
-<meta name="citation_abstract"           content="{{ ABSTRACT|striptags }}">
+{% if page.search_description or page.body_excerpt %}<meta name="citation_abstract"           content="{% firstof page.search_description page.body_excerpt|striptags|truncatewords:40 %}">{% endif %}
 {% if page.authors.exists %}
   {% for a in page.authors.all %}
     <meta name="citation_author"         content="{{ a.person }}">
@@ -32,8 +31,8 @@
   "headline": "{{ TITLE|escapejs }}",
   "datePublished": "{{ page.first_published_at|date:'Y-m-d' }}",
   "url": "{{ CANON_URL|escapejs }}",
-  "inLanguage": "en",
-  "articleBody": "{{ ABSTRACT|striptags|escapejs }}",
+  "inLanguage": "en",{% if page.search_description or page.body_excerpt %}
+  "articleBody": "{% firstof page.search_description page.body_excerpt|striptags|truncatewords:40 %}",{% endif %}
   "author": [
     {% if page.authors.exists %}
       {% for a in page.authors.all %}

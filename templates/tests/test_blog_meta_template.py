@@ -49,6 +49,24 @@ class MockPageWithAuthors:
             return [MockAuthor("Author One"), MockAuthor("Author Two")]
 
 
+class MockPageNoAbstract:
+    """Mock blog page with no abstract content."""
+    def __init__(self):
+        self.title = "Post Without Abstract"
+        self.search_description = ""  # Empty string
+        self.first_published_at = datetime(2025, 6, 26)
+        self.owner = User(username="testuser")
+        
+    class authors:
+        @staticmethod
+        def exists():
+            return False
+            
+        @staticmethod
+        def all():
+            return []
+
+
 class TestBlogMetaTemplate(TestCase):
     """Very simple tests for blog_meta.html template."""
 
@@ -111,7 +129,7 @@ class TestBlogMetaTemplate(TestCase):
 
 
     def test_citation_abstract_present(self):
-        """Test that citation_abstract meta tag is present."""
+        """Test that citation_abstract meta tag is present when there's content."""
         page = MockPage()
         rendered = self.render_template(page)
         self.assertIn('<meta name="citation_abstract"', rendered)
@@ -119,7 +137,7 @@ class TestBlogMetaTemplate(TestCase):
 
 
     def test_all_basic_meta_tags_present(self):
-        """Test that all basic Zotero meta tags are present."""
+        """Test that all basic Zotero meta tags are present when content is available."""
         page = MockPage()
         rendered = self.render_template(page)
         
@@ -129,9 +147,12 @@ class TestBlogMetaTemplate(TestCase):
             'citation_webpage_title', 
             'citation_webpage_url',
             'citation_language',
-            'citation_abstract',
             'citation_author'
         ]
         
         for tag in required_tags:
             self.assertIn(f'<meta name="{tag}"', rendered)
+            
+        # Abstract should be present when there's content
+        self.assertIn('<meta name="citation_abstract"', rendered)
+        
