@@ -62,3 +62,7 @@ LOGGING = {
         "cdhweb": {"handlers": ["console"], "level": "DEBUG"},
     },
 }
+
+# Set static files path
+STATIC_ROOT = BASE_DIR / "collected"
+STATICFILES_DIRS = [BASE_DIR / "static"]
