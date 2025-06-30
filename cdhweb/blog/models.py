@@ -120,6 +120,13 @@ class BlogPost(BasePage, ClusterableModel):
         max_length=20,
     )
 
+    publish_date = models.DateField(
+        verbose_name="Publish Date",
+        help_text="Publish date to display for this post. Leave blank to use the date the post was first published.",
+        blank=True,
+        null=True,
+    )
+
     # can only be created underneath special link page
     parent_page_types = ["blog.BlogLinkPageArchived", "blog.BlogLandingPage"]
     # no allowed subpages
@@ -128,6 +135,7 @@ class BlogPost(BasePage, ClusterableModel):
     # admin edit configuration
     content_panels = Page.content_panels + [
         FieldPanel("description"),
+        FieldPanel("publish_date"),
         MultiFieldPanel(
             [
                 FieldPanel("image"),
@@ -184,6 +192,19 @@ class BlogPost(BasePage, ClusterableModel):
     def author_list(self):
         """Comma-separated list of author names."""
         return ", ".join(str(author.person) for author in self.authors.all())
+
+    @property
+    def display_date(self):
+        """Return the custom date if set, otherwise return first_published_at."""
+        if self.publish_date:
+            return self.publish_date
+        return self.first_published_at.date() if self.first_published_at else None
+
+    # def save(self, *args, **kwargs):
+    #     """Set publish_date to first_published_at if not set and post is being published."""
+    #     if not self.publish_date and self.first_published_at:
+    #         self.publish_date = self.first_published_at.date()
+    #     super().save(*args, **kwargs)
 
     def get_url_parts(self, request, *args, **kwargs):
         """Custom blog post URLs of the form /updates/2014/03/01/my-post."""
