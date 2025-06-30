@@ -2,6 +2,7 @@
 {% load wagtailcore_tags wagtailimages_tags %}
 
 {% block extra_head %}
+    {{ block.super }}
     {% include "snippets/blog_meta.html" %}
 {% endblock %}
 
