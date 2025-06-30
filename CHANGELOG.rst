@@ -1,6 +1,48 @@
 CHANGELOG
 =========
 
+4.1.0
+-----
+- Frontend dependency updates, and related fixes
+- Sass import overhaul
+- update breakpoint mixin name within mixins dir
+- Remove unneeded gradient stop
+- Fix login template block name for extra styles
+- [CDH-65] Fix missing tags in project export
+- [CDH-65] Make summary and body plaintext in project exports
+- [CDH-65] Reinstate admin Event export
+- [CDH-81] Add past events to the event landing page
+- [CDH-81] Include year in event tiles now that we're showing past ones
+- [CDH-83] Mobile safari main nav button and select text colour fixes
+- [CDH-84] Blog tiles - show authors instead of summary
+- [CDH-85] Add links from event speakers to CDH person-profiles
+- [CDH-89] Include future events in profile page "Related events"
+- [CDH-94] Mobile nav secondary links font size bump
+- [CDH-97] Add a new rich text block to Blog and Event index/landing pages
+
+Also, changes stemming from design QA:
+
+- [CDH-98] Make the logo bigger on larger viewports
+- [CDH-99] top nav text vertical alignment
+- [CDH-100] main nav item spacing increase from xl
+- [CDH-101] make homepage hero 3d box a bit spacier vertically
+- [CDH-102] set text-wrap to pretty
+- [CDH-103] feature block text vertical spacing
+- [CDH-104] button border width
+- [CDH-105] form input sizing/spacing
+- [CDH-106] h2 spacing
+- [CDH-107] make dark tags also be big tags
+- [CDH-108] Make primary button style consistent
+- [CDH-109] Project page layout fixes
+- [CDH-110] Update footer gradient placement
+- [CDH-111] project page filter button style updates
+- [CDH-112] changes to tiles
+- [CDH-113] main nav colour updates
+- [CDH-114] Accordion content spacing
+- [CDH-115] External link icon for project sidebar
+- [CDH-116] global base line height increase
+- [CDH-117] search page tweaks
+
 4.0.1
 -----
 - bugfix: `Title` related positions should be optional when creating new titles
@@ -10,7 +52,7 @@ CHANGELOG
 
 4.0.0
 -----
-- Major overhaul, redesigned and rebuilt by Springload 
+- Major overhaul, redesigned and rebuilt by Springload
   - Dropped custom views and shift logic to using wagtail pages throughout
   - numerous new wagtail blocks added
   - frontend build now uses webpack, dropped django compressor
