@@ -4,19 +4,12 @@
 {# – extract fields from Wagtail Page objects– #}
 {% firstof page.seo_title page.title as TITLE %}
 {% firstof page.search_description page.body_excerpt|striptags|truncatewords:40 '' as ABSTRACT %}
-{% if page.first_published_at %}
-    {% firstof page.first_published_at as PUB_DATE %}
-{% elif page.date %}
-    {% firstof page.date as PUB_DATE %}
-{% else %}
-    {% firstof '' as PUB_DATE %}
-{% endif %}
 {% firstof request.build_absolute_uri as CANON_URL %}
 
 
 {# – use Highwire <meta> tags to pass metadata to Zotero #}
 <meta name="citation_title"              content="{{ TITLE }}">
-<meta name="citation_date"   content="{{ PUB_DATE|date:'Y-m-d' }}">
+<meta name="citation_date"   content="{{ page.first_published_at|date:'Y-m-d' }}">
 <meta name="citation_webpage_title"      content="{{ TITLE }}">
 <meta name="citation_webpage_url"        content="{{ CANON_URL }}">
 <meta name="citation_language"           content="en">
@@ -31,29 +24,13 @@
 
 
 
-{# – COinS metadata span for Zotero fallback parsing – #}
-<span class="Z3988"
-      title="ctx_ver=Z39.88-2004
-            &amp;rft_val_fmt={{ 'info:ofi/fmt:kev:mtx:journal'|urlencode }}
-            &amp;rft.genre={{ 'blog'|urlencode }}
-            &amp;rft.atitle={{ TITLE|urlencode }}
-            &amp;rft.date={{ PUB_DATE|date:'Y-m-d'|urlencode }}
-            &amp;rft_id={{ CANON_URL|urlencode }}
-            {% if page.authors.exists %}
-              {% for a in page.authors.all %}
-                &amp;rft.au={{ a.person|urlencode }}
-              {% endfor %}
-            {% endif %}
-            "></span>
-
-
 {# – schema.org JSON-LD block to help Zotero detect blog post type – #}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
   "headline": "{{ TITLE|escapejs }}",
-  "datePublished": "{{ PUB_DATE|date:'Y-m-d' }}",
+  "datePublished": "{{ page.first_published_at|date:'Y-m-d' }}",
   "url": "{{ CANON_URL|escapejs }}",
   "inLanguage": "en",
   "articleBody": "{{ ABSTRACT|striptags|escapejs }}",
