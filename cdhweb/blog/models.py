@@ -200,12 +200,6 @@ class BlogPost(BasePage, ClusterableModel):
             return self.publish_date
         return self.first_published_at.date() if self.first_published_at else None
 
-    # def save(self, *args, **kwargs):
-    #     """Set publish_date to first_published_at if not set and post is being published."""
-    #     if not self.publish_date and self.first_published_at:
-    #         self.publish_date = self.first_published_at.date()
-    #     super().save(*args, **kwargs)
-
     def get_url_parts(self, request, *args, **kwargs):
         """Custom blog post URLs of the form /updates/2014/03/01/my-post."""
         url_parts = super().get_url_parts(request, *args, **kwargs)
