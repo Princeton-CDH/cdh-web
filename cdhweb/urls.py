@@ -77,7 +77,7 @@ urlpatterns = [
         name="blog-detail",
     ),
     path("updates/<slug>/", BlogPostRedirectView.as_view(), name="blog-detail"),
-] + debug_toolbar_urls()
+]
 
 if settings.DEBUG:
     from django.contrib.staticfiles.urls import staticfiles_urlpatterns
