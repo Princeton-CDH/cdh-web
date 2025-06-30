@@ -2,12 +2,7 @@
 # Copy to cdhweb/settings/local_settings.py and configure
 
 import os
-from django.conf import settings
-
-DATABASES = settings.DATABASES
-BASE_DIR = settings.BASE_DIR
-INTERNAL_IPS = getattr(settings, "INTERNAL_IPS", [])
-PUCAS_LDAP = getattr(settings, "PUCAS_LDAP", {})
+from cdhweb.settings import DATABASES, BASE_DIR, INTERNAL_IPS, PUCAS_LDAP
 
 # debug is true by default when running in development
 # (i.e., DJANGO_ENV=development or unset)
