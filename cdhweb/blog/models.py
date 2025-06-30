@@ -261,10 +261,18 @@ class BlogLinkPageArchived(LinkPage):
 class BlogLandingPage(IndexPageMixin, RoutablePageMixin, Page):
     """Container page that defines where Event pages can be created."""
 
+    featured_post = models.ForeignKey(
+        "BlogPost",
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="featured_post",
+    )
+
     page_size = 12
     template_name = "blog/blog_landing_page.html"
 
-    content_panels = IndexPageMixin.content_panels
+    content_panels = IndexPageMixin.content_panels + [FieldPanel("featured_post")]
 
     search_fields = IndexPageMixin.search_fields
 
@@ -281,6 +289,14 @@ class BlogLandingPage(IndexPageMixin, RoutablePageMixin, Page):
             posts = self.get_latest_posts()
 
         posts = posts.prefetch_related("image", "image__renditions")
+
+        # Exclude featured_post from the results, and add
+        # it to the context note this means the template
+        # should access `featured_post` *NOT*
+        # `self.featured_post`
+        if self.featured_post and posts.filter(id=self.featured_post_id).exists():
+            context["featured_post"] = self.featured_post
+            posts = posts.exclude(pk=self.featured_post.pk)
 
         page_number = request.GET.get("page") or 1
         paginator = Paginator(posts, self.page_size)
