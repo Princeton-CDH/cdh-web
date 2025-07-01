@@ -230,7 +230,6 @@ class BlogPost(BasePage, ClusterableModel):
             # These dates need to be in DEFAULT_TIMEZONE, rather than UTC,
             # otherwise the dates don't match up with the generated URLs (in
             # `BlogPage.get_url_parts`)
-            path_date = timezone.localtime(self.first_published_at)
             page_path = parent.reverse_subpage(
                 "dated_child",
                 kwargs={
@@ -360,14 +359,8 @@ class BlogLandingPage(IndexPageMixin, RoutablePageMixin, Page):
         return child.specific.serve(request)
 
     def get_posts_for_year_and_month(self, year=None, month=None):
-        # get blogs by year and month using publish_date if it exists, otherwise first_published_at
-        # Get BlogPost instances specifically to access the publish_date field
-        child_qs = (
-            BlogPost.objects.child_of(self)
-            .live()
-            .public()
-            .annotate(sort_date=Coalesce("publish_date", F("first_published_at__date")))
-        )
+        # get blogs by year and month using sort_date
+        child_qs = self.get_latest_posts()
 
         if year:
             child_qs = child_qs.filter(sort_date__year=year)
@@ -388,14 +381,6 @@ class BlogLandingPage(IndexPageMixin, RoutablePageMixin, Page):
         ).order_by("-sort_date")
 
     def get_list_of_dates(self):
-        # get list of dates to sort by using display_date
-        from cdhweb.blog.models import BlogPost
-
-        # Get BlogPost instances specifically to access the publish_date field
-        child_pages = (
-            BlogPost.objects.child_of(self)
-            .live()
-            .public()
-            .annotate(sort_date=Coalesce("publish_date", F("first_published_at__date")))
-        )
-        return child_pages.dates("sort_date", "month", order="DESC")
+        # get list of dates to sort by using sort_date
+        child_qs = self.get_latest_posts()
+        return child_qs.dates("sort_date", "month", order="DESC")
