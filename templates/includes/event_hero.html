@@ -18,6 +18,11 @@
         <p class="event-hero__add-to-calendar">
             <a href="{{ self.get_ical_url }}">Add to calendar</a>
         </p>
+        <p class="event-hero__rsvp">
+            {% if self.rsvp_url %}
+                <a href="{{ self.rsvp_url }}">{{ self.rsvp_text }}</a>
+            {% endif %}
+        </p>
 
         {# Much of this schema is ported over from the old event template #}
         {% if self.location %}
