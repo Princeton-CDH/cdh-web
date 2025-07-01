@@ -212,7 +212,7 @@ class Event(BasePage, ClusterableModel):
         default="RSVP",
         null=True,
         blank=True,
-        help_text="Text for the RSVP button",
+        help_text="Text for the RSVP button, this will default to RSVP if left blank",
         max_length=20,
     )
 

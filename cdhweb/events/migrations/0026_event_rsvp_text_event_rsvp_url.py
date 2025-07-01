@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             field=models.CharField(
                 blank=True,
                 default="RSVP",
-                help_text="Text for the RSVP button",
+                help_text="Text for the RSVP button, this will default to RSVP if left blank",
                 max_length=20,
                 null=True,
                 verbose_name="RSVP Text",
