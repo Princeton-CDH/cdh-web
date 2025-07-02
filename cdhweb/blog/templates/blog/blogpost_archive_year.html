@@ -21,7 +21,7 @@
             <span property="schema:name">{{ author.person }}</span></a>
         </div>
         {% endfor %}
-        <div>{{ post.first_published_at|naturalday }}</div>
+        <div>{{ post.display_date|naturalday }}</div>
     </li>
     {% endfor %}
 </ul>

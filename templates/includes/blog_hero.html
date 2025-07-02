@@ -6,7 +6,7 @@
         <h1>{{ page.title }}</h1>
     
         <p class="blog-hero__date">
-            {{ page.first_published_at|date:"j F Y" }}
+            {{ page.display_date|date:"j F Y" }}
         </p>
 
         {% if page.authors.all %}
