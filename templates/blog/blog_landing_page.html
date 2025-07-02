@@ -21,16 +21,20 @@
 
               {# Group months by year #}
               {% for archive_date in date_list %}
-                {% ifchanged %}
+                {% ifchanged archive_date.year %}
+                  {% if forloop.counter > 1 %}
+                    {# Close the previous group, unless we're on the first trip through #}
+                    </optgroup>
+                  {% endif %}
                   <optgroup label="{{ archive_date.year }}">
                 {% endifchanged %}
 
                 {% routablepageurl self 'by-month' year=archive_date.year month=archive_date|date:"m" as blog_url %}
                 <option data-href="{{ blog_url }}" {% if blog_url == request.path  %}selected{% endif %}>{{ archive_date|date:"F" }}</option>
 
-                {% ifchanged %}
-                  </optgroup>
-                {% endifchanged %}
+              {% if forloop.last %}
+                </optgroup> {# close the last optgroup #}
+              {% endif %}
               {% endfor %}
             </select>
           </div>
