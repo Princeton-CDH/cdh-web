@@ -2,7 +2,6 @@
 # Copy to cdhweb/settings/local_settings.py and configure
 
 import os
-
 from cdhweb.settings import DATABASES, BASE_DIR, INTERNAL_IPS, PUCAS_LDAP
 
 # debug is true by default when running in development
@@ -10,23 +9,19 @@ from cdhweb.settings import DATABASES, BASE_DIR, INTERNAL_IPS, PUCAS_LDAP
 # uncomment to disable debug mode
 # DEBUG = False
 
-INTERNAL_IPS = [
-    "127.0.0.1",
-]
-
 # SECURITY WARNING: keep the secret key used in production secret
 # http://www.miniwebtool.com/django-secret-key-generator/
-SECRET_KEY = ""
-NEVERCACHE_KEY = ""
+SECRET_KEY = "<your-secret-key-here>"
+NEVERCACHE_KEY = "<your-nevercache-key-here>"
 
 # Turn this on in test/QA site to show test banner
 # SHOW_TEST_WARNING = True
 
 # override default database settings as needed
 # default name and user are both "cdhweb"
-# DATABASES["default"]["NAME"] = ""
-# DATABASES["default"]["USER"] = ""
-DATABASES["default"]["PASSWORD"] = ""
+DATABASES["default"]["NAME"] = "cdhweb"
+DATABASES["default"]["USER"] = "cdhweb"
+DATABASES["default"]["PASSWORD"] = "******"
 
 # INCLUDE_ANALYTICS = True
 
@@ -67,3 +62,7 @@ LOGGING = {
         "cdhweb": {"handlers": ["console"], "level": "DEBUG"},
     },
 }
+
+# Set static files path
+STATIC_ROOT = BASE_DIR / "collected"
+STATICFILES_DIRS = [BASE_DIR / "static"]

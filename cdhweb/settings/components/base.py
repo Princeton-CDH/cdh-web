@@ -127,6 +127,7 @@ ROOT_URLCONF = "%s.urls" % PROJECT_APP
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "APP_DIRS": False,
         "DIRS": [BASE_DIR / "templates"],
         "OPTIONS": {
             "loaders": [
