@@ -20,33 +20,3 @@
 {% else %}
   <meta name="citation_author"           content="{{ page.owner.get_full_name|default:page.owner.username }}">
 {% endif %}
-
-
-
-{# – schema.org JSON-LD block to help Zotero detect blog post type – #}
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "{{ TITLE|escapejs }}",
-  "datePublished": "{{ page.first_published_at|date:'Y-m-d' }}",
-  "url": "{{ CANON_URL|escapejs }}",
-  "inLanguage": "en",{% if page.search_description or page.body_excerpt %}
-  "articleBody": "{% firstof page.search_description page.body_excerpt|striptags|truncatewords:40 %}",{% endif %}
-  "author": [
-    {% if page.authors.exists %}
-      {% for a in page.authors.all %}
-        {
-          "@type": "Person",
-          "name": "{{ a.person|escapejs }}"
-        }{% if not forloop.last %},{% endif %}
-      {% endfor %}
-    {% else %}
-      {
-        "@type": "Person",
-        "name": "{{ page.owner.get_full_name|default:page.owner.username|escapejs }}"
-      }
-    {% endif %}
-  ]
-}
-</script>
