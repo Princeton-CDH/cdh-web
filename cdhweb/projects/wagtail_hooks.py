@@ -1,8 +1,14 @@
+import csv
+
+from django.http import HttpResponse
+from django.template.defaultfilters import striptags
+from django.urls import path, reverse
+from wagtail import hooks
+from wagtail.admin.action_menu import ActionMenuItem
 from wagtail_modeladmin.mixins import ThumbnailMixin
 from wagtail_modeladmin.options import ModelAdmin, ModelAdminGroup, modeladmin_register
 
-from django.template.defaultfilters import striptags
-
+from cdhweb.pages.blocks.accordion_block import ProjectAccordion
 from cdhweb.projects.models import (
     GrantType,
     Membership,
@@ -12,6 +18,42 @@ from cdhweb.projects.models import (
     ProjectRole,
     Role,
 )
+
+
+class ProjectAccordionCSVeMenuItem(ActionMenuItem):
+    name = "action-accordion-csv"
+    label = "Export Accordion to CSV"
+
+    def get_url(self, context):
+        page = context.get("page")
+        if page and isinstance(page, Project):
+            return reverse("export_project_accordion_csv", kwargs={"page_id": page.id})
+        return None
+
+
+@hooks.register("construct_page_action_menu")
+def setup_accordion_export_menu_items(menu_items, request, context):
+    page = context.get("page")
+    if page and isinstance(page, Project):
+        menu_items.extend(
+            [
+                ProjectAccordionCSVeMenuItem(order=10),
+            ]
+        )
+
+
+@hooks.register("register_admin_urls")
+def register_accordion_export_url():
+    """Register the accordion export URL"""
+    from .views import export_project_accordion_csv_view
+
+    return [
+        path(
+            "pages/<int:page_id>/export-accordion-csv/",
+            export_project_accordion_csv_view,
+            name="export_project_accordion_csv",
+        ),
+    ]
 
 
 class ProjectAdmin(ThumbnailMixin, ModelAdmin):
