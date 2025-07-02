@@ -1,6 +1,3 @@
-import csv
-
-from django.http import HttpResponse
 from django.template.defaultfilters import striptags
 from django.urls import path, reverse
 from wagtail import hooks
@@ -8,7 +5,6 @@ from wagtail.admin.action_menu import ActionMenuItem
 from wagtail_modeladmin.mixins import ThumbnailMixin
 from wagtail_modeladmin.options import ModelAdmin, ModelAdminGroup, modeladmin_register
 
-from cdhweb.pages.blocks.accordion_block import ProjectAccordion
 from cdhweb.projects.models import (
     GrantType,
     Membership,
