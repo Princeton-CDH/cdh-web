@@ -64,7 +64,7 @@ This option runs the application directly on your local machine.
       source .venv/bin/activate
 
 
-. **Install Python dependencies:**
+2. **Install Python dependencies:**
    ::
    
       # For development (includes test dependencies)
@@ -73,7 +73,7 @@ This option runs the application directly on your local machine.
       # Or for production only
       pip install -r requirements.txt
 
-4. **Set up local settings:**
+3. **Set up local settings:**
    ::
    
       cp cdhweb/settings/local_settings.py.sample cdhweb/settings/local_settings.py
@@ -81,12 +81,12 @@ This option runs the application directly on your local machine.
       # Edit local_settings.py and add your SECRET_KEY
       # Configure database connection to your local PostgreSQL
 
-5. **Install Node.js dependencies:**
+4. **Install Node.js dependencies:**
    ::
    
       npm install
 
-6. **Set up database:**
+5. **Set up database:**
    ::
    
       # Create database
@@ -102,22 +102,22 @@ This option runs the application directly on your local machine.
       # Option B: Princeton NetID account with admin permissions  
       python manage.py createcasuser --admin netid
 
-7. **Build frontend assets:**
+6. **Build frontend assets:**
    ::
    
       npm run build
 
-8. **Collect static files:**
+7. **Collect static files:**
    ::
    
       python manage.py collectstatic --noinput
 
-9. **Run the development server:**
+8. **Run the development server:**
    ::
    
       python manage.py runserver
 
-10. **Visit the site:**
+9. **Visit the site:**
     - Main site: http://localhost:8000/
     - Django admin: http://localhost:8000/admin/
     - Wagtail admin: http://localhost:8000/cms/
@@ -146,33 +146,33 @@ This option runs the application in Docker containers, providing a production-li
    
       cp cdhweb/settings/local_settings.py.docker-sample cdhweb/settings/local_settings.py
 
-4. **Create Docker network:**
+3. **Create Docker network:**
    ::
    
       docker network create nginx-proxy
 
-5. **Start the application:**
+4. **Start the application:**
    ::
    
       docker-compose up -d
 
-6. **Build frontend assets (on host machine):**
+5. **Build frontend assets (on host machine):**
    ::
    
       npm install
       npm run build
 
-7. **Collect static files:**
+6. **Collect static files:**
    ::
    
       docker-compose exec application python manage.py collectstatic --noinput
 
-8. **Run database migrations:**
+7. **Run database migrations:**
    ::
    
       docker-compose exec application python manage.py migrate
 
-9. **Create admin user (optional, choose one option):**
+8. **Create admin user (optional, choose one option):**
    ::
    
       # Option A: Standard Django superuser
@@ -181,7 +181,7 @@ This option runs the application in Docker containers, providing a production-li
       # Option B: Princeton NetID account with admin permissions
       docker-compose exec application python manage.py createcasuser --admin netid
 
-10. **Visit the site:**
+9. **Visit the site:**
     - Main site: http://localhost:56180/
     - Django admin: http://localhost:56180/admin/
     - Wagtail admin: http://localhost:56180/cms/
@@ -193,23 +193,23 @@ Frontend Development
 
 The frontend uses webpack and npm.
 
-**Set up Node.js version:**
+1. **Set up Node.js version:**
 ::
 
    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
    nvm use
 
-**Install dependencies:**
+2. **Install dependencies:**
 ::
 
    npm install
 
-**Development mode:**
+3. **Development mode:**
 ::
 
    npm start
 
-**Build for production:**
+4. **Build for production:**
 ::
 
    npm run build
