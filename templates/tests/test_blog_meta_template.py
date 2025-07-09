@@ -1,6 +1,6 @@
 """
 Simple tests for the templates/snippets/blog_meta.html template.
-Tests basic Zotero citation metadata tags.
+Tests COinS metadata for Zotero integration.
 run 'docker-compose exec application python -m pytest templates/tests/test_blog_meta_template.py -v'
 """
 
@@ -88,71 +88,95 @@ class TestBlogMetaTemplate(TestCase):
         return template.render(context)
 
 
-    def test_citation_title_present(self):
-        """Test that citation_title meta tag is present."""
+    def test_coins_span_present(self):
+        """Test that COinS span element is present."""
         page = MockPage()
         rendered = self.render_template(page)
-        self.assertIn('<meta name="citation_title"', rendered)
-        self.assertIn('Test CDH Blog Post', rendered)
+        self.assertIn('<span class="Z3988"', rendered)
+        self.assertIn('title="', rendered)
 
 
-    def test_citation_date_present(self):
-        """Test that citation_date meta tag is present."""
+    def test_coins_blog_type_present(self):
+        """Test that COinS identifies content as blogPost."""
         page = MockPage()
         rendered = self.render_template(page)
-        self.assertIn('<meta name="citation_date"', rendered)
-        
+        self.assertIn('rft.type=blogPost', rendered)
 
-    def test_citation_language_present(self):
-        """Test that citation_language meta tag is present."""
+
+    def test_coins_title_present(self):
+        """Test that COinS contains the page title."""
         page = MockPage()
         rendered = self.render_template(page)
-        self.assertIn('<meta name="citation_language"', rendered)
-        self.assertIn('content="en"', rendered)
+        self.assertIn('rft.title=Test%20CDH%20Blog%20Post', rendered)
 
 
-    def test_citation_author_multiple(self):
-        """Test citation_author with multiple authors."""
+    def test_coins_date_present(self):
+        """Test that COinS contains the publication date."""
+        page = MockPage()
+        rendered = self.render_template(page)
+        self.assertIn('rft.date=2025-06-26', rendered)
+
+
+    def test_coins_source_present(self):
+        """Test that COinS contains the source information."""
+        page = MockPage()
+        rendered = self.render_template(page)
+        self.assertIn('rft.source=Center%20For%20Digital%20Humanities%40Princeton', rendered)
+
+
+    def test_coins_url_present(self):
+        """Test that COinS contains the page URL."""
+        page = MockPage()
+        rendered = self.render_template(page)
+        self.assertIn('rft.identifier=https%3A//example.com/test/', rendered)
+
+
+    def test_coins_author_multiple(self):
+        """Test COinS with multiple authors."""
         page = MockPageWithAuthors()
         rendered = self.render_template(page)
-        self.assertIn('<meta name="citation_author"', rendered)
-        self.assertIn('Author One', rendered)
-        self.assertIn('Author Two', rendered)
+        self.assertIn('rft.creator=Author%20One', rendered)
+        self.assertIn('rft.creator=Author%20Two', rendered)
 
 
-    def test_citation_webpage_url_present(self):
-        """Test that citation_webpage_url meta tag is present."""
+    def test_coins_author_fallback(self):
+        """Test COinS falls back to page owner when no authors."""
         page = MockPage()
         rendered = self.render_template(page)
-        self.assertIn('<meta name="citation_webpage_url"', rendered)
-        self.assertIn('https://example.com/test/', rendered)
+        self.assertIn('rft.creator=Test%20User', rendered)
 
 
-    def test_citation_abstract_present(self):
-        """Test that citation_abstract meta tag is present when there's content."""
+    def test_coins_description_present(self):
+        """Test that COinS contains description when available."""
         page = MockPage()
         rendered = self.render_template(page)
-        self.assertIn('<meta name="citation_abstract"', rendered)
-        self.assertIn('Test description', rendered)
+        self.assertIn('rft.description=Test%20description', rendered)
 
 
-    def test_all_basic_meta_tags_present(self):
-        """Test that all basic Zotero meta tags are present when content is available."""
+    def test_coins_description_absent_when_empty(self):
+        """Test that COinS doesn't include description when empty."""
+        page = MockPageNoAbstract()
+        rendered = self.render_template(page)
+        self.assertNotIn('rft.description=', rendered)
+
+
+    def test_coins_all_basic_elements_present(self):
+        """Test that all basic COinS elements are present."""
         page = MockPage()
         rendered = self.render_template(page)
         
-        required_tags = [
-            'citation_title',
-            'citation_date',
-            'citation_webpage_title', 
-            'citation_webpage_url',
-            'citation_language',
-            'citation_author'
+        required_elements = [
+            'url_ver=Z39.88-2004',
+            'ctx_ver=Z39.88-2004',
+            'rft_val_fmt=info:ofi/fmt:kev:mtx:dc',
+            'rft.type=blogPost',
+            'rft.title=',
+            'rft.creator=',
+            'rft.date=',
+            'rft.source=',
+            'rft.identifier='
         ]
         
-        for tag in required_tags:
-            self.assertIn(f'<meta name="{tag}"', rendered)
-            
-        # Abstract should be present when there's content
-        self.assertIn('<meta name="citation_abstract"', rendered)
+        for element in required_elements:
+            self.assertIn(element, rendered)
         
