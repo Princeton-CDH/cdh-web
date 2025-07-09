@@ -53,20 +53,16 @@ This option runs the application directly on your local machine.
 **Setup Steps:**
 
 1. **Set up Python environment:**
-
-   **Important:** This project uses the Python version specified in `.python-version`. 
-   Using the correct version is essential for compatibility.
-
-   ::
-   
+   .. code-block:: bash
+      # Install Python 3.11 (if not already installed)
+      brew install python@3.11  # macOS
+      
       # Create and activate virtual environment
-      python -m venv .venv
-      source .venv/bin/activate
-
+      virtualenv cdhweb -p python3.11
+      source cdhweb/bin/activate
 
 . **Install Python dependencies:**
-   ::
-   
+   .. code-block:: bash
       # For development (includes test dependencies)
       pip install -r requirements/dev.txt
       
@@ -74,53 +70,43 @@ This option runs the application directly on your local machine.
       pip install -r requirements.txt
 
 4. **Set up local settings:**
-   ::
-   
+   .. code-block:: bash
       cp cdhweb/settings/local_settings.py.sample cdhweb/settings/local_settings.py
       
       # Edit local_settings.py and add your SECRET_KEY
       # Configure database connection to your local PostgreSQL
 
 5. **Install Node.js dependencies:**
-   ::
-   
+   .. code-block:: bash
       npm install
 
 6. **Set up database:**
-   ::
-   
+   .. code-block:: bash
       # Create database
       createdb cdhweb
       
       # Run migrations
       python manage.py migrate
       
-      # Create admin user (choose one option):
-      # Option A: Standard Django superuser
+      # Create superuser (optional)
       python manage.py createsuperuser
-      
-      # Option B: Princeton NetID account with admin permissions  
-      python manage.py createcasuser --admin netid
 
 7. **Build frontend assets:**
-   ::
-   
+   .. code-block:: bash
       npm run build
 
 8. **Collect static files:**
-   ::
-   
+   .. code-block:: bash
       python manage.py collectstatic --noinput
 
 9. **Run the development server:**
-   ::
-   
+   .. code-block:: bash
       python manage.py runserver
 
 10. **Visit the site:**
-    - Main site: http://localhost:8000/
-    - Django admin: http://localhost:8000/admin/
-    - Wagtail admin: http://localhost:8000/cms/
+    - Main site: http://127.0.0.1:8000/
+    - Django admin: http://127.0.0.1:8000/admin/
+    - Wagtail admin: http://127.0.0.1:8000/cms/
 
 **Additional Setup (Optional):**
 - Download licensed fonts and install under `/sitemedia/fonts/`
@@ -142,49 +128,34 @@ This option runs the application in Docker containers, providing a production-li
    - Font files --> put in `static_src/fonts/`
 
 2. **Configure Docker settings:**
-   ::
-   
+   .. code-block:: bash
       cp cdhweb/settings/local_settings.py.docker-sample cdhweb/settings/local_settings.py
 
 4. **Create Docker network:**
-   ::
-   
+   .. code-block:: bash
       docker network create nginx-proxy
 
 5. **Start the application:**
-   ::
-   
+   .. code-block:: bash
       docker-compose up -d
 
 6. **Build frontend assets (on host machine):**
-   ::
-   
+   .. code-block:: bash
       npm install
       npm run build
 
 7. **Collect static files:**
-   ::
-   
+   .. code-block:: bash
       docker-compose exec application python manage.py collectstatic --noinput
 
 8. **Run database migrations:**
-   ::
-   
+   .. code-block:: bash
       docker-compose exec application python manage.py migrate
 
-9. **Create admin user (optional, choose one option):**
-   ::
-   
-      # Option A: Standard Django superuser
-      docker-compose exec application python manage.py createsuperuser
-      
-      # Option B: Princeton NetID account with admin permissions
-      docker-compose exec application python manage.py createcasuser --admin netid
-
-10. **Visit the site:**
-    - Main site: http://localhost:56180/
-    - Django admin: http://localhost:56180/admin/
-    - Wagtail admin: http://localhost:56180/cms/
+9. **Visit the site:**
+    - Main site: http://127.0.0.1:56180/
+    - Django admin: http://127.0.0.1:56180/admin/
+    - Wagtail admin: http://127.0.0.1:56180/cms/
 
 
 
@@ -194,24 +165,20 @@ Frontend Development
 The frontend uses webpack and npm.
 
 **Set up Node.js version:**
-::
-
+.. code-block:: bash
    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
    nvm use
 
 **Install dependencies:**
-::
-
+.. code-block:: bash
    npm install
 
 **Development mode:**
-::
-
+.. code-block:: bash
    npm start
 
 **Build for production:**
-::
-
+.. code-block:: bash
    npm run build
 
 
