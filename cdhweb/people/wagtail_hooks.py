@@ -51,6 +51,7 @@ class ProfileAdmin(ThumbnailMixin, ModelAdmin):
     search_fields = ("title", "body")
     ordering = ("title",)
     thumb_image_field_name = "image"
+    exclude_from_explorer = True
 
 
 class LinkTypeAdmin(ModelAdmin):

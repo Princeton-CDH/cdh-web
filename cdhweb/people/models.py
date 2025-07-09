@@ -632,7 +632,7 @@ class PeopleLandingPageArchived(LandingPage):
 class PeopleCategoryPage(BaseLandingPage, SidebarNavigationMixin, RoutablePageMixin):
     """Landing Page for categeory of people i.e. staff, students, affiliates, executive committee"""
 
-    subpage_types = [Profile]
+    subpage_types = []
 
     template_name = "people/people_category_page.html"
 
@@ -810,7 +810,7 @@ class PeopleCategoryPage(BaseLandingPage, SidebarNavigationMixin, RoutablePageMi
 
 
 class PeopleLandingPage(StandardHeroMixin, Page):
-    subpage_types = [PeopleCategoryPage]
+    subpage_types = [Profile, PeopleCategoryPage]
 
     template_name = "people/people_landing_page.html"
 
