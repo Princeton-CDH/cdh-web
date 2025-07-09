@@ -1,7 +1,9 @@
 @use '../functions/fn';
 
-button {
-  // mobile safari's UA is a bit different, so we need to explicitly override it
+button,
+select {
+  // mobile safari's UA is a bit different, so we need to explicitly override it.
+  // specifically, this it to avoid default blue text on some elements
   color: currentColor;
 }
 
