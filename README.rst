@@ -45,7 +45,7 @@ Development Setup
 Choose one of the following setup options:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Option 1: Local Development ("bare-metal" / non docker)
+Option 1: Local Development ("bare-metal")
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This option runs the application directly on your local machine.
