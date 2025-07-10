@@ -1,7 +1,9 @@
 from django.template.defaultfilters import striptags
 from django.urls import path, reverse
+from django.utils.translation import gettext_lazy as _
 from wagtail import hooks
 from wagtail.admin.action_menu import ActionMenuItem
+from wagtail_modeladmin.helpers import ButtonHelper
 from wagtail_modeladmin.mixins import ThumbnailMixin
 from wagtail_modeladmin.options import ModelAdmin, ModelAdminGroup, modeladmin_register
 
@@ -16,40 +18,19 @@ from cdhweb.projects.models import (
 )
 
 
-class ProjectAccordionCSVeMenuItem(ActionMenuItem):
-    name = "action-accordion-csv"
-    label = "Export Accordion to CSV"
+class AccordionCSVButtonHelper(ButtonHelper):
+    @property
+    def export_accordion_csv_button(self, classnames_add=None, classnames_exclude=None):
+        # Define custom button for downloading csv with project accordion data
+        custom_button = {
+            "url": self.url_helper.get_action_url("export_accordion"),
+            "label": _("Export Project Accordions CSV"),
+            "classname": self.finalise_classname(self.add_button_classnames),
+            "title": _("Export Project Accordions CSV"),
+            "icon": "download",
+        }
 
-    def get_url(self, context):
-        page = context.get("page")
-        if page and isinstance(page, Project):
-            return reverse("export_project_accordion_csv", kwargs={"page_id": page.id})
-        return None
-
-
-@hooks.register("construct_page_action_menu")
-def setup_accordion_export_menu_items(menu_items, request, context):
-    page = context.get("page")
-    if page and isinstance(page, Project):
-        menu_items.extend(
-            [
-                ProjectAccordionCSVeMenuItem(order=10),
-            ]
-        )
-
-
-@hooks.register("register_admin_urls")
-def register_accordion_export_url():
-    """Register the accordion export URL"""
-    from .views import export_project_accordion_csv_view
-
-    return [
-        path(
-            "pages/<int:page_id>/export-accordion-csv/",
-            export_project_accordion_csv_view,
-            name="export_project_accordion_csv",
-        ),
-    ]
+        return custom_button
 
 
 class ProjectAdmin(ThumbnailMixin, ModelAdmin):
@@ -74,6 +55,7 @@ class ProjectAdmin(ThumbnailMixin, ModelAdmin):
     thumb_image_field_name = "thumbnail"
     thumb_col_header_text = "thumbnail"
     ordering = ("title",)
+    button_helper_class = AccordionCSVButtonHelper
 
     def tags(self, obj):
         """
@@ -89,6 +71,19 @@ class ProjectAdmin(ThumbnailMixin, ModelAdmin):
 
     def page_content(self, obj):
         return striptags(obj.body)
+
+    def get_admin_urls_for_registration(self):
+        urls = super().get_admin_urls_for_registration()
+        from .views import export_accordion_csv_view
+
+        custom_urls = (
+            path(
+                "export_accordion",
+                export_accordion_csv_view,
+                name=self.url_helper.get_action_url_name("export_accordion"),
+            ),
+        )
+        return urls + custom_urls
 
 
 class MembershipAdmin(ModelAdmin):
