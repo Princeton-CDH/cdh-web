@@ -1,0 +1,7 @@
+{% extends "modeladmin/index.html" %}
+{% load i18n wagtailadmin_tags modeladmin_tags %}
+
+{% block header_extra %}
+    {{ block.super }}
+    {% include 'modeladmin/includes/button.html' with button=view.button_helper.export_accordion_csv_button %}  
+{% endblock %}

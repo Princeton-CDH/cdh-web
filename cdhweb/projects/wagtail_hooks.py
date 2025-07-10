@@ -1,7 +1,11 @@
+from django.template.defaultfilters import striptags
+from django.urls import path, reverse
+from django.utils.translation import gettext_lazy as _
+from wagtail import hooks
+from wagtail.admin.action_menu import ActionMenuItem
+from wagtail_modeladmin.helpers import ButtonHelper
 from wagtail_modeladmin.mixins import ThumbnailMixin
 from wagtail_modeladmin.options import ModelAdmin, ModelAdminGroup, modeladmin_register
-
-from django.template.defaultfilters import striptags
 
 from cdhweb.projects.models import (
     GrantType,
@@ -12,6 +16,21 @@ from cdhweb.projects.models import (
     ProjectRole,
     Role,
 )
+
+
+class AccordionCSVButtonHelper(ButtonHelper):
+    @property
+    def export_accordion_csv_button(self, classnames_add=None, classnames_exclude=None):
+        # Define custom button for downloading csv with project accordion data
+        custom_button = {
+            "url": self.url_helper.get_action_url("export_accordion"),
+            "label": _("Export Project Accordions CSV"),
+            "classname": self.finalise_classname(self.add_button_classnames),
+            "title": _("Export Project Accordions CSV"),
+            "icon": "download",
+        }
+
+        return custom_button
 
 
 class ProjectAdmin(ThumbnailMixin, ModelAdmin):
@@ -36,6 +55,7 @@ class ProjectAdmin(ThumbnailMixin, ModelAdmin):
     thumb_image_field_name = "thumbnail"
     thumb_col_header_text = "thumbnail"
     ordering = ("title",)
+    button_helper_class = AccordionCSVButtonHelper
 
     def tags(self, obj):
         """
@@ -51,6 +71,19 @@ class ProjectAdmin(ThumbnailMixin, ModelAdmin):
 
     def page_content(self, obj):
         return striptags(obj.body)
+
+    def get_admin_urls_for_registration(self):
+        urls = super().get_admin_urls_for_registration()
+        from .views import export_accordion_csv_view
+
+        custom_urls = (
+            path(
+                "export_accordion",
+                export_accordion_csv_view,
+                name=self.url_helper.get_action_url_name("export_accordion"),
+            ),
+        )
+        return urls + custom_urls
 
 
 class MembershipAdmin(ModelAdmin):
