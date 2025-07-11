@@ -38,74 +38,182 @@ This repository uses `git-flow <https://github.com/nvie/gitflow>`_ conventions; 
 contains the most recent release, and work in progress will be on the **develop** branch.
 Pull requests should be made against **develop**.
 
+-----------------
+Development Setup
+-----------------
 
-Development instructions
-------------------------
+Choose one of the following setup options:
 
-Bare-metal
-~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Option 1: Local Development ("bare-metal")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Initial setup and installation:
+This option runs the application directly on your local machine.
 
-- Recommended: create and activate a python 3.9 virtualenv::
+**Setup Steps:**
 
-    virtualenv cdhweb -p python3.9
-    source cdhweb/bin/activate
+1. **Set up Python environment:**
 
-- Use pip to install required python dependencies.  To install production
-  dependencies only::
+   **Important:** This project uses the Python version specified in `.python-version`. 
+   Using the correct version is essential for compatibility.
 
-    pip install -r requirements.txt
+   ::
+   
+      # Create and activate virtual environment
+      python -m venv .venv
+      source .venv/bin/activate
 
-  To install all development requirements::
 
-    pip install -r requirements/dev.txt
+2. **Install Python dependencies:**
+   ::
+   
+      # For development (includes test dependencies)
+      pip install -r requirements/dev.txt
+      
+      # Or for production only
+      pip install -r requirements.txt
 
-- Install django-compressor dependencies::
+3. **Set up local settings:**
+   ::
+   
+      cp cdhweb/settings/local_settings.py.sample cdhweb/settings/local_settings.py
+      
+      # Edit local_settings.py and add your SECRET_KEY
+      # Configure database connection to your local PostgreSQL
 
-    npm install
+4. **Install Node.js dependencies:**
+   ::
+   
+      npm install
 
-- Copy sample local settings and configure for your environment::
+5. **Set up database:**
+   ::
+   
+      # Create database
+      createdb cdhweb
+      
+      # Run migrations
+      python manage.py migrate
+      
+      # Create admin user (choose one option):
+      # Option A: Standard Django superuser
+      python manage.py createsuperuser
+      
+      # Option B: Princeton NetID account with admin permissions  
+      python manage.py createcasuser --admin netid
 
-    cp cdhweb/settings/local_settings.py.sample cdhweb/settings/local_settings.py
+6. **Build frontend assets:**
+   ::
+   
+      npm run build
 
-You must add a ``SECRET_KEY`` value in your local settings.
+7. **Collect static files:**
+   ::
+   
+      python manage.py collectstatic --noinput
 
-- Download licensed fonts and install locally under /sitemedia/fonts/
+8. **Run the development server:**
+   ::
+   
+      python manage.py runserver
 
-- Install OpenCV dependencies (if necessary) for `wagtail image feature detection <https://docs.wagtail.io/en/stable/advanced_topics/images/feature_detection.html>`_
+9. **Visit the site:**
+    - Main site: http://localhost:8000/
+    - Django admin: http://localhost:8000/admin/
+    - Wagtail admin: http://localhost:8000/cms/
 
-Docker (Springload)
+**Additional Setup (Optional):**
+- Download licensed fonts and install under `/sitemedia/fonts/`
+- Install OpenCV dependencies for Wagtail image feature detection
+- Set up pre-commit hooks: `pre-commit install`
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Option 2: Docker Development (Production-like Environment)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This option runs the application in Docker containers, providing a production-like environment.
+
+**Setup Steps:**
+
+1. **Download required files** from the shared Springload drive (https://drive.google.com/drive/folders/1B7qObEuO6sYJhVyE23RP8Tf0IbFCLlMf):
+   - Database dump (e.g., `2024-05-02_cdhweb.sql`) --> put in `docker/database/`
+   - Media archive (e.g., `2024-05-02_cdhweb_media.tar.gz`) --> put in `media/`
+   - Font files --> put in `static_src/fonts/`
+
+2. **Configure Docker settings:**
+   ::
+   
+      cp cdhweb/settings/local_settings.py.docker-sample cdhweb/settings/local_settings.py
+
+3. **Create Docker network:**
+   ::
+   
+      docker network create nginx-proxy
+
+4. **Start the application:**
+   ::
+   
+      docker-compose up -d
+
+5. **Build frontend assets (on host machine):**
+   ::
+   
+      npm install
+      npm run build
+
+6. **Collect static files:**
+   ::
+   
+      docker-compose exec application python manage.py collectstatic --noinput
+
+7. **Run database migrations:**
+   ::
+   
+      docker-compose exec application python manage.py migrate
+
+8. **Create admin user (optional, choose one option):**
+   ::
+   
+      # Option A: Standard Django superuser
+      docker-compose exec application python manage.py createsuperuser
+      
+      # Option B: Princeton NetID account with admin permissions
+      docker-compose exec application python manage.py createcasuser --admin netid
+
+9. **Visit the site:**
+    - Main site: http://localhost:56180/
+    - Django admin: http://localhost:56180/admin/
+    - Wagtail admin: http://localhost:56180/cms/
+
+
+
+Frontend Development
 ~~~~~~~~~~~~~~~~~~~
-
-- Download the **database**, **media dump** and **fonts** from https://drive.google.com/drive/u/0/folders/1B7qObEuO6sYJhVyE23RP8Tf0IbFCLlMf
-- Copy the database dump into `docker/database`
-- Extract the media into `media`
-
-    tar -xvzf path_to_file.tar.gz -C media
-
-- Move the font files into `static_src/fonts`
-- Copy cdhweb/settings/local_settings.py.docker-sample to cdhweb/settings/local_settings.py
-- Run `docker-compose up`
-
-Frontend (Springload)
-~~~~~~~~~~~~~~~~~~~~~
 
 The frontend uses webpack and npm.
 
-First, make sure you're using the correct node version:
+1. **Set up Node.js version:**
+::
 
-  nvm use
+   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+   nvm use
 
-If it tells you to install a new version, do so. Then run ``nvm use`` again.
+2. **Install dependencies:**
+::
 
-Install dependencies:
+   npm install
 
-  npm install
+3. **Development mode:**
+::
 
-Then to run the site in development mode locally:
+   npm start
 
-  npm start
+4. **Build for production:**
+::
+
+   npm run build
+
 
 Setup pre-commit hooks
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -127,6 +235,7 @@ following command::
 
     git config blame.ignoreRevsFile .git-blame-ignore-revs
 
+
 Unit Testing
 ------------
 
@@ -140,6 +249,7 @@ included in dev)::
 Run tests using py.test::
 
   py.test
+
 
 Visual Testing
 --------------
@@ -164,6 +274,7 @@ You can use both of these commands locally if you need to accomplish either of
 these tasks. You will need to have the dependencies in `requirements/test.txt`
 installed, and set `PERCY_TOKEN` in your shell environment.
 
+
 Documentation
 ~~~~~~~~~~~~~
 
@@ -185,6 +296,7 @@ On every commit, GitHub Actions will generate and then publish a database diagra
 
     python manage.py dbml > cdhweb.dbml
     npx dbdocs build cdhweb.dbml --project cdhweb
+
 
 License
 -------
