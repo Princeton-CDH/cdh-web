@@ -1,6 +1,5 @@
 __version__ = "4.2.0"
 
-
 # context processor to add version to the template environment; can be
 # manually overridden in the project's settings
 def context_extras(request):
