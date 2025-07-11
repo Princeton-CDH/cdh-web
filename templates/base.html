@@ -10,7 +10,9 @@
     <title>{% block title %}{% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.title }}{% endif %}{% endblock %}{% block title_suffix %}{% endblock %} – CDH@Princeton</title>
     
     {% include "includes/favicons.html" %}
-    {% include "snippets/head_meta.html" %}
+    {% block extra_head %}
+        {% include "snippets/head_meta.html" %}
+    {% endblock %}
 
     <script type="text/javascript"> window.staticRoot = "{% static 'dist/' %}"; </script>
 

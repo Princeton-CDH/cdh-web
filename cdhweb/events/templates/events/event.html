@@ -12,9 +12,9 @@
 
 
 {% block main %}
-<div typeof="schema:Event" class="event-detail">
+<div class="event-detail">
 <header>
-    <h1 property="schema:name">{{ page.title }}</h1>
+    <h1>{{ page.title }}</h1>
 </header>
 
 <div class="details">
@@ -23,10 +23,10 @@
     <ul>
     {% for speaker in page.speakers.all %}
     {# performer == presenter #}
-    <li property="schema:performer" typeof="schema:Person">
-        <h3><span property="schema:name">
+    <li>
+        <h3><span>
             <a
-            {% if speaker.person.profile_url %}href="{{ speaker.person.profile_url }}" property="schema:sameAs"{% endif %}>
+            {% if speaker.person.profile_url %}href="{{ speaker.person.profile_url }}"{% endif %}>
             {{ speaker.person }}</a></span>
         </h3>
         {% if speaker.person.institution %}
@@ -42,19 +42,17 @@
     {% if page.type.name != page.title %}
     <p>{{ page.type }}</p>
     {% endif %}
-    <meta property="schema:startDate" content="{{ page.start_time|date:'c' }}"/>
-    <meta property="schema:endDate" content="{{ page.end_time|date:'c' }}"/>
     <div>{{ page.when }}</div>
 
     {% if page.location %}
-    <div property="schema:location" typeof="{% if page.is_virtual %}schema:VirtualLocation{% else %}schema:Place{% endif %}" class="location">
-        <span property="schema:name">{{ page.location.name }}</span>
+    <div class="location">
+        <span>{{ page.location.name }}</span>
         {% if not page.is_virtual %}
-        <div property="schema:address"
-        {% if page.location.name == page.location.address %}style="display:none"{% endif %}>
-        {{ page.location.address}}</div>
-        {% elif page.join_url %}
-        <div property="schema:url" style="display:none">{{ page.join_url }}</div>
+        <div
+            {% if page.location.name == page.location.address %}style="display:none"{% endif %}
+        >
+            {{ page.location.address}}
+        </div>
         {% endif %}
     </div>
     {% endif %}
@@ -67,17 +65,12 @@
 <div class="description">
     {% if page.image %}
         {% image page.image width-735 as event_img %}
-        <img src="{{ event_img.url }}" alt="{{ page.title }}" property="schema:image"/>
+        <img src="{{ event_img.url }}" alt="{{ page.title }}"/>
     {% endif %}
-    <meta property="schema:url" content="{{ page.full_url }}"/>
-    <div property="schema:description">
+    <div>
     {% include_block page.body %}
     </div>
 </div>
 
 </div>
 {% endblock %}
-
-
-
-
