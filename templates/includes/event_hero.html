@@ -19,23 +19,21 @@
             <a href="{{ self.get_ical_url }}">Add to calendar</a>
         </p>
 
-        {# Much of this schema is ported over from the old event template #}
         {% if self.location %}
             <div
                 class="event-hero__location"
                 property="schema:location"
                 typeof="{% if self.location.name %}schema:VirtualLocation{% else %}schema:Place{% endif %}"
             >
-                <span property="schema:name">{{ self.location.name }}</span>
+                <span>{{ self.location.name }}</span>
                 {% if not self.location.name == "Virtual" %}
                     <div
-                        property="schema:address"
                         {% if self.location.name == self.location.address %}style="display:none"{% endif %}
                     >
                         {{ self.location.address }}
                     </div>
                 {% elif self.join_url %}
-                    <div property="schema:url" style="display:none">{{ page.join_url }}</div>
+                    <div style="display:none">{{ page.join_url }}</div>
                 {% endif %}
             </div>
         {% endif %}

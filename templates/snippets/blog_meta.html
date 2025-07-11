@@ -1,0 +1,9 @@
+{% load wagtailcore_tags %}
+
+
+{# – extract fields from Wagtail Page objects– #}
+{% firstof page.seo_title page.title as TITLE %}
+{% firstof request.build_absolute_uri as CANON_URL %}
+
+{# – use CoinS to pass metadata to Zotero #}
+<span class="Z3988" title="url_ver=Z39.88-2004&amp;ctx_ver=Z39.88-2004&amp;rfr_id=info%3Asid%2Fcdh.princeton.edu%3Ablog&amp;rft_val_fmt=info:ofi/fmt:kev:mtx:dc&amp;rft.type=blogPost&amp;rft.title={% firstof page.seo_title page.title %}{% if page.authors.exists %}{% for a in page.authors.all %}&amp;rft.creator={{ a.person }}{% endfor %}{% endif %}&amp;rft.date={{ page.first_published_at|date:'Y-m-d' }}&amp;rft.source=Center For Digital Humanities@Princeton&amp;rft.identifier={{ CANON_URL }}"></span>
