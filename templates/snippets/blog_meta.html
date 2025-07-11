@@ -5,6 +5,5 @@
 {% firstof page.seo_title page.title as TITLE %}
 {% firstof request.build_absolute_uri as CANON_URL %}
 
-
 {# – use CoinS to pass metadata to Zotero #}
-<span class="Z3988" title="url_ver=Z39.88-2004&ctx_ver=Z39.88-2004&rft_val_fmt=info:ofi/fmt:kev:mtx:dc&rft.type=blogPost&rft.title={{ TITLE|urlencode }}&{% if page.authors.exists %}{% for a in page.authors.all %}rft.creator={{ a.person|urlencode }}&{% endfor %}{% else %}rft.creator={{ page.owner.get_full_name|default:page.owner.username|urlencode }}&{% endif %}rft.date={{ page.first_published_at|date:'Y-m-d' }}&rft.source=Center For Digital Humanities@Princeton&rft.identifier={{ CANON_URL|urlencode }}{% if page.search_description %}&rft.description={{ page.search_description|urlencode }}{% endif %}"></span>
+<span class="Z3988" title="url_ver=Z39.88-2004&amp;ctx_ver=Z39.88-2004&amp;rfr_id=info%3Asid%2Fcdh.princeton.edu%3Ablog&amp;rft_val_fmt=info:ofi/fmt:kev:mtx:dc&amp;rft.type=blogPost&amp;rft.title={% firstof page.seo_title page.title %}{% if page.authors.exists %}{% for a in page.authors.all %}&amp;rft.creator={{ a.person }}{% endfor %}{% endif %}&amp;rft.date={{ page.first_published_at|date:'Y-m-d' }}&amp;rft.source=Center For Digital Humanities@Princeton&amp;rft.identifier={{ CANON_URL }}"></span>

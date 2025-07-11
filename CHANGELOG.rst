@@ -1,6 +1,16 @@
 CHANGELOG
 =========
 
+4.2.0
+-----
+- Add CoinS metadata to blog post pages for Zotero citation support
+- Improved developer's documentation in Readme
+  
+4.1.1
+-----
+- Allow person profile pages to be created where they belong
+- Return to excluding profile pages from the page explorer
+
 4.1.0
 -----
 - Frontend dependency updates, and related fixes
