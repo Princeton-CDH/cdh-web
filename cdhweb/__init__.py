@@ -1,4 +1,4 @@
-__version__ = "4.1.0"
+__version__ = "4.2.0"
 
 
 # context processor to add version to the template environment; can be
