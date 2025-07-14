@@ -28,7 +28,7 @@
                 {% endfor %}
             </div><br/>
             {% endif %}
-            <span class="date-published">{{ post.first_published_at|date:"F j, Y" }}</span>
+            <span class="date-published">{{ post.display_date|date:"F j, Y" }}</span>
         </div>
     </header>
     {# don't display descriptions on profile #}
