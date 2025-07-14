@@ -84,7 +84,7 @@
                     {% include 'cdhpages/blocks/tile.html' with internal_page=project tile_type='internal_page_tile' has_component_title=True %}
                 {% endfor %}
             {% else %}
-                <p class="no-results-message">No current projects match your filters.</p>
+                <p class="no-results-message">No {% if filter_form.current.value %}current {% endif %}projects match your filters.</p>
             {% endif %}
             
         </div>
