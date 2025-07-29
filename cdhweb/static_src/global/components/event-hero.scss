@@ -59,6 +59,8 @@ Event hero. Similar to standard hero. Key differences:
   grid-area: t;
   font-size: fn.rem(16);
   line-height: 1.125;
+  display: flex; // to support visual re-ordering (tag before h1)
+  flex-direction: column;
 
   :where(h1) {
     margin-block-start: var(--title-top-space);
@@ -86,6 +88,12 @@ Event hero. Similar to standard hero. Key differences:
       margin-block-start: 40px;
     }
   }
+}
+
+.event-hero__type-tag {
+  justify-self: start;
+  align-self: start;
+  order: -1; // visually before h1
 }
 
 .event-hero__date {
