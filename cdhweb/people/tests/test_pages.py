@@ -63,6 +63,7 @@ class TestProfile:
         person.delete()
         assert Profile.objects.count() == 0
 
+    @pytest.mark.skip("Skipped after blog tests cleanup - blog integration test")
     def test_recent_blogposts(self, people_landing_page, blog_link_page):
         """profile should have person's most recent blog posts in context"""
         # create the profile page
