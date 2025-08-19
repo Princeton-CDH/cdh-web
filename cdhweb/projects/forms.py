@@ -10,21 +10,21 @@ class ProjectFiltersForm(forms.Form):
 
     q = forms.CharField(required=False, label="Keyword")
     method = forms.ModelChoiceField(
-        ProjectMethod.objects.filter(projects__isnull=False).distinct(),
+        ProjectMethod.objects.filter(projects__isnull=False).distinct().order_by("method"),
         empty_label="--Select--",
         required=False,
         blank=True,
         label="Method/Approach",
     )
     field = forms.ModelChoiceField(
-        ProjectField.objects.filter(projects__isnull=False).distinct(),
+        ProjectField.objects.filter(projects__isnull=False).distinct().order_by("field"),
         empty_label="--Select--",
         required=False,
         blank=True,
         label="Field of Study",
     )
     role = forms.ModelChoiceField(
-        ProjectRole.objects.filter(projects__isnull=False).distinct(),
+        ProjectRole.objects.filter(projects__isnull=False).distinct().order_by("role"),
         empty_label="--Select--",
         required=False,
         blank=True,
