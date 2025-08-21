@@ -1,6 +1,16 @@
 CHANGELOG
 =========
 
+4.3.0
+-----
+- [CDH-62] add category label to event and blog pages
+- [CDH-91] add menu button to download project accordion
+- [CDH-118] Add breadcrumbs to search page
+- [CDH-87] adding rsvp link to event page
+- [CDH-86] turn add to calendar link into button
+- [CDH-119] update no projects message
+- [CDH-124] order project filters alphabetically
+
 4.2.0
 -----
 - Add CoinS metadata to blog post pages for Zotero citation support
