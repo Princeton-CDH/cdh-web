@@ -1,7 +1,9 @@
 import bleach
 from django.core.paginator import Paginator
 from django.db import models
-from django.shortcuts import get_object_or_404
+from django.db.models import F
+from django.db.models.functions import Coalesce
+from django.shortcuts import get_object_or_404, redirect
 from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
@@ -120,6 +122,13 @@ class BlogPost(BasePage, ClusterableModel):
         max_length=20,
     )
 
+    publish_date = models.DateField(
+        verbose_name="Publish Date",
+        help_text="Publish date to display for this post. Leave blank to use the date the post was first published.",
+        blank=True,
+        null=True,
+    )
+
     # can only be created underneath special link page
     parent_page_types = ["blog.BlogLinkPageArchived", "blog.BlogLandingPage"]
     # no allowed subpages
@@ -128,6 +137,7 @@ class BlogPost(BasePage, ClusterableModel):
     # admin edit configuration
     content_panels = Page.content_panels + [
         FieldPanel("description"),
+        FieldPanel("publish_date"),
         MultiFieldPanel(
             [
                 FieldPanel("image"),
@@ -185,13 +195,30 @@ class BlogPost(BasePage, ClusterableModel):
         """Comma-separated list of author names."""
         return ", ".join(str(author.person) for author in self.authors.all())
 
+    @property
+    def display_date(self):
+        """Return the custom date if set, otherwise return first_published_at."""
+        if self.publish_date:
+            return self.publish_date
+        return self.first_published_at.date() if self.first_published_at else None
+
+    @property
+    def url_date(self):
+        """Return the date to use for URL generation."""
+        # If publish_date is set and different from first_published_at, use publish_date
+        if self.publish_date and self.first_published_at:
+            if self.publish_date != self.first_published_at.date():
+                return self.publish_date
+        # Otherwise use first_published_at
+        return self.first_published_at.date() if self.first_published_at else None
+
     def get_url_parts(self, request, *args, **kwargs):
         """Custom blog post URLs of the form /updates/2014/03/01/my-post."""
         url_parts = super().get_url_parts(request, *args, **kwargs)
         # NOTE evidently these can sometimes be None; unclear why – perhaps it
         # gets called in a context where the request is unavailable. Seems to
         # happen immediately on page creation; the creation still succeeds.
-        if url_parts and self.first_published_at:
+        if url_parts and self.url_date:
             site_id, root_url, _remainder = url_parts
             parent = self.get_parent().specific
 
@@ -203,14 +230,13 @@ class BlogPost(BasePage, ClusterableModel):
             # These dates need to be in DEFAULT_TIMEZONE, rather than UTC,
             # otherwise the dates don't match up with the generated URLs (in
             # `BlogPage.get_url_parts`)
-            path_date = timezone.localtime(self.first_published_at)
             page_path = parent.reverse_subpage(
                 "dated_child",
                 kwargs={
-                    "year": path_date.year,
+                    "year": self.url_date.year,
                     # force two-digit month and day
-                    "month": "%02d" % path_date.month,
-                    "day": "%02d" % path_date.day,
+                    "month": "%02d" % self.url_date.month,
+                    "day": "%02d" % self.url_date.day,
                     "slug": self.slug,
                 },
             )
@@ -240,10 +266,18 @@ class BlogLinkPageArchived(LinkPage):
 class BlogLandingPage(IndexPageMixin, RoutablePageMixin, Page):
     """Container page that defines where Event pages can be created."""
 
+    featured_post = models.ForeignKey(
+        "BlogPost",
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="featured_post",
+    )
+
     page_size = 12
     template_name = "blog/blog_landing_page.html"
 
-    content_panels = IndexPageMixin.content_panels
+    content_panels = IndexPageMixin.content_panels + [FieldPanel("featured_post")]
 
     search_fields = IndexPageMixin.search_fields
 
@@ -254,12 +288,29 @@ class BlogLandingPage(IndexPageMixin, RoutablePageMixin, Page):
     def get_context(self, request, year=None, month=None):
         context = super().get_context(request)
 
+        # Store filter state in request to persist across multiple calls
+        if year is not None:
+            request.blog_filter_year = year
+            request.blog_filter_month = month
+        else:
+            # Use stored filter state if available
+            year = getattr(request, "blog_filter_year", None)
+            month = getattr(request, "blog_filter_month", None)
+
         if year:
             posts = self.get_posts_for_year_and_month(year=year, month=month)
         else:
             posts = self.get_latest_posts()
 
         posts = posts.prefetch_related("image", "image__renditions")
+
+        # Exclude featured_post from the results, and add
+        # it to the context note this means the template
+        # should access `featured_post` *NOT*
+        # `self.featured_post`
+        if self.featured_post and posts.filter(id=self.featured_post_id).exists():
+            context["featured_post"] = self.featured_post
+            posts = posts.exclude(pk=self.featured_post.pk)
 
         page_number = request.GET.get("page") or 1
         paginator = Paginator(posts, self.page_size)
@@ -285,34 +336,51 @@ class BlogLandingPage(IndexPageMixin, RoutablePageMixin, Page):
 
     @path("<int:year>/<int:month>/<int:day>/<slug:slug>/", name="dated_child")
     def dated_child(self, request, year=None, month=None, day=None, slug=None):
+        from datetime import date
+
+        # Find the blog post by slug
         child = get_object_or_404(
-            self.get_children()
-            .live()
-            .public()
-            .filter(
-                first_published_at__year=year,
-                first_published_at__month=month,
-                first_published_at__day=day,
-            ),
-            slug=slug,
+            self.get_children().live().public().filter(slug=slug),
         )
+
+        blog_post = child.specific
+
+        # Check if this is the correct URL for the post
+        if blog_post.url_date:
+            expected_year = blog_post.url_date.year
+            expected_month = blog_post.url_date.month
+            expected_day = blog_post.url_date.day
+
+            # If the URL doesn't match the expected url_date, redirect to the correct URL
+            if year != expected_year or month != expected_month or day != expected_day:
+                correct_url = blog_post.get_url(request)
+                return redirect(correct_url, permanent=True)
+
         return child.specific.serve(request)
 
     def get_posts_for_year_and_month(self, year=None, month=None):
-        # get blogs by year and month
-        child_qs = self.get_latest_posts().filter(first_published_at__year=year)
-        if month:
-            child_qs = child_qs.filter(first_published_at__month=month)
-        return child_qs
+        # get blogs by year and month using sort_date
+        child_qs = self.get_latest_posts()
+
+        if year:
+            child_qs = child_qs.filter(sort_date__year=year)
+            if month:
+                child_qs = child_qs.filter(sort_date__month=month)
+
+        return child_qs.order_by("-sort_date")
 
     def get_latest_posts(self):
-        child_pages = self.get_children().live().public().specific()
+        # Get BlogPost instances specifically to access the publish_date field
+        from cdhweb.blog.models import BlogPost
 
-        # Fetch all posts ordered by most recently published
-        return child_pages.order_by("-first_published_at")
+        child_pages = BlogPost.objects.child_of(self).live().public()
+
+        # Use publish_date if it exists, otherwise first_published_at
+        return child_pages.annotate(
+            sort_date=Coalesce("publish_date", F("first_published_at__date"))
+        ).order_by("-sort_date")
 
     def get_list_of_dates(self):
-        # get list of dates to sort by
-
-        child_pages = self.get_children().live()
-        return child_pages.dates("first_published_at", "month", order="DESC")
+        # get list of dates to sort by using sort_date
+        child_qs = self.get_latest_posts()
+        return child_qs.dates("sort_date", "month", order="DESC")
