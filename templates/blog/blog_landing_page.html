@@ -37,9 +37,7 @@
 
           <div class="tiles__list">
             {% if featured_post %}
-              <div class="featured-tile-wrapper">
-                {% include 'cdhpages/blocks/tile.html' with internal_page=featured_post tile_type='internal_page_tile' is_featured=True %}
-              </div>
+              {% include 'cdhpages/blocks/tile.html' with internal_page=featured_post tile_type='internal_page_tile' is_featured=True %}
             {% endif %}
             {% for post in posts %}
               {% include 'cdhpages/blocks/tile.html' with internal_page=post tile_type='internal_page_tile' %}
