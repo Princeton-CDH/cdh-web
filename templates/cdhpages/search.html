@@ -6,6 +6,8 @@
 {% block bodyclass %}search{% endblock bodyclass %}
 
 {% block main %}
+    {% include 'includes/breadcrumbs.html' with breadcrumbs=breadcrumbs current_page=page %}
+    
     <div class="search-page grid-standard content-width">
         <h1>
             {% if form.q.value %}

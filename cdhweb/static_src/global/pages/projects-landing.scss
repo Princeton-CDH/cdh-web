@@ -112,3 +112,18 @@
   flex-direction: column;
   gap: 8px;
 }
+
+.no-results-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.no-results-message {
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.no-results-suggestion {
+  white-space: nowrap;
+  max-width: 100%;
+}

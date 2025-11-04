@@ -4,6 +4,9 @@
     
     <div class="blog-hero__text">
         <h1>{{ page.title }}</h1>
+        {% if page.category %}
+            <div class="blog-hero__category-tag tag tag--dark tag--bigger">{{ page.category }}</div>
+        {% endif %}
     
         <p class="blog-hero__date">
             {{ page.first_published_at|date:"j F Y" }}

@@ -69,6 +69,8 @@ Blog hero. Similar to standard hero. Key differences:
 .blog-hero__text {
   grid-area: t;
   line-height: 1.125;
+  display: flex; // to support visual re-ordering (tag before h1)
+  flex-direction: column;
 
   :where(h1) {
     margin-block-start: var(--title-top-space);
@@ -96,6 +98,12 @@ Blog hero. Similar to standard hero. Key differences:
       margin-block-start: 40px;
     }
   }
+}
+
+.blog-hero__category-tag {
+  justify-self: start;
+  align-self: start;
+  order: -1; // visually before h1
 }
 
 .blog-hero__date {

@@ -100,7 +100,24 @@ class SiteSearchView(ListView, FormMixin):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update({"page_title": self.page_title})
+
+        # Get the HomePage for breadcrumbs
+        from cdhweb.pages.models import HomePage
+
+        home_page = HomePage.objects.first()
+
+        context.update(
+            {
+                "page_title": self.page_title,
+                "breadcrumbs": [home_page]
+                if home_page
+                else [],  # HomePage for breadcrumbs
+                "page": {  # mock page object for breadcrumbs
+                    "title": "Search",
+                    "short_title": "Search",
+                },
+            }
+        )
         return context
 
 

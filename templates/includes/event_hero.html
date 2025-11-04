@@ -4,6 +4,9 @@
 
     <div class="event-hero__text">
         <h1>{{ self.title}}</h1>
+        {% if self.type %}
+            <div class="event-hero__type-tag tag tag--dark tag--bigger">{{ self.type }}</div>
+        {% endif %}
 
         <p class="event-hero__date">
             {# Display date differently depending on if it spans multiple days #}
@@ -15,8 +18,19 @@
                 <time datetime="{{ self.end_time|date:'c' }}">{{ self.end_time|date:"M d g:i a" }}</time>
             {% endif %}
         </p>
-        <p class="event-hero__add-to-calendar">
-            <a href="{{ self.get_ical_url }}">Add to calendar</a>
+        
+        <p class="event-hero__buttons">
+            <a class="sk-btn sk-btn--primary" href="{{ self.get_ical_url }}">
+                Add to calendar
+                {% include 'includes/svg.html' with sprite="two-tone" svg="cal" %}
+            </a>
+
+            {% if self.rsvp_url %}
+            <a class="sk-btn sk-btn--secondary" href="{{ self.rsvp_url }}">
+                {{ self.rsvp_text }}
+                {% include 'includes/svg.html' with sprite="two-tone" svg="rsvp" %}
+            </a>
+            {% endif %}
         </p>
 
         {% if self.location %}

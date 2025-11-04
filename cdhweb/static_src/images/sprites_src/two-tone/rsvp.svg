@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+  <path fill="var(--icon-accent-color, #00edff)" d="M18.44 4.06h-15v15h15v-15Z" />
+  <path fill="var(--icon-accent-color, #00edff)"
+    d="M19.06 19.69H2.81V3.44h16.25v16.25Zm-15-1.25h13.75V4.69H4.06v13.75Z" />
+  <path fill="#fff" d="M16.56 2.19h-15v15h15v-15Z" />
+  <path fill="var(--icon-color, #414042)" d="M17.19 17.81H.94V1.56h16.25v16.25Zm-15-1.25h13.75V2.81H2.19v13.75Z" />
+  <path fill="var(--icon-color, #414042)"
+    d="M16.56 5.63h-15v1.25h15V5.63Zm-8.13 6.32a.06.06 0 0 1-.08 0l-1.62-1.73-1.1 1.19 2.76 2.96 4.42-4.75-1.1-1.18-3.28 3.51ZM5.63 0H4.38v3.75h1.25V0Zm8.15 0h-1.25v3.75h1.25V0Z" />
+</svg>

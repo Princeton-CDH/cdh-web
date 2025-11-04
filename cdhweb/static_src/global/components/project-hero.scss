@@ -59,6 +59,7 @@ and some meta info that can appear below the description (like blog hero).
 }
 
 .project-hero__title {
+  
   &:where(:not(:has(+ .project-hero__cdh-built-tag))) {
     margin-block-start: var(--title-top-space);
   }

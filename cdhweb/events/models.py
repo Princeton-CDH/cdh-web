@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from dataclasses import dataclass
 import datetime
+from dataclasses import dataclass
 
 import icalendar
 from django.core.exceptions import ValidationError
@@ -200,6 +200,21 @@ class Event(BasePage, ClusterableModel):
     people = models.ManyToManyField(Person, through=Speaker, related_name="events")
     tags = ClusterTaggableManager(through=EventTag, blank=True)
     # TODO attachments (#245)
+    rsvp_url = models.URLField(
+        verbose_name="RSVP URL",
+        null=True,
+        blank=True,
+        help_text="RSVP URL for events",
+    )
+
+    rsvp_text = models.CharField(
+        verbose_name="RSVP Text",
+        default="RSVP",
+        null=True,
+        blank=True,
+        help_text="Text for the RSVP button, this will default to RSVP if left blank",
+        max_length=20,
+    )
 
     # can only be created underneath special link page
     parent_page_types = ["events.EventsLinkPageArchived", "events.EventsLandingPage"]
@@ -218,6 +233,13 @@ class Event(BasePage, ClusterableModel):
                         FieldPanel("location"),
                     ),
                     "Details",
+                ),
+                FieldRowPanel(
+                    (
+                        FieldPanel("rsvp_url"),
+                        FieldPanel("rsvp_text"),
+                    ),
+                    "RSVP",
                 ),
                 InlinePanel("speakers", [AutocompletePanel("person")], label="Speaker"),
                 MultiFieldPanel(
