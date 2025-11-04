@@ -52,60 +52,16 @@
 }
 
 .tile {
-  --border-color: var(--tile-border-color, var(--color-brand-100));
   display: grid;
   position: relative; // for whole-tile click pseudo element
   grid-template-rows: auto 1fr;
 }
 
 .tile--featured {
-  --tile-border-color: var(--color-grey-100);
-}
+  grid-column: 1 / -1;
 
-// Extra wrapper required for container query
-.featured-tile-wrapper {
-  @supports (container-name: test) {
-    container-type: inline-size;
-    container-name: featured-tile;
-
-    // The no. of cols the wrapper has (.tiles__list) is based on *its* width, i.e.
-    // not by breakpoint. So we don't know *exactly* when the grid layout will go
-    // from 1 col to 2. It happens somewhere between `sm` and `md`. BUT we can be
-    // confident that from `md`, there will be at least 2 cols, so we can set the
-    // featured tile to span 2 cols from then (doing so when there is only 1 column
-    // causes layout bugs.
-    grid-column: 1 / -1;
-
-    @include mx.lg {
-      grid-column: span 2;
-    }
-  }
-}
-
-@container featured-tile (min-width: #{fn.rem(400)}) {
-  .tile--featured {
-    grid-template-rows: 1fr;
-    grid-template-columns: 0.9fr 1fr;
-    height: 100%;
-    min-height: fn.rem(250);
-
-    .tile__img-wrapper {
-      grid-column: 1;
-      grid-row: 1;
-      height: unset;
-      aspect-ratio: unset;
-    }
-    .tile__text {
-      grid-column: 2;
-      grid-row: 1;
-      border: 8px solid var(--border-color);
-      border-left: none;
-      padding-left: 40px;
-      align-content: end;
-    }
-    .tile__tag {
-      grid-column: 1 / -1;
-    }
+  @include mx.lg {
+    grid-column: span 2;
   }
 }
 
@@ -113,7 +69,7 @@
   grid-row: 2;
   grid-column: 1;
   background-color: var(--color-white);
-  border: 8px solid var(--border-color);
+  border: 8px solid var(--color-brand-100);
   border-top: none;
   padding: 24px 12px;
 
