@@ -37,7 +37,12 @@
 
           <div class="tiles__list">
             {% if featured_post %}
-              {% include 'cdhpages/blocks/tile.html' with internal_page=featured_post tile_type='internal_page_tile' is_featured=True %}
+              {% comment %}
+                NOTE: 
+                We're not using `is_featured=True` for blog/article tiles. We only use that style on `project` tiles.
+                We still want to 'pin' the featured post to the top though.
+              {% endcomment %}
+              {% include 'cdhpages/blocks/tile.html' with internal_page=featured_post tile_type='internal_page_tile' %}
             {% endif %}
             {% for post in posts %}
               {% include 'cdhpages/blocks/tile.html' with internal_page=post tile_type='internal_page_tile' %}
