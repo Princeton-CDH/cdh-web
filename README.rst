@@ -27,7 +27,7 @@ CDH Website
     :target: https://pycqa.github.io/isort/
     :alt: "imports: isort"
 
-Python 3.11 / Django 4.2 / Node 18 / PostgreSQL 12
+Python 3.12 / Django 4.2 / Node 18 / PostgreSQL 15
 `cdhweb` is a Django+Wagtail application that powers the CDH website
 with custom models for people, events, and projects.
 
@@ -54,11 +54,11 @@ This option runs the application directly on your local machine.
 
 1. **Set up Python environment:**
 
-   **Important:** This project uses the Python version specified in `.python-version`. 
+   **Important:** This project uses the Python version specified in `.python-version`.
    Using the correct version is essential for compatibility.
 
    ::
-   
+
       # Create and activate virtual environment
       python -m venv .venv
       source .venv/bin/activate
@@ -66,55 +66,55 @@ This option runs the application directly on your local machine.
 
 2. **Install Python dependencies:**
    ::
-   
+
       # For development (includes test dependencies)
       pip install -r requirements/dev.txt
-      
+
       # Or for production only
       pip install -r requirements.txt
 
 3. **Set up local settings:**
    ::
-   
+
       cp cdhweb/settings/local_settings.py.sample cdhweb/settings/local_settings.py
-      
+
       # Edit local_settings.py and add your SECRET_KEY
       # Configure database connection to your local PostgreSQL
 
 4. **Install Node.js dependencies:**
    ::
-   
+
       npm install
 
 5. **Set up database:**
    ::
-   
+
       # Create database
       createdb cdhweb
-      
+
       # Run migrations
       python manage.py migrate
-      
+
       # Create admin user (choose one option):
       # Option A: Standard Django superuser
       python manage.py createsuperuser
-      
-      # Option B: Princeton NetID account with admin permissions  
+
+      # Option B: Princeton NetID account with admin permissions
       python manage.py createcasuser --admin netid
 
 6. **Build frontend assets:**
    ::
-   
+
       npm run build
 
 7. **Collect static files:**
    ::
-   
+
       python manage.py collectstatic --noinput
 
 8. **Run the development server:**
    ::
-   
+
       python manage.py runserver
 
 9. **Visit the site:**
@@ -143,41 +143,41 @@ This option runs the application in Docker containers, providing a production-li
 
 2. **Configure Docker settings:**
    ::
-   
+
       cp cdhweb/settings/local_settings.py.docker-sample cdhweb/settings/local_settings.py
 
 3. **Create Docker network:**
    ::
-   
+
       docker network create nginx-proxy
 
 4. **Start the application:**
    ::
-   
+
       docker-compose up -d
 
 5. **Build frontend assets (on host machine):**
    ::
-   
+
       npm install
       npm run build
 
 6. **Collect static files:**
    ::
-   
+
       docker-compose exec application python manage.py collectstatic --noinput
 
 7. **Run database migrations:**
    ::
-   
+
       docker-compose exec application python manage.py migrate
 
 8. **Create admin user (optional, choose one option):**
    ::
-   
+
       # Option A: Standard Django superuser
       docker-compose exec application python manage.py createsuperuser
-      
+
       # Option B: Princeton NetID account with admin permissions
       docker-compose exec application python manage.py createcasuser --admin netid
 
