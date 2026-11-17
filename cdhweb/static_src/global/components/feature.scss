@@ -56,6 +56,7 @@
 
 .feature__img {
   order: -1; // on top when stacked
+  z-index: 1; // in front of 3d box's background color
 
   @include mx.xl {
     order: unset;
