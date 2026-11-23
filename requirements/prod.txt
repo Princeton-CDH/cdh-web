@@ -12,7 +12,7 @@ attrdict
 django-fullurl
 django-apptemplates
 wagtailmenus>=3.1
-opencv-python
+opencv-python<5.0
 bleach
 wagtail-autocomplete
 wagtailcodeblock

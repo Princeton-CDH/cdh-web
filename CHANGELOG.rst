@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+4.3.1
+-----
+
+- Update to python 3.12
+- Pin opencv-python to <5 for compability with current wagtail version
+
 4.3.0
 -----
 - [CDH-62] add category label to event and blog pages
@@ -15,7 +21,7 @@ CHANGELOG
 -----
 - Add CoinS metadata to blog post pages for Zotero citation support
 - Improved developer's documentation in Readme
-  
+
 4.1.1
 -----
 - Allow person profile pages to be created where they belong
